@@ -7,3 +7,10 @@ GET     /                           controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Robots and Humans files
+GET     /$file<(robots|humans).txt>             controllers.Assets.at(path="/public", file)
+
+# Flash policies
+GET     /$file<crossdomain.xml>                 controllers.Assets.at(path="/public", file)
+

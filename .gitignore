@@ -4,3 +4,7 @@ project/target
 target
 tmp
 .history
+*.ipr
+*.iws
+*.iml
+
