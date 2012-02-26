@@ -3,18 +3,24 @@
 
 
 /* TEAM */
-  <your title>: <your name>
-  Site:
-  Twitter:
-  Location:
+  Developer: Pere Villega
+  Site: www.perevillega.com
+  Twitter: @pvillega
+  Location: Dublin, Ireland
 
 /* THANKS */
   Names (& URL):
+  Initializr (http://www.initializr.com/)
+  HTML 5 Boilerplate (http://html5boilerplate.com/)
+  Twitter Bootstrap (http://twitter.github.com/bootstrap/)
+  Play Framework (http://www.playframework.org/)
+  Heroku (http://www.heroku.com/)
 
 /* SITE */
-  Standards: HTML5, CSS3
-  Components: Modernizr, jQuery
-  Software:
+  Standards: HTML5, CSS3 (well, kind of :P)
+  Components: Modernizr, TWitter Bootstrap, jQuery
+  Software: Play Framework 2.x, Heroku
+
 
 
 

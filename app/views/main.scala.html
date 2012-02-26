@@ -42,7 +42,51 @@
             <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
         @* ********************************************************************************************************** *@
 
-        @content
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+
+                    <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+
+                    <!-- Be sure to leave the brand out there if you want it shown -->
+                    <a class="brand" href="#">@Messages("app.title")</a>
+
+                    <!-- Everything you want hidden at 940px or less, place within here -->
+                    <div class="nav-collapse">
+                        <!-- .nav, .navbar-search, .navbar-form, etc -->
+                        <ul class="nav">
+                            <li class="active"><a href="#">@Messages("area.home")</a></li>
+                            <li><a href="#">@Messages("area.modules")</a></li>
+                            <li><a href="#">@Messages("area.demos")</a></li>
+                            <li class="divider-vertical"></li>
+                        </ul>
+                        <ul class="nav pull-right">
+                            <li><a href="#">@Messages("area.login")</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div id="main-container" class="container">
+
+            @content
+            <hr class="soften">
+            <footer class="footer">
+                <p class="pull-right"><a href="#">@Messages("back.top")</a></p>
+                <p></p>
+                <p>@Messages("footer.design1") <a target="_blank" href="http://twitter.com/pvillega">@@pvillega</a> @Messages("footer.design2") <a target="_blank" href="www.playframework.org">@Messages("footer.design3")</a>.</p>
+                <p>@Messages("footer.code") <a target="_blank" href="https://github.com/pvillega/Play-Modules">GitHub</a>.</p>
+                <p>@Messages("footer.license") <a target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License v2.0</a>.</p>
+            </footer>
+        </div>
 
         @* ********************************************************************************************************** *@
         <!-- Javascript files -->

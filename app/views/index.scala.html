@@ -1,9 +1,54 @@
-@(message: String)
+@()
 
-@main("Welcome to Play 2.0") {
-    
-    <h1>MY MESSAGE HERE</h1>
-        
-        
-    <p>@message</p>
+@main(Messages("app.title")) {
+
+    @* landing page content *@
+     <header class="humongous mainheader">
+        <div class="inner">
+            <h1>@Messages("app.title")</h1>
+            <p>@Messages("app.pitch")</p>
+            <p>
+                <a class="btn btn-primary btn-large" href="#">@Messages("landing.browseModules")</a>
+                <a class="btn btn-large" href="assets/bootstrap.zip">@Messages("landing.demos")</a>
+                <a class="btn btn-success btn-large" href="assets/bootstrap.zip">@Messages("landing.upload")</a>
+            </p>
+        </div>
+    </header>
+
+
+    <div class="landingdetails">
+        <h1>@Messages("landing.detailsTitle")</h1>
+        <p class="subheader">@Messages("landing.detailsSubtitle")</p>
+        <div class="row">
+            <div class="span4">
+                <h2><i class="icon-search"></i>@Messages("landing.details.browse")</h2>
+                <p>@Messages("landing.details.browse.text")</p>
+            </div>
+            <div class="span4">
+                <h2><i class="icon-eye-open"></i>@Messages("landing.details.samples")</h2>
+                <p>@Messages("landing.details.samples.text")</p>
+            </div>
+            <div class="span4">
+                <h2><i class="icon-comment"></i>@Messages("landing.details.collaborate")</h2>
+                <p>@Messages("landing.details.collaborate.text")</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4">
+                <h2><i class="icon-file"></i>@Messages("landing.details.open")</h2>
+                <p>@Messages("landing.details.open.text") <a target="_blank" href="https://github.com/pvillega/Play-Modules">@Messages("landing.details.open.text2")</a></p>
+            </div>
+            <div class="span4">
+                <h2><i class="icon-user"></i>@Messages("landing.details.community")</h2>
+                <p>@Messages("landing.details.community.text")</p>
+            </div>
+            <div class="span4">
+                <h2><i class="icon-info-sign"></i>@Messages("landing.details.play")</h2>
+                <p>@Messages("landing.details.play.text")</p>
+            </div>
+        </div>
+    </div>
+
+     <div class="spacer">&nbsp;</div>
+
 }

@@ -1,0 +1,42 @@
+# App strings
+app.title=Play Modules
+app.pitch=The collaborative index for open-source Play Modules and Demos
+
+# Sections
+area.home=Home
+area.modules=Modules
+area.demos=Demos
+area.login=Login to publish
+
+# Landing
+landing.browseModules=Browse
+landing.demos=See Demos
+landing.upload=Publish
+landing.detailsTitle=How does it work?
+landing.detailsSubtitle=See how this site can help your Play development experience.
+landing.details.browse=Browse the repository
+landing.details.browse.text=Check the repository for Play modules. Speed up your development by using tested code. See community feedback and provide your own.
+landing.details.samples=Find code samples
+landing.details.samples.text=Learning by example is the best way of learning. Look at code samples provided by the community. Discover what can be achieved with Play.
+landing.details.collaborate=Collaborate
+landing.details.collaborate.text=Have some great code to share? Register and make it available for all to see. Spread your knowledge and get feedback.
+landing.details.open=Open Source
+landing.details.open.text=The code for the site is available on Github. Fork the codebase, improve it and create a pull request. Help evolving the site. Or deploy your own!
+landing.details.open.text2=Contribute!
+landing.details.community=For the Community
+landing.details.community.text=The aim of the site is to facilitate access to the great modules available for Play. Feedback will drive the growth of the application to fulfil community needs (up to where it is possible).
+landing.details.play=Built in Play & Heroku
+landing.details.play.text=The site itself is built using Play 2.0, the framework we all admire and love for what's become. It uses Heroku as the execution platform. It may not be the most elegant code (check Github!) but we sure "eat our own dog food" ;)
+
+# Footer
+footer.design1=Designed and built by
+footer.design2=for the
+footer.design3=Play Framework community
+footer.code=Code available on
+footer.license=Code licensed under the
+
+
+
+
+# Navigation
+back.top=Back to top
