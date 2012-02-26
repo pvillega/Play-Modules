@@ -16,6 +16,7 @@ object Global extends GlobalSettings {
    * Executed before start of application
    */
   override def beforeStart(app : play.api.Application) = {
+    Logger.info("beforeStart executed for application %s".format(app.mode))
     super.beforeStart(app)
   }
 
@@ -24,6 +25,7 @@ object Global extends GlobalSettings {
    * We load DB data in here
    */
   override def onStart(app: Application) {
+    Logger.info("onStart executed for application %s".format(app.mode))
     super.onStart(app)
   }
 
@@ -32,6 +34,7 @@ object Global extends GlobalSettings {
    * We use the same scenario as Not Found to hide options from hackers but we notify ourselves with email
    */
   override def onError(request: RequestHeader, ex: Throwable) = {
+    Logger.info("onError executed for request %s".format(request), ex)
     InternalServerError(
       views.html.errors.error(ex)
     )
@@ -42,6 +45,7 @@ object Global extends GlobalSettings {
    * Route not found
    */
   override def onHandlerNotFound(request: RequestHeader) = {
+    Logger.info("onHandlerNotFound executed for request %s".format(request))
     NotFound(
       views.html.errors.error404(request.path)
     )
@@ -52,6 +56,7 @@ object Global extends GlobalSettings {
    * We use the same scenario as Not Found to hide options from hackers but we notify ourselves with email
    */
   override def onBadRequest(request : play.api.mvc.RequestHeader, error : scala.Predef.String) = {
+    Logger.info("onBadRequest executed for request %s on error %s".format(request, error))
     NotFound(
       views.html.errors.error404(request.path)
     )

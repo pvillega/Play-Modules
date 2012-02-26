@@ -1,13 +1,12 @@
 @(ex: Throwable)
 
-@main("Error detected") {
+@main(Messages("error.title")) {
 
-    <article>
-        <h1>It broke <span frown>:(</span></h1>
-        <div>
-            <p>Sorry, but somehow the server broke.</p>
-            <p>It looks like this won't work, please try something else!</p>
+    <header class="humongous mainheader">
+        <div class="inner">
+            <h1>@Messages("error.header") <span frown>:(</span></h1>
+            <p>@Messages("error.text1")</p>
+            <p>@Messages("error.text2") <a href="@routes.Application.index()">@Messages("error.textLink")</a></p>
         </div>
-
-    </article>
+    </header>
 }

@@ -1,23 +1,23 @@
 @(path: String)
 
-@main("Page Not Found") {
+@main(Messages("notFound.title")) {
 
-    <article>
-        <h1>@path Not found <span frown>:(</span></h1>
-        <div>
-            <p>Sorry, but the page you were trying to view does not exist.</p>
-            <p>It looks like this was the result of either:</p>
-            <ul>
-                <li>a mistyped address</li>
-                <li>an out-of-date link</li>
-            </ul>
-        </div>
+    <header class="humongous mainheader">
+        <div class="inner">
+            <h1>@Messages("notFound.header") <span frown>:(</span></h1>
+            <p>@Messages("notFound.text1")</p>
+            <p>@Messages("notFound.text2")</p>
+            <p>@Messages("notFound.text5") <a href="@routes.Application.index()">@Messages("notFound.textLink")</a></p>
 
-        @* Notify google on the issue *@
+
+        @* Notify google on the issue and provide search box *@
         <script>
             var GOOG_FIXURL_LANG = (navigator.language || '').slice(0,2),
             GOOG_FIXURL_SITE = location.host;
         </script>
         <script src="http://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
-    </article>
+
+        </div>
+    </header>
+
 }

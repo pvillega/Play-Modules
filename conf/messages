@@ -35,8 +35,19 @@ footer.design3=Play Framework community
 footer.code=Code available on
 footer.license=Code licensed under the
 
+# Error
+error.title=Error detected
+error.header=It broke
+error.text1=Sorry but, somehow, the server broke. Developers have been notified.
+error.text2=It looks like this request won't work, please
+error.textLink=go back to the main page.
 
+notFound.title=Page Not Found
+notFound.header=URL Not found
+notFound.text1=Sorry, but the page you were trying to view does not exist.
+notFound.text2=It looks like this was the result of either a mistyped address or an outdated link.
+notFound.text5=Please use the box below to search for the page or
+notFound.textLink=go back to the main page.
 
-
-# Navigation
+# Footer Navigation
 back.top=Back to top
