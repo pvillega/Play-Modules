@@ -2,11 +2,18 @@
 app.title=Play Modules
 app.pitch=The collaborative index for open-source Play Modules and Demos
 
+# Alerts
+alerts.warning=Warning!
+alerts.success=All is Ok!
+alerts.error=Oh Snap!
+alerts.info=Notification
+
 # Sections
 area.home=Home
 area.modules=Modules
 area.demos=Demos
 area.login=Login to publish
+area.logout=Logout
 
 # Landing
 landing.browseModules=Browse
@@ -27,6 +34,27 @@ landing.details.community=For the Community
 landing.details.community.text=The aim of the site is to facilitate access to the great modules available for Play. Feedback will drive the growth of the application to fulfil community needs (up to where it is possible).
 landing.details.play=Built in Play & Heroku
 landing.details.play.text=The site itself is built using Play 2.0, the framework we all admire and love for what's become. It uses Heroku as the execution platform. It may not be the most elegant code (check Github!) but we sure "eat our own dog food" ;)
+
+# Login
+login.title=Log in
+login.text=Use your account in one of the following services to log into the application. Rest assured that no personal data will be harvested. And NO spam. Promise.
+login.backend.welcome=Welcome to Play Modules, {0}
+login.backend.disabled=Your user has been disabled. Please contact us for more details.
+login.backend.failed=There's been an error and your login request could not be processed. Please try again.
+login.backend.logout=See you again soon!
+login.backend.cancel=You cancelled the authentication process
+
+# Profile
+profile.title=Profile of {0}
+profile.name=Name
+profile.bio=Bio
+profile.location=Location
+profile.blog=Blog
+profile.githubUrl=GitHub
+profile.admin=Administration
+profile.modules=Modules
+profile.demos=Demos
+
 
 # Footer
 footer.design1=Designed and built by

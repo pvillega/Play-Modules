@@ -1,0 +1,19 @@
+@()(implicit request: play.api.mvc.RequestHeader)
+
+@* Login icons thanks to https://github.com/intridea/authbuttons *@
+
+@main(Messages("login.title")) {
+    <header>
+        <h1>@Messages("login.title")</h1>
+    </header>
+
+
+    <div class="loginOptions">
+        <p>@Messages("login.text")</p>
+        <br/>
+        <a href="@routes.Authentication.githubAuth()" class="github">&nbsp;</a>
+    </div>
+
+    @* for style purposes *@
+    <div class="spacer">&nbsp;</div>
+}

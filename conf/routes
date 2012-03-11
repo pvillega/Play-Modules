@@ -4,9 +4,22 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /browse                           controllers.Application.browse
+
+# Authentication
+GET     /authentication             controllers.Authentication.index
+GET     /logout                     controllers.Authentication.logout
+GET     /githubAuth                 controllers.Authentication.githubAuth
+
+# Profile
+GET     /profile/:id                controllers.Profile.index(id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Get favicon
+GET     /favicon.ico         controllers.Assets.at(path="/public", file="/images/favicon.png")
 
 # Robots and Humans files
 GET     /$file<(robots|humans).txt>             controllers.Assets.at(path="/public", file)

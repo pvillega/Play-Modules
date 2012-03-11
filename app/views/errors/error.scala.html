@@ -1,12 +1,12 @@
-@(ex: Throwable)
+@(ex: Throwable)(implicit request: play.api.mvc.RequestHeader)
 
 @main(Messages("error.title")) {
 
     <header class="humongous mainheader">
         <div class="inner">
             <h1>@Messages("error.header") <span frown>:(</span></h1>
-            <p>@Messages("error.text1")</p>
-            <p>@Messages("error.text2") <a href="@routes.Application.index()">@Messages("error.textLink")</a></p>
+            <p class="left">@Messages("error.text1")</p>
+            <p class="left">@Messages("error.text2") <a href="@routes.Application.index()">@Messages("error.textLink")</a></p>
         </div>
     </header>
 }

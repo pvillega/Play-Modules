@@ -1,20 +1,56 @@
 @background: #EEEEEE;
 @quotes: #999999;
+@lightText: #555555;
+@borders: #494949;
+
+/* Common */
 
 body {
     background-color: @background;
 }
 
+.spacer {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.footer {
+    p {
+        color: @lightText;
+        margin-bottom: 0;
+    }
+}
+
+p {
+ font-size: 13px;
+ line-height: 18px;
+ margin-right: 10px;
+ text-align: left;
+}
+
+/* Landing page */
+
 header {
     color: #ffffff;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+    margin-bottom: 15px;
     h1 {
+        background: @lightText;
         color: #ffffff;
+        padding: 5px;
+        margin-top: -10px;
     }
     .inner {
-        background: -moz-linear-gradient(center top , #555555, #333333) repeat scroll 0 0 transparent;
-        border: 2px solid #494949;
+        background: #333333;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@lightText', endColorstr='#333333');
+        background: -webkit-gradient(linear, center top, center bottom, from(@lightText), to(#333333));
+        background: -moz-linear-gradient(center top , @lightText, #333333) repeat scroll 0 0 transparent;
+        border: 2px solid @borders;
         padding: 15px;
+        h1 {
+            background: transparent;
+            color: #ffffff;
+        }
     }
 }
 
@@ -61,6 +97,10 @@ header {
         .landingText;
         font-size: 30px;
         line-height: 36px;
+
+    }
+    p.left {
+        text-align: left;
     }
 }
 
@@ -86,25 +126,31 @@ header {
             width: 24px;
         }
     }
-    p {
-        text-align: left;
-        font-size: 13px;
-        line-height: 18px;
-        margin-right: 10px;
-    }
-
 }
 
-.spacer {
-    margin-top: 50px;
-    margin-bottom: 50px;
+.page-header {
+   h2 { /* for subheaders in page*/
+       border-bottom: 3px solid @lightText;
+       margin-bottom: 5px;
+   }
 }
 
-.footer {
-    p {
-        color: #555555;
-        margin-bottom: 0;
-    }
+/* Login */
+
+.loginOptions {
+    margin: 20px 0px;
+    padding: 10px;
+}
+
+.loginOptions a:hover {
+    text-decoration: none;
+}
+
+.github {
+    background-image: url('/assets/images/login/github_128.png');
+    display: block;
+    width: 128px;
+    height: 128px;
 }
 
 /* ===== Primary Styles ====================================================== */
@@ -114,7 +160,6 @@ header {
 
     .humongous {
         position: relative;
-
         h1 {
             font-size: 51px;
             letter-spacing: -1px;
@@ -122,7 +167,7 @@ header {
             margin-bottom: 9px;
         }
         h3 {
-                color: #ffffff;
+            color: #ffffff;
         }
         p {
             font-weight: 300;
@@ -138,6 +183,13 @@ header {
             display: block;
             clear: both;
         }
+    }
+
+    .github{
+        background-image: url('/assets/images/login/github_32.png');
+        display: block;
+        width: 32px;
+        height: 32px;
     }
 
 }
@@ -155,7 +207,7 @@ header {
             margin-bottom: 9px;
         }
         h3 {
-                color: #ffffff;
+            color: #ffffff;
         }
         p {
             font-weight: 300;
@@ -171,6 +223,13 @@ header {
             display: block;
             clear: both;
         }
+    }
+
+    .github{
+        background-image: url('/assets/images/login/github_64.png');
+        display: block;
+        width: 64px;
+        height: 64px;
     }
 
 }

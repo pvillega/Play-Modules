@@ -1,6 +1,8 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit request: play.api.mvc.RequestHeader)
 
 @* This page should have no logic at all to be able to display error pages, otherwise we may enter an error loop situation *@
+
+@import tag._
 
 <!DOCTYPE html>
 @* See see: paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ on usage of these classes *@
@@ -40,6 +42,8 @@
         @* Prompt IE 6 users to upgrade or install Chrome Frame. chromium.org/developers/how-tos/chrome-frame-getting-started *@
         <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or
             <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+
         @* ********************************************************************************************************** *@
 
         <div class="navbar">
@@ -54,19 +58,20 @@
                     </a>
 
                     <!-- Be sure to leave the brand out there if you want it shown -->
-                    <a class="brand" href="#">@Messages("app.title")</a>
+                    <a class="brand" href="@routes.Application.index()">@Messages("app.title")</a>
 
                     <!-- Everything you want hidden at 940px or less, place within here -->
                     <div class="nav-collapse">
                         <!-- .nav, .navbar-search, .navbar-form, etc -->
                         <ul class="nav">
-                            <li class="active"><a href="#">@Messages("area.home")</a></li>
+                            <li class="active"><a href="@routes.Application.index()">@Messages("area.home")</a></li>
                             <li><a href="#">@Messages("area.modules")</a></li>
                             <li><a href="#">@Messages("area.demos")</a></li>
                             <li class="divider-vertical"></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li><a href="#">@Messages("area.login")</a></li>
+                            <li><a href="@routes.Authentication.index()">@Messages("area.login")</a></li>
+                            <li><a href="@routes.Authentication.logout()">@Messages("area.logout")</a></li>
                         </ul>
                     </div>
 
@@ -74,19 +79,21 @@
             </div>
         </div>
 
-
         <div id="main-container" class="container">
+            @* Notifications *@
+            @notice(request.flash)
 
             @content
             <hr class="soften">
             <footer class="footer">
                 <p class="pull-right"><a href="#">@Messages("back.top")</a></p>
-                <p></p>
+                <br/>
                 <p>@Messages("footer.design1") <a target="_blank" href="http://twitter.com/pvillega">@@pvillega</a> @Messages("footer.design2") <a target="_blank" href="www.playframework.org">@Messages("footer.design3")</a>.</p>
                 <p>@Messages("footer.code") <a target="_blank" href="https://github.com/pvillega/Play-Modules">GitHub</a>.</p>
                 <p>@Messages("footer.license") <a target="_blank" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License v2.0</a>.</p>
             </footer>
         </div>
+
 
         @* ********************************************************************************************************** *@
         <!-- Javascript files -->

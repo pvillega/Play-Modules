@@ -7,7 +7,7 @@
  */
 
 import play.api._
-import play.api.mvc._
+import mvc._
 import play.api.mvc.Results._
 
 object Global extends GlobalSettings {
@@ -34,9 +34,10 @@ object Global extends GlobalSettings {
    * We use the same scenario as Not Found to hide options from hackers but we notify ourselves with email
    */
   override def onError(request: RequestHeader, ex: Throwable) = {
-    Logger.info("onError executed for request %s".format(request), ex)
+    Logger.error("onError executed for request %s".format(request), ex)
+
     InternalServerError(
-      views.html.errors.error(ex)
+      views.html.errors.error(ex)(request)
     )
     //TODO: send mail?
   }
@@ -45,20 +46,24 @@ object Global extends GlobalSettings {
    * Route not found
    */
   override def onHandlerNotFound(request: RequestHeader) = {
-    Logger.info("onHandlerNotFound executed for request %s".format(request))
+    Logger.error("onHandlerNotFound executed for request %s".format(request))
+
     NotFound(
-      views.html.errors.error404(request.path)
+      views.html.errors.error404(request.path)(request)
     )
   }
+
+
 
   /**
    * Route was found but we couldn't bind the parameters
    * We use the same scenario as Not Found to hide options from hackers but we notify ourselves with email
    */
-  override def onBadRequest(request : play.api.mvc.RequestHeader, error : scala.Predef.String) = {
-    Logger.info("onBadRequest executed for request %s on error %s".format(request, error))
+  override def onBadRequest(request : RequestHeader, error : scala.Predef.String) = {
+    Logger.error("onBadRequest executed for request %s on error %s".format(request, error))
+
     NotFound(
-      views.html.errors.error404(request.path)
+      views.html.errors.error404(request.path)(request)
     )
     //TODO: send mail?
   }

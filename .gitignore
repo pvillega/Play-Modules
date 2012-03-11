@@ -7,4 +7,5 @@ tmp
 *.ipr
 *.iws
 *.iml
-
+launch.sh
+test.sh

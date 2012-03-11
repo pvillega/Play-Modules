@@ -1,0 +1,37 @@
+@(flash : play.api.mvc.Flash)
+
+@block(label: String, message: String) = {
+<div class="alert alert-block alert-@label">
+    <a class="close" data-dismiss="alert">×</a>
+    <h4 class="alert-heading">@Messages("alerts."+label)</h4>
+    @message
+</div>
+}
+
+@{
+flash.get("success") match {
+    case Some(message) => block("success",message)
+    case None =>
+}
+}
+
+@{
+flash.get("warning") match {
+    case Some(message) => block("warning",message)
+    case None =>
+}
+}
+
+@{
+flash.get("error") match {
+    case Some(message) => block("error",message)
+    case None =>
+}
+}
+
+@{
+flash.get("info") match {
+    case Some(message) => block("info",message)
+    case None =>
+}
+}
