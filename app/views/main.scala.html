@@ -65,13 +65,19 @@
                         <!-- .nav, .navbar-search, .navbar-form, etc -->
                         <ul class="nav">
                             <li class="active"><a href="@routes.Application.index()">@Messages("area.home")</a></li>
-                            <li><a href="#">@Messages("area.modules")</a></li>
-                            <li><a href="#">@Messages("area.demos")</a></li>
+                            <li><a href="@routes.Application.browse()">@Messages("area.modules")</a></li>
+                            <li><a href="@routes.Application.demos()">@Messages("area.demos")</a></li>
                             <li class="divider-vertical"></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li><a href="@routes.Authentication.index()">@Messages("area.login")</a></li>
-                            <li><a href="@routes.Authentication.logout()">@Messages("area.logout")</a></li>
+                            @request.session.get("userId").map{ userId => {
+                                <li><a href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
+                                <li><a href="@routes.Authentication.logout()">@Messages("area.logout")</a></li>
+                                }
+                            }.getOrElse{
+                                <li><a href="@routes.Authentication.index()">@Messages("area.login")</a></li>
+                            }
+
                         </ul>
                     </div>
 

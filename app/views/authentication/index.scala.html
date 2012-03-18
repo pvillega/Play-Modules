@@ -10,8 +10,20 @@
 
     <div class="loginOptions">
         <p>@Messages("login.text")</p>
-        <br/>
-        <a href="@routes.Authentication.githubAuth()" class="github">&nbsp;</a>
+        <div class="row">
+            <div class="span2">
+                <a href="@routes.Authentication.githubAuth()" class="github">&nbsp;</a>
+            </div>
+            <div class="span2">
+                <a href="@routes.Authentication.twitterAuth()" class="twitter">&nbsp;</a>
+            </div>
+            <div class="span2">
+                <a href="@routes.Authentication.googleAuth()" class="google">&nbsp;</a>
+            </div>
+            <div class="span6">
+                &nbsp;
+            </div>
+        </div>
     </div>
 
     @* for style purposes *@

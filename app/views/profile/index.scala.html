@@ -16,6 +16,9 @@
                     </a>
                 </li>
             </ul>
+            @if(itsMe) {
+                <a href="@routes.Profile.edit()">@Messages("profile.edit")</a>
+            }
         </div>
         <div class="span10">
             <div class="row">
@@ -27,16 +30,12 @@
                 <div class="span5">@user.bio</div>
             </div>
             <div class="row">
+                <div class="span1"><strong>@Messages("profile.url")</strong></div>
+                <div class="span5"><a href="@user.url">@user.url</a></div>
+            </div>
+            <div class="row">
                 <div class="span1"><strong>@Messages("profile.location")</strong></div>
-                <div class="span5"><em>@user.location</em></div>
-            </div>
-            <div class="row">
-                <div class="span1"><strong>@Messages("profile.blog")</strong></div>
-                <div class="span5"><a href="@user.blog">@user.blog</a></div>
-            </div>
-            <div class="row">
-                <div class="span1"><strong>@Messages("profile.githubUrl")</strong></div>
-                <div class="span5"><a href="@user.githubUrl">@user.githubUrl</a></div>
+                <div class="span5">@user.location</div>
             </div>
             @if(itsMe && user.admin) {
                 <div class="row">

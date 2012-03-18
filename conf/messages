@@ -14,6 +14,7 @@ area.modules=Modules
 area.demos=Demos
 area.login=Login to publish
 area.logout=Logout
+area.profile=My Profile
 
 # Landing
 landing.browseModules=Browse
@@ -38,23 +39,32 @@ landing.details.play.text=The site itself is built using Play 2.0, the framework
 # Login
 login.title=Log in
 login.text=Use your account in one of the following services to log into the application. Rest assured that no personal data will be harvested. And NO spam. Promise.
-login.backend.welcome=Welcome to Play Modules, {0}
+login.backend.welcome=Welcome to Play Modules
 login.backend.disabled=Your user has been disabled. Please contact us for more details.
-login.backend.failed=There's been an error and your login request could not be processed. Please try again.
+login.backend.failed=There''s been an error and your login request could not be processed. Please try again.
 login.backend.logout=See you again soon!
 login.backend.cancel=You cancelled the authentication process
 
 # Profile
 profile.title=Profile of {0}
 profile.name=Name
+profile.avatar=Avatar
 profile.bio=Bio
+profile.url=Url
 profile.location=Location
-profile.blog=Blog
-profile.githubUrl=GitHub
 profile.admin=Administration
 profile.modules=Modules
 profile.demos=Demos
-
+profile.edit=Edit profile
+profile.data=Your details
+profile.save=Save
+profile.cancel=Cancel
+profile.name.help=Your name
+profile.avatar.help=The URL of your avatar
+profile.bio.help=Tell us something about you
+profile.url.help=Your personal page
+profile.location.help=Where are you?
+profile.updated=Profile updated successfully
 
 # Footer
 footer.design1=Designed and built by

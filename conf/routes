@@ -4,15 +4,22 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /browse                           controllers.Application.browse
+GET     /browse                     controllers.Application.browse
+GET     /demos                      controllers.Application.demos
 
 # Authentication
 GET     /authentication             controllers.Authentication.index
 GET     /logout                     controllers.Authentication.logout
 GET     /githubAuth                 controllers.Authentication.githubAuth
+GET     /twitterAuth                controllers.Authentication.twitterAuth
+GET     /googleAuth                 controllers.Authentication.googleAuth
+GET     /openIdcallback             controllers.Authentication.openIDCallback
+
 
 # Profile
-GET     /profile/:id                controllers.Profile.index(id: Long)
+GET     /profile/$id<[0-9]+>                controllers.Profile.index(id: Long)
+GET     /profile/edit               controllers.Profile.edit()
+POST    /profile/save               controllers.Profile.save()
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -3,8 +3,7 @@
 @block(label: String, message: String) = {
 <div class="alert alert-block alert-@label">
     <a class="close" data-dismiss="alert">×</a>
-    <h4 class="alert-heading">@Messages("alerts."+label)</h4>
-    @message
+    <h4 class="alert-heading">@message</h4>
 </div>
 }
 

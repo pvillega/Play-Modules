@@ -14,12 +14,12 @@ import play.api.test._
 import play.api.i18n.Messages
 import play.api.test.Helpers._
 
-class Application extends Specification {
+class ApplicationTest extends Specification {
 
   "Application controller" should {
 
     "respond to the index Action" in {
-      val Some(result) = routeAndCall(FakeRequest(GET, "/"))
+      val result = controllers.Application.index()(FakeRequest())
 
       status(result) must equalTo(OK)
       contentType(result) must beSome("text/html")
