@@ -1,0 +1,23 @@
+@()(implicit request: play.api.mvc.RequestHeader)
+
+@main(Messages("administration.title")) {
+<header>
+    <h1>@Messages("administration.title")</h1>
+</header>
+
+
+<div class="row">
+    <div class="span5">
+        <a href="@routes.Administration.users()">@Messages("administration.users")</a>
+    </div>
+</div>
+<div class="row">
+    <div class="span5">
+        <a href="@routes.Administration.versions()">@Messages("administration.versions")</a>
+    </div>
+</div>
+
+
+@* for style purposes *@
+<div class="spacer">&nbsp;</div>
+}

@@ -45,10 +45,10 @@ trait Secured {
   case class AuthenticatedRequest[A](val user: models.User, val request: Request[A]) extends WrappedRequest(request)
 
   /**
-   *
+   * Verifies the user has authenticated
    * @param p the body parser of this action
    * @param f the action to execute
-   * @tparam A
+   * @tparam A content type
    * @return Result of the action
    */
   def Authenticated[A](p: BodyParser[A])(f: AuthenticatedRequest[A] => Result) = {
@@ -66,6 +66,31 @@ trait Secured {
    */
   def Authenticated(f: AuthenticatedRequest[AnyContent] => Result): Action[AnyContent] = {
     Authenticated(parse.anyContent)(f)
+  }
+
+
+  /**
+   * Checks if the authenticated user is an admin
+   * @param p the body parser of this action
+   * @param f the action to execute
+   * @tparam A content type
+   * @return Result of the action
+   */
+  def IsAdmin[A](p: BodyParser[A])(f: AuthenticatedRequest[A] => Result) = {
+    Authenticated(p) { implicit request =>
+      if(request.user.admin) {
+        f(AuthenticatedRequest(request.user, request))
+      }  else {
+        onUnauthorized(request)
+      }
+    }
+  }
+
+  /**
+   * Overloaded method to use the default body parser
+   */
+  def IsAdmin(f: AuthenticatedRequest[AnyContent] => Result): Action[AnyContent] = {
+    IsAdmin(parse.anyContent)(f)
   }
 
 }

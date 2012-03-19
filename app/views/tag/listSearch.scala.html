@@ -1,0 +1,17 @@
+@(call: Call, placeholder: String, submit: String, currentFilter: String)
+
+@**
+    Renders the seach component for paginated list views
+
+    @param call the controller method that will render the results
+    @param placeholder text to display as placeholder in the input
+    @param submit text to display in the submit button
+    @param currentFilter  current filter used in the page
+*@
+
+<div id="actions">
+    @helper.form(action=call, 'class -> "well form-inline") {
+    <input type="search" id="searchbox" name="filter" value="@currentFilter" placeholder="@placeholder" class="input-medium search-query">
+    <input type="submit" id="searchsubmit" value="@submit" class="btn">
+    }
+</div>

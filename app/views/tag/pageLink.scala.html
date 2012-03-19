@@ -1,0 +1,27 @@
+@(newPage: Int, currentFilter: String, currentOrderBy: Int, call: (Int, Int, String) => Call, newOrderBy: Option[Int] = None)
+
+@**
+    Helper generating navigation links between pages
+
+    @param newPage destination page
+    @param currentFilter current filter being applied to the resultset
+    @param currentOrderBy current order being applied to the resultset
+    @param call the 'list' method of a Controller that we will call to load the page. Method: (page: Int, orderBy: Int, filter: String) => Call
+    @param newOrderBy new ordering for results. Default: None
+*@
+
+@{
+    call(newPage,
+        newOrderBy.map { orderBy =>
+            if(orderBy == scala.math.abs(currentOrderBy)) {
+                if(currentOrderBy > 0) {
+                   -currentOrderBy
+                } else {
+                   orderBy
+                }
+            } else {
+                orderBy
+            }
+        }.getOrElse(currentOrderBy),
+        currentFilter)
+}

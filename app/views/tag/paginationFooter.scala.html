@@ -1,0 +1,37 @@
+@(currentPage: Page[Any], pageSize: Int, currentFilter: String, currentOrderBy: Int, call: (Int, Int, String) => Call)
+
+@**
+    Helper generating the pagination footer for list views
+
+    @param currentPage the page currently being displayed
+    @param pageSize number of elements in this page
+    @param currentFilter current filter being applied to the resultset
+    @param currentOrderBy current order being applied to the resultset
+    @param call the 'list' method of a Controller that we will call to load the page. Method: (page: Int, orderBy: Int, filter: String) => Call
+*@
+
+<div id="pagination" class="pagination">
+    <ul>
+        @currentPage.prev.map { page =>
+        <li class="prev">
+            <a href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.prev")</a>
+        </li>
+        }.getOrElse {
+        <li class="prev disabled">
+            <a>@Messages("pagination.prev")</a>
+        </li>
+        }
+        <li class="current">
+            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
+        </li>
+        @currentPage.next.map { page =>
+        <li class="next">
+            <a href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
+        </li>
+        }.getOrElse {
+        <li class="next disabled">
+            <a>@Messages("pagination.next")</a>
+        </li>
+        }
+    </ul>
+</div>

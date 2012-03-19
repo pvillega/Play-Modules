@@ -17,10 +17,18 @@ GET     /openIdcallback             controllers.Authentication.openIDCallback
 
 
 # Profile
-GET     /profile/$id<[0-9]+>                controllers.Profile.index(id: Long)
+GET     /profile/$id<[0-9]+>        controllers.Profile.index(id: Long)
 GET     /profile/edit               controllers.Profile.edit()
 POST    /profile/save               controllers.Profile.save()
 
+
+# Administration
+GET     /admin                      controllers.Administration.index()
+GET     /admin/users                controllers.Administration.users()
+GET     /admin/users/list/          controllers.Administration.listUsers(page: Int ?= 0, orderBy: Int ?= 1, filter: String ?= "")
+GET     /admin/users/edit/:id       controllers.Administration.editUser(id: Long)
+POST    /admin/users/save/:id       controllers.Administration.saveUser(id: Long)
+GET     /admin/versions             controllers.Administration.versions()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -1,0 +1,60 @@
+@(currentPage: Page[models.User], currentOrderBy: Int, currentFilter: String)(implicit request: play.api.mvc.RequestHeader)
+
+@import tag._
+
+@main(Messages("administration.users")) {
+<header>
+    <h1>@Messages("administration.users")</h1>
+</header>
+
+@listSearch(routes.Administration.listUsers(), Messages("useradmin.search.placeholder"), Messages("useradmin.search.button"), currentFilter)
+
+@Option(currentPage.items).filterNot(_.isEmpty).map { users =>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    @headerEntry(2, "User name", currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(6, "Disabled", currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(7, "Admin", currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(9, "Last Access", currentFilter, currentOrderBy, routes.Administration.listUsers)
+</tr>
+</thead>
+<tbody>
+
+@users.map {
+    case user => {
+    <tr>
+        <td><a href="@routes.Administration.editUser(user.id.get)">@user.name</a></td>
+        <td>
+            @user.disabled
+        </td>
+        <td>
+            @user.admin
+        </td>
+        <td>
+            @user.lastAccess.format("dd/MM/yyyy hh:mm:ss")
+        </td>
+    </tr>
+    }
+}
+
+</tbody>
+</table>
+
+
+@paginationFooter(currentPage, users.size, currentFilter, currentOrderBy, routes.Administration.listUsers)
+
+}.getOrElse {
+
+<div class="well">
+    <em>Nothing to display</em>
+</div>
+
+}
+
+
+@* for style purposes *@
+<div class="spacer">&nbsp;</div>
+}
+

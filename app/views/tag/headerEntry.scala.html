@@ -1,0 +1,18 @@
+@(newOrderBy: Int, title: String, currentFilter: String, currentOrderBy: Int, call: (Int, Int, String) => Call)
+
+@**
+    Helper generating table headers to reorder the table by a field
+
+    @param newOrderBy new ordering for results
+    @param title the title to display in the header
+    @param currentFilter current filter being applied to the resultset
+    @param currentOrderBy current order being applied to the resultset
+    @param call the 'list' method of a Controller that we will call to load the page. Method: (page: Int, orderBy: Int, filter: String) => Call
+*@
+
+<th>
+    @if(scala.math.abs(currentOrderBy) == newOrderBy) {
+        @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
+    }
+    <a href="@pageLink(0, currentFilter, currentOrderBy, call, Some(newOrderBy))">@title</a>
+</th>

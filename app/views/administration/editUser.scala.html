@@ -1,0 +1,94 @@
+@(userForm: Form[models.User], id: Long)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("useradmin.edit")) {
+    <header>
+        <h1>@Messages("useradmin.edit")</h1>
+    </header>
+
+    @helper.form(action = routes.Administration.saveUser(id), 'class -> "well") {
+
+        @inputText(
+        userForm("name"),
+        '_label -> Messages("profile.name"),
+        '_help -> Messages("profile.name.help"),
+        '_error -> userForm.globalError
+        )
+
+        @inputText(
+        userForm("githubId"),
+        '_label -> Messages("profile.githubId"),
+        '_error -> userForm.globalError
+        )
+
+        @inputText(
+        userForm("twitterId"),
+        '_label -> Messages("profile.twitterId"),
+        '_error -> userForm.globalError
+        )
+
+        @inputText(
+        userForm("googleId"),
+        '_label -> Messages("profile.googleId"),
+        '_error -> userForm.globalError
+        )
+
+        @checkbox(
+        userForm("disabled"),
+        '_label -> Messages("profile.isdisabled"),
+        '_help -> "",
+        '_error -> userForm.globalError
+        )
+
+        @checkbox(
+        userForm("admin"),
+        '_label -> Messages("profile.isadmin"),
+        '_help -> "",
+        '_error -> userForm.globalError
+        )
+
+        @inputText(
+        userForm("avatar"),
+        '_label -> Messages("profile.avatar"),
+        '_help -> Messages("profile.avatar.help"),
+        '_error -> userForm.globalError
+        )
+
+        @textarea(
+        userForm("bio"),
+        '_label -> Messages("profile.bio"),
+        '_help -> Messages("profile.bio.help"),
+        'cols -> 50,
+        'rows -> 7,
+        '_error -> userForm.globalError
+        )
+
+        @inputText(
+        userForm("url"),
+        '_label -> Messages("profile.url"),
+        '_help -> Messages("profile.url.help"),
+        '_error -> userForm.globalError
+        )
+
+        @inputText(
+        userForm("location"),
+        '_label -> Messages("profile.location"),
+        '_help -> Messages("profile.location.help"),
+        '_error -> userForm.globalError
+        )
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("useradmin.save")">
+        <a href="@routes.Administration.users()" class="btn">@Messages("useradmin.cancel")</a>
+    </div>
+
+
+    }
+
+
+    <div class="spacer">&nbsp;</div>
+}

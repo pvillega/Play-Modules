@@ -6,6 +6,8 @@ import play.api.db.DB
 import anorm._
 import play.api.Play.current
 import play.api.cache.Cache
+import play.Logger
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,9 +16,7 @@ import play.api.cache.Cache
  * Time: 11:48
  * Model for users in the application
  */
-
 case class User(id: Pk[Long] = NotAssigned, name: String, githubId: Option[Long] = None, twitterId: Option[Long] = None, googleId: Option[String] = None, disabled: Boolean = false, admin: Boolean = false, created: Date = new Date, lastAccess: Date = new Date, avatar: Option[String] = Some(User.defaultAvatar), url: Option[String] = None, bio: Option[String] = None, location: Option[String] = None)
-
 
 object User {
 
@@ -193,6 +193,44 @@ object User {
   }
 
   /**
+   * Updates user details from an administration screen
+   * @param id the id of the user to update
+   * @param user the details of the user
+   */
+  def updateUserAdministration(id: Long, user: User) = {
+    DB.withConnection {
+      implicit connection =>
+
+        SQL(
+          """
+            update publisher
+            set name = {name}, githubId = {githubId}, twitterId = {twitterId}, googleId = {googleId}, disabled = {disabled},
+                admin = {admin}, avatar = {avatar}, url = {url}, bio = {bio}, location = {location}
+            where id = {id}
+          """
+        ).on(
+          'id -> id,
+          'name -> user.name,
+          'githubId -> user.githubId,
+          'twitterId -> user.twitterId,
+          'googleId -> user.googleId,
+          'disabled -> user.disabled,
+          'admin -> user.admin,
+          'avatar -> user.avatar.map {
+            avatar => avatar
+          }.getOrElse(defaultAvatar),
+          'bio -> user.bio,
+          'url -> user.url,
+          'location -> user.location
+        ).executeUpdate()
+
+        //store object in cache for later retrieval. This user should be in cache already so this should be quick
+        val cached = findById(id).get
+        Cache.set(userCacheKey + id, cached.copy(name = user.name, githubId = user.githubId, twitterId = user.twitterId, googleId = user.googleId, disabled = user.disabled, admin = user.admin, avatar = user.avatar, bio = user.bio, url = user.url, location = user.location))
+    }
+  }
+
+  /**
    * Disables a user.
    *
    * @param user the user to disable.
@@ -260,4 +298,50 @@ object User {
     }
   }
 
+  /**
+   * Returns a page of Users
+   *
+   * @param page Page to display
+   * @param pageSize Number of elements per page
+   * @param orderBy property used for sorting
+   * @param filter Filter applied on the elements
+   */
+  def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Page[User] = {
+    val offset = pageSize * page
+    val mode = if (orderBy > 0) "ASC NULLS FIRST" else "DESC NULLS LAST"
+
+    Logger.debug("Users.list with params: page[%d] pageSize[%d] orderBy[%d] filter[%s] order[%s]".format(page, pageSize, orderBy, filter, mode))
+
+    DB.withConnection {
+      implicit connection =>
+
+        val users = SQL(
+          """
+            select * from publisher
+            where name ilike {filter}
+            order by {orderBy} %s
+            limit {pageSize} offset {offset}
+          """.format(mode)
+        ).on(
+          'pageSize -> pageSize,
+          'offset -> offset,
+          'filter -> filter,
+          'orderBy -> scala.math.abs(orderBy)
+        ).as(User.simple *)
+
+        val totalRows = SQL(
+          """
+            select count(*) from publisher
+            where name like {filter}
+          """
+        ).on(
+          'filter -> filter
+        ).as(scalar[Long].single)
+
+        Page(users, page, offset, totalRows)
+    }
+
+  }
+
 }
+

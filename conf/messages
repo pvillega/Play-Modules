@@ -52,6 +52,11 @@ profile.avatar=Avatar
 profile.bio=Bio
 profile.url=Url
 profile.location=Location
+profile.githubId=GithubId
+profile.twitterId=TwitterId
+profile.googleId=GoogleId
+profile.isdisabled=Disabled
+profile.isadmin=Admin
 profile.admin=Administration
 profile.modules=Modules
 profile.demos=Demos
@@ -65,6 +70,22 @@ profile.bio.help=Tell us something about you
 profile.url.help=Your personal page
 profile.location.help=Where are you?
 profile.updated=Profile updated successfully
+
+# Administration
+administration.title=Admin Area
+administration.users=Manage Users
+administration.versions=Manage Versions
+useradmin.search.placeholder=Filter by user name...
+useradmin.search.button=Filter by name
+useradmin.edit=Editing user
+useradmin.save=Save
+useradmin.cancel=Cancel
+useradmin.updated=User details updated!
+
+
+# Pagination
+pagination.prev=< Previous
+pagination.next=Next >
 
 # Footer
 footer.design1=Designed and built by
