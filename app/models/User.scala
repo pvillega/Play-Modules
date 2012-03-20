@@ -315,18 +315,22 @@ object User {
     DB.withConnection {
       implicit connection =>
 
+        // An explanation on the format applied to the SQL String: for some reason the JDBC driver for postgresql doesn't like it when you replace the
+        // order by param in a statement. It gets ignored. So we have to provide it in the query before the driver processes the statement.
+        // Now you'll be screaming "SQL INJECTION". Relax. Although it could happen, orderBy is an integer (which we turn into abs value for more safety).
+        // If you try to call the controller that provides orderBy with a string, Play returns a 404 error. So only integers are allowed. And if there is no
+        // column corresponding to the given integer, the order by is ignored. So, not ideal, but not so bad.
         val users = SQL(
           """
             select * from publisher
             where name ilike {filter}
-            order by {orderBy} %s
+            order by %d %s
             limit {pageSize} offset {offset}
-          """.format(mode)
+          """.format(scala.math.abs(orderBy), mode)
         ).on(
           'pageSize -> pageSize,
           'offset -> offset,
-          'filter -> filter,
-          'orderBy -> scala.math.abs(orderBy)
+          'filter -> filter
         ).as(User.simple *)
 
         val totalRows = SQL(
@@ -344,4 +348,3 @@ object User {
   }
 
 }
-
