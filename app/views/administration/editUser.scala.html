@@ -10,7 +10,7 @@
         <h1>@Messages("useradmin.edit")</h1>
     </header>
 
-    @helper.form(action = routes.Administration.saveUser(id), 'class -> "well") {
+    @helper.form(action = routes.Administration.updateUser(id), 'class -> "well") {
 
         @inputText(
         userForm("name"),
@@ -82,8 +82,8 @@
         )
 
     <div class="form-actions">
-        <input type="submit" class="btn btn-primary" value="@Messages("useradmin.save")">
-        <a href="@routes.Administration.users()" class="btn">@Messages("useradmin.cancel")</a>
+        <input type="submit" class="btn btn-primary" value="@Messages("administration.save")">
+        <a href="@routes.Administration.users()" class="btn">@Messages("administration.cancel")</a>
     </div>
 
 

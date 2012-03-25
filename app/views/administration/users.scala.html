@@ -14,10 +14,11 @@
 <table class="table table-striped">
 <thead>
 <tr>
-    @headerEntry(2, "User name", currentFilter, currentOrderBy, routes.Administration.listUsers)
-    @headerEntry(6, "Disabled", currentFilter, currentOrderBy, routes.Administration.listUsers)
-    @headerEntry(7, "Admin", currentFilter, currentOrderBy, routes.Administration.listUsers)
-    @headerEntry(9, "Last Access", currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(1, Messages("administration.id"), currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(2, Messages("profile.name"), currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(6, Messages("profile.isdisabled"), currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(7, Messages("profile.isadmin"), currentFilter, currentOrderBy, routes.Administration.listUsers)
+    @headerEntry(9, Messages("profile.lastAccess"), currentFilter, currentOrderBy, routes.Administration.listUsers)
 </tr>
 </thead>
 <tbody>
@@ -25,6 +26,7 @@
 @users.map {
     case user => {
     <tr>
+        <td><a href="@routes.Administration.editUser(user.id.get)">@user.id.get</a></td>
         <td><a href="@routes.Administration.editUser(user.id.get)">@user.name</a></td>
         <td>
             @user.disabled
@@ -48,10 +50,13 @@
 }.getOrElse {
 
 <div class="well">
-    <em>Nothing to display</em>
+    <em>@Messages("administration.nothing")</em>
 </div>
 
 }
+<div class="form-actions">
+    <a href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
+</div>
 
 
 @* for style purposes *@

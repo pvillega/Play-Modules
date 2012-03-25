@@ -1,0 +1,40 @@
+@(versionForm: Form[models.Version], id: Long)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("versionadmin.edit")) {
+    <header>
+        <h1>@Messages("versionadmin.edit")</h1>
+    </header>
+
+    @helper.form(action = routes.Administration.updateVersion(id), 'class -> "well") {
+
+        @inputText(
+        versionForm("name"),
+        '_label -> Messages("version.name"),
+        '_error -> versionForm.globalError
+        )
+
+        @select(
+        versionForm("parent"),
+        options = options(Version.allSelect),
+        '_default -> Messages("version.parent.default"),
+        '_label -> Messages("version.parent"),
+        '_error -> versionForm.globalError
+        )
+
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("administration.save")">
+        <a href="@routes.Administration.versions()" class="btn">@Messages("administration.cancel")</a>
+    </div>
+
+
+    }
+
+
+    <div class="spacer">&nbsp;</div>
+}

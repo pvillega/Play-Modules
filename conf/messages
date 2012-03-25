@@ -57,6 +57,7 @@ profile.twitterId=TwitterId
 profile.googleId=GoogleId
 profile.isdisabled=Disabled
 profile.isadmin=Admin
+profile.lastAccess=Last Access
 profile.admin=Administration
 profile.modules=Modules
 profile.demos=Demos
@@ -75,13 +76,28 @@ profile.updated=Profile updated successfully
 administration.title=Admin Area
 administration.users=Manage Users
 administration.versions=Manage Versions
+administration.nothing=Nothing to display
+administration.save=Save
+administration.cancel=Cancel
+administration.back=Back
+administration.id=#
+
 useradmin.search.placeholder=Filter by user name...
 useradmin.search.button=Filter by name
 useradmin.edit=Editing user
-useradmin.save=Save
-useradmin.cancel=Cancel
 useradmin.updated=User details updated!
 
+versionadmin.create=Create a new version
+versionadmin.edit=Editing Version
+versionadmin.search.placeholder=Filter by version number...
+versionadmin.search.button=Filter by version
+versionadmin.saved=Version created!
+versionadmin.updated=Version details updated!
+
+# Version
+version.name=Version Number
+version.parent=Parent Version
+version.parent.default=-- Choose a Parent --
 
 # Pagination
 pagination.prev=< Previous
