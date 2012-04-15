@@ -1,0 +1,60 @@
+@(demoForm: Form[models.Demo])(implicit request: controllers.AuthenticatedRequest[AnyContent])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("demos.create")) {
+<header>
+    <h1>@Messages("demos.create")</h1>
+</header>
+
+@helper.form(action = routes.Demos.saveDemo(), 'class -> "well") {
+
+    @inputText(
+    demoForm("name"),
+    '_label -> Messages("demo.name"),
+    '_error -> demoForm.globalError
+    )
+
+    @select(
+    demoForm("version"),
+    options = options(Version.allSelect),
+    '_default -> Messages("demo.version.default"),
+    '_label -> Messages("demo.version"),
+    '_help -> "",
+    '_error -> demoForm.globalError
+    )
+
+    @inputText(
+    demoForm("codeurl"),
+    '_label -> Messages("demo.codeurl"),
+    '_help -> Messages("demo.codeurl.help"),
+    '_error -> demoForm.globalError
+    )
+
+    @inputText(
+    demoForm("demourl"),
+    '_label -> Messages("demo.demourl"),
+    '_help -> Messages("demo.demourl.help"),
+    '_error -> demoForm.globalError
+    )
+
+    @textarea(
+    demoForm("description"),
+    '_label -> Messages("demo.description"),
+    '_help -> Messages("demo.description.help"),
+    'cols -> 50,
+    'rows -> 7,
+    '_error -> demoForm.globalError
+    )
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
+        <a href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.cancel")</a>
+    </div>
+}
+
+<div class="spacer">&nbsp;</div>
+}

@@ -131,8 +131,10 @@ header {
 .page-header {
    h2 { /* for subheaders in page*/
        border-bottom: 3px solid @lightText;
-       margin-bottom: 5px;
+       margin-bottom: 0px;
    }
+   margin-bottom: 0px;
+   padding-bottom: 2px;
 }
 
 /* Login */
@@ -165,6 +167,71 @@ header {
     display: block;
     width: 128px;
     height: 128px;
+}
+
+/* Profile */
+div {
+    .pinRight {
+        margin-right: 0;
+        margin-top: 5px;
+    }
+    .clear {
+        clear: both;
+    }
+}
+
+.floatRight {
+     float: right;
+}
+
+/* Voting badges */
+.biggerBadge {
+    font-size: 20px;
+}
+
+.voteForm {
+    margin: 0px;
+}
+
+.voteAlign {
+    text-align: center;
+    margin: 0px auto;
+}
+
+.voteBadge {
+    .voteAlign;
+    margin: 10px auto;
+}
+
+.voteArrow {
+  display: block;
+  background-image: url('/assets/images/arrows.png');
+  width: 42px;
+  height: 29px;
+}
+
+.voteUp {
+  background-position: 0px 0px;
+  .voteArrow;
+  .voteAlign;
+}
+
+.voteUpSelected {
+  background-position: 0px -39px;
+  .voteArrow;
+  .voteAlign;
+}
+
+.voteDown {
+  background-position: 0px -118px;
+  .voteArrow;
+  .voteAlign;
+}
+
+.voteDownSelected {
+  background-position: 0px -78px;
+  .voteArrow;
+  .voteAlign;
 }
 
 /* ===== Primary Styles ====================================================== */

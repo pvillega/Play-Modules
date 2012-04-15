@@ -1,0 +1,73 @@
+@(demo: models.DemoView)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("demos.view")) {
+    <header>
+        <h1>@Messages("demos.view")</h1>
+    </header>
+
+    @* first row, demo details *@
+    <div class="row">
+        @* first colum, score*@
+        <div class="span1">
+            @request.session.get("userId").map { userId =>
+                <form id="voteUp" class="voteForm" action="@routes.Demos.voteDemo(demo.id, 1, demo.vote.get)" method="POST">
+                    <a class="@if(demo.vote.get > 0) {voteUpSelected} else {voteUp}" href="#" onclick="$('#voteUp').submit()"></a>
+                </form>
+            }
+            <div class="voteBadge">
+                <span class="badge @if(demo.showScore > 0) {badge-success} else {badge-error} biggerBadge">@demo.showScore</span>
+            </div>
+            @request.session.get("userId").map { userId =>
+                <form id="voteDown" class="voteForm" action="@routes.Demos.voteDemo(demo.id, -1, demo.vote.get)" method="POST">
+                    <a class="@if(demo.vote.get < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
+                </form>
+            }
+        </div>
+        <div class="span11">
+            <div class="row">
+                <div class="span1"><strong>@Messages("demo.name")</strong></div>
+                <div class="span5">@demo.name</div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("demo.author")</strong></div>
+                <div class="span5"><a href="@routes.Profile.index(demo.aid)">@demo.publisher</a></div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("demo.version")</strong></div>
+                <div class="span5">@demo.version</div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("demo.codeurl")</strong></div>
+                <div class="span5"><a href="@demo.codeurl">@demo.codeurl</a></div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("demo.demourl")</strong></div>
+                <div class="span5"><a href="@demo.demourl">@demo.demourl</a></div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("demo.description")</strong></div>
+                <div class="span5">@demo.description</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="#" onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    @* second row, comments *@
+    @disqus("demo"+demo.id)
+
+    <div class="form-actions">
+        <a href="#" onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    <div class="spacer">&nbsp;</div>
+}

@@ -89,7 +89,10 @@ object Administration extends Controller with Secured {
       Logger.info("Administration.editUser accessed by user %d to edit user[%d]".format(request.user.id.get, id))
       User.findById(id) match {
         case Some(user) => Ok(views.html.administration.editUser(userForm.fill(user), user.id.get))
-        case _ => NotFound(views.html.errors.error404(request.path)(request))
+        case _ => {
+          Logger.warn("Administration.editUser can't find user [%d]".format(id))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
       }
   }
 
@@ -102,9 +105,13 @@ object Administration extends Controller with Secured {
     implicit request =>
       userForm.bindFromRequest.fold(
         // Form has errors, redisplay it
-        errors => BadRequest(views.html.administration.editUser(errors, id)),
+        errors => {
+          Logger.warn("Administration.updateUser errors while updating user %d [%s]".format(id, errors))
+          BadRequest(views.html.administration.editUser(errors, id))
+        },
         // We got a valid User value, update
         user => {
+          Logger.info("Administration.updateUser updating user %d [%s]".format(id, user))
           User.updateUserAdministration(id, user)
           Redirect(routes.Administration.editUser(id)).flashing("success" -> Messages("useradmin.updated"))
         }
@@ -147,7 +154,10 @@ object Administration extends Controller with Secured {
       Logger.info("Administration.editVersion accessed by user %d to edit version[%d]".format(request.user.id.get, id))
       Version.findById(id) match {
         case Some(version) => Ok(views.html.administration.editVersion(versionForm.fill(version), version.id.get))
-        case _ => NotFound(views.html.errors.error404(request.path)(request))
+        case _ => {
+          Logger.warn("Administration.editVersion can't find version [%d]".format(id))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
       }
   }
 
@@ -170,9 +180,13 @@ object Administration extends Controller with Secured {
     implicit request =>
       versionForm.bindFromRequest.fold(
         // Form has errors, redisplay it
-        errors => BadRequest(views.html.administration.editVersion(errors, id)),
+        errors => {
+          Logger.warn("Administration.updateVersion errors while updating version %d [%s]".format(id, errors))
+          BadRequest(views.html.administration.editVersion(errors, id))
+        },
         // We got a valid User value, update
         version => {
+          Logger.info("Administration.updateVersion updating version %d [%s]".format(id, version))
           Version.update(id, version)
           Redirect(routes.Administration.editVersion(id)).flashing("success" -> Messages("versionadmin.updated"))
         }
@@ -186,9 +200,13 @@ object Administration extends Controller with Secured {
     implicit request =>
       versionForm.bindFromRequest.fold(
         // Form has errors, redisplay it
-        errors => BadRequest(views.html.administration.createVersion(errors)),
+        errors => {
+          Logger.warn("Administration.saveVersion errors while saving version [%s]".format(errors))
+          BadRequest(views.html.administration.createVersion(errors))
+        },
         // We got a valid User value, update
         version => {
+          Logger.info("Administration.saveVersion saving new version [%s]".format(version))
           val newVersion = Version.create(version)
           Redirect(routes.Administration.editVersion(newVersion.id.get)).flashing("success" -> Messages("versionadmin.saved"))
         }
@@ -196,3 +214,5 @@ object Administration extends Controller with Secured {
   }
 
 }
+
+//TODO: add management of demos/projects as admin

@@ -1,0 +1,84 @@
+@(demoForm: Form[models.Demo], id: Long)(implicit request: controllers.AuthenticatedRequest[AnyContent])
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("demos.edit")) {
+    <header>
+        <h1>@Messages("demos.edit")</h1>
+    </header>
+
+    <div class="row">
+        <div class="span2 offset10">
+            <a class="btn btn-danger" data-toggle="modal" href="#deleteModal" >@Messages("demos.delete")</a>
+        </div>
+    </div>
+
+    <div class="modal hide" id="deleteModal">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>@Messages("demos.delete")</h3>
+        </div>
+        <div class="modal-body">
+            <p>@Messages("demos.delete.text")</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>
+            @form(routes.Demos.deleteDemo(id)) {
+            <input type="submit" value="@Messages("navigation.delete")" class="btn btn-danger">
+            }
+        </div>
+    </div>
+
+    @helper.form(action = routes.Demos.updateDemo(id), 'class -> "well") {
+
+        @inputText(
+        demoForm("name"),
+        '_label -> Messages("demo.name"),
+        '_error -> demoForm.globalError
+        )
+
+        @select(
+        demoForm("version"),
+        options = options(Version.allSelect),
+        '_default -> Messages("demo.version.default"),
+        '_label -> Messages("demo.version"),
+        '_help -> "",
+        '_error -> demoForm.globalError
+        )
+
+        @inputText(
+        demoForm("codeurl"),
+        '_label -> Messages("demo.codeurl"),
+        '_help -> Messages("demo.codeurl.help"),
+        '_error -> demoForm.globalError
+        )
+
+        @inputText(
+        demoForm("demourl"),
+        '_label -> Messages("demo.demourl"),
+        '_help -> Messages("demo.demourl.help"),
+        '_error -> demoForm.globalError
+        )
+
+        @textarea(
+        demoForm("description"),
+        '_label -> Messages("demo.description"),
+        '_help -> Messages("demo.description.help"),
+        'cols -> 50,
+        'rows -> 7,
+        '_error -> demoForm.globalError
+        )
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
+        <a href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    }
+
+    <div class="spacer">&nbsp;</div>
+}

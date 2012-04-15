@@ -1,11 +1,11 @@
 package controllers
 
 import play.api.mvc._
-import models.User
 import play.Logger
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import models.{Demo, User}
 
 /**
  * Controller for the profile-related actions
@@ -41,11 +41,7 @@ object Profile extends Controller with Secured {
     implicit request =>
       val loggedId = session.get("userId").getOrElse("-1").toLong
       Logger.info("Profile.index with id %d accessed by user %s".format(id, loggedId))
-      val itsMe = id == loggedId
-      User.findById(id) match {
-        case None => NotFound(views.html.errors.error404(request.path)(request))
-        case Some(user) => Ok(views.html.profile.index(user, itsMe))
-      }
+      Redirect(routes.Profile.filteredProfile(userid = id))
   }
 
   /**
@@ -66,18 +62,48 @@ object Profile extends Controller with Secured {
       Logger.info("Profile.save accessed by user %d".format(request.user.id.get))
       profileForm.bindFromRequest.fold(
         // Form has errors, redisplay it
-        errors => BadRequest(views.html.profile.edit(errors, request.user.id.get)),
+        errors =>{
+          Logger.warn("Profile.save errors while saving profile [%s]".format(errors))
+          BadRequest(views.html.profile.edit(errors, request.user.id.get))
+        },
         // We got a valid User value, update
         user => {
+          Logger.info("Profile.save updating profile %d with details [%s]".format(request.user.id.get, user))
           User.updateUser(request.user.id.get, user)
           Redirect(routes.Profile.index(request.user.id.get)).flashing("success" -> Messages("profile.updated"))
         }
       )
   }
 
+
+  /**
+   * Shows the profile of the requested user with some filters applied to the demo or projects tables
+   * @param userid the id of the user we are checking
+   * @param demoPage the current demos page
+   * @param demoOrderBy current order ny applied to demo table
+   * @return the profile for the requested user or not found
+   */
+  def filteredProfile(userid :Long, demoPage: Int, demoOrderBy: Int) = Action {
+    implicit request =>
+      val loggedId = session.get("userId").getOrElse("-1").toLong
+      Logger.info("Profile.index with id %d accessed".format(userid))
+      val itsMe = userid == loggedId
+      User.findById(userid) match {
+        case None => {
+          Logger.warn("Profile.filteredProfile can't find profile[%d]".format(userid))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
+        case Some(user) => Ok(views.html.profile.index(user, itsMe,
+                Demo.listByUser(page = demoPage, orderBy = demoOrderBy, userId = userid),
+                demoOrderBy
+        ))
+      }
+  }
+
+
 }
 
 //TODO: add pjax for all anchor not POST
 //TODO: check selected menu at top is the correct one (does jquery onload works fine with pjax request?)
-//TODO: create CRUD page for admins to manage users (form + edit/update/remove) < see computer demo for pagination, edit, etc
 //TODO: create pages to manage projects
+//TODO: pagination, extend to show 1..2..3.. (see bootstrap page)

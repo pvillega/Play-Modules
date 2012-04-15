@@ -5,7 +5,6 @@
 # Home page
 GET     /                           controllers.Application.index
 GET     /browse                     controllers.Application.browse
-GET     /demos                      controllers.Application.demos
 
 # Authentication
 GET     /authentication             controllers.Authentication.index
@@ -20,7 +19,17 @@ GET     /openIdcallback             controllers.Authentication.openIDCallback
 GET     /profile/$id<[0-9]+>        controllers.Profile.index(id: Long)
 GET     /profile/edit               controllers.Profile.edit()
 POST    /profile/save               controllers.Profile.save()
+GET     /profile/$userid<[0-9]+>/filter  controllers.Profile.filteredProfile(userid :Long, demoPage: Int ?= 0, demoOrderBy: Int ?= 1)
 
+# Demos
+GET     /demo/list                  controllers.Demos.listDemos(page: Int ?= 0, orderBy: Int ?= 1, filter: String ?= "")
+GET     /demo/edit/:id              controllers.Demos.editDemo(id: Long)
+POST    /demo/update/:id            controllers.Demos.updateDemo(id: Long)
+GET     /demo/create/               controllers.Demos.createDemo()
+POST    /demo/save/                 controllers.Demos.saveDemo()
+POST    /demo/delete/               controllers.Demos.deleteDemo(id: Long)
+GET     /demo/$id<[0-9]+>           controllers.Demos.viewDemo(id: Long)
+POST    /demo/vote/$id<[0-9]+>      controllers.Demos.voteDemo(id: Long, vote: Int, oldVote: Int ?= 0)
 
 # Administration
 GET     /admin                      controllers.Administration.index()

@@ -18,17 +18,13 @@ object Application extends Controller with Secured {
 
   def browse() = TODO
 
-  def demos() = TODO
-
 }
 
-/**
- * Provide security features
- */
-
+//Extension of request object to include the current logged in user
+case class AuthenticatedRequest[A](val user: models.User, val request: Request[A]) extends WrappedRequest(request)
 
 /**
- * Trait to validate authenticated users, based on
+ * Trait to validate authenticated users, based on Play secured trait
  */
 trait Secured {
 
@@ -40,9 +36,6 @@ trait Secured {
     Logger.warn("Unauthorized request %s".format(request))
     NotFound(views.html.errors.error404(request.path)(request)).withNewSession
   }
-
-  //Extension of request object to include the current logged in user
-  case class AuthenticatedRequest[A](val user: models.User, val request: Request[A]) extends WrappedRequest(request)
 
   /**
    * Verifies the user has authenticated

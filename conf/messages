@@ -16,6 +16,13 @@ area.login=Login to publish
 area.logout=Logout
 area.profile=My Profile
 
+# navigation
+navigation.save=Save
+navigation.cancel=Cancel
+navigation.delete=Delete
+navigation.back=Back
+navigation.nothing=Nothing to display
+
 # Landing
 landing.browseModules=Browse
 landing.demos=See Demos
@@ -46,7 +53,6 @@ login.backend.logout=See you again soon!
 login.backend.cancel=You cancelled the authentication process
 
 # Profile
-profile.title=Profile of {0}
 profile.name=Name
 profile.avatar=Avatar
 profile.bio=Bio
@@ -58,6 +64,9 @@ profile.googleId=GoogleId
 profile.isdisabled=Disabled
 profile.isadmin=Admin
 profile.lastAccess=Last Access
+
+# Profile page
+profile.title=Profile of {0}
 profile.admin=Administration
 profile.modules=Modules
 profile.demos=Demos
@@ -71,6 +80,36 @@ profile.bio.help=Tell us something about you
 profile.url.help=Your personal page
 profile.location.help=Where are you?
 profile.updated=Profile updated successfully
+
+# Demo
+demo.id=#
+demo.name=Name
+demo.version=Version
+demo.version.default=-- Choose a Version --
+demo.author=Author
+demo.score=Popularity
+demo.codeurl=Code at
+demo.codeurl.help=Url where the code can be found
+demo.demourl=Demo at
+demo.demourl.help=Optional url of a live deployment of the demo
+demo.description=Description
+demo.description.help=Brief explanation fo your demo
+
+# Demo pages
+demos.listDemos=List of Demos
+demos.userDemos=List of Demos
+demos.search.placeholder=Filter by Demo name...
+demos.search.button=Filter by name
+demos.create=Add a new Demo
+demos.saved=Demo added!
+demos.edit=Editing Demo
+demos.updated=Demo details updated!
+demos.delete=Delete this Demo
+demos.delete.text=Are you sure you want to delete this demo? This can't be undone.
+demos.deleted=Demo removed
+demos.view=View Demo details
+demos.comments=View Comments
+demos.voted=Thanks for voicing your opinion.
 
 # Administration
 administration.title=Admin Area
@@ -87,7 +126,7 @@ useradmin.search.button=Filter by name
 useradmin.edit=Editing user
 useradmin.updated=User details updated!
 
-versionadmin.create=Create a new version
+versionadmin.create=Add a new version
 versionadmin.edit=Editing Version
 versionadmin.search.placeholder=Filter by version number...
 versionadmin.search.button=Filter by version

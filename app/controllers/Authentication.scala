@@ -3,14 +3,13 @@ package controllers
 import play.api.libs.ws
 import models.User
 import play.api.i18n.Messages
-import play.api.{Configuration, Logger, Play}
+import play.api.{Logger, Play}
 import play.api.libs.oauth._
 import ws.{Response, WS}
 import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.libs.openid.OpenID
 import play.api.libs.concurrent.{Thrown, Redeemed, Promise}
-
 
 /**
  * Created by IntelliJ IDEA.
@@ -128,7 +127,7 @@ case object Google extends OpenIdService {
 }
 
 
-object Authentication extends Controller {
+object Authentication extends Controller with Secured {
 
   def index() = Action {
     implicit request =>
@@ -361,9 +360,10 @@ object Authentication extends Controller {
   /**
    * Removes user session and redirects to home page
    */
-  def logout() = Action {
+  def logout() = Authenticated {
     implicit request =>
-      Redirect("/").flashing("info" -> Messages("login.backend.logout")).withNewSession
+      Logger.info("Authentication.logout called for user %d".format(request.user.id.get))
+      Redirect(routes.Application.index).flashing("info" -> Messages("login.backend.logout")).withNewSession
   }
 
 }

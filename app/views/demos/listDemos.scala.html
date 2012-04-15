@@ -1,0 +1,56 @@
+@(currentPage: Page[models.DemoView], currentOrderBy: Int, currentFilter: String)(implicit request: play.api.mvc.RequestHeader)
+
+@import tag._
+
+@main(Messages("demos.listDemos")) {
+<header>
+    <h1>@Messages("demos.listDemos")</h1>
+</header>
+
+@listSearch(routes.Demos.listDemos(), Messages("demos.search.placeholder"), Messages("demos.search.button"), currentFilter)
+
+@Option(currentPage.items).filterNot(_.isEmpty).map { demos =>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    @headerEntry(2, Messages("demo.name"), currentFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntry(8, Messages("demo.version"), currentFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntry(10, Messages("demo.author"), currentFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntry(3, Messages("demo.score"), currentFilter, currentOrderBy, routes.Demos.listDemos)
+</tr>
+</thead>
+<tbody>
+
+@demos.map {
+    case (demo) => {
+    <tr>
+        <td><a href="@routes.Demos.viewDemo(demo.id)">@demo.name</a></td>
+        <td>@demo.version</td>
+        <td><a href="@routes.Profile.index(demo.aid)">@demo.publisher</a></td>
+        <td>@demo.showScore</td>
+    </tr>
+    }
+}
+
+</tbody>
+</table>
+
+@paginationFooter(currentPage, demos.size, currentFilter, currentOrderBy, routes.Demos.listDemos)
+
+}.getOrElse {
+
+<div class="well">
+    <em>@Messages("navigation.nothing")</em>
+</div>
+
+}
+<div class="form-actions">
+    <a href="@routes.Application.index()" class="btn">@Messages("navigation.back")</a>
+</div>
+
+
+@* for style purposes *@
+<div class="spacer">&nbsp;</div>
+}
+
