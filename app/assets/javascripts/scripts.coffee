@@ -1,5 +1,14 @@
 # App scripts
 
+#Enables the proper option in the navigation bar menu by reading the id attribute from the header of the section
+setNavigationBar = () ->
+    $('#menuHomeArea').removeClass('active')
+    $('#menuModulesArea').removeClass('active')
+    $('#menuDemosArea').removeClass('active')
+    option = $('header').attr('id')
+    if option?
+        $('#'+option).addClass('active')
+setNavigationBar()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Below there are core functional scripts, don't change
