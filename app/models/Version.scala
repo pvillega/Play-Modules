@@ -53,7 +53,7 @@ object Version {
    * @param id the id of the version to retrieve
    */
   def findById(id: Long): Option[Version] = {
-    Cache.getOrElse(versionCacheKey + id) {
+    Cache.getOrElse(versionCacheKey + id, 60*60) {
       DB.withConnection {
         implicit connection =>
           SQL("select * from version where id = {id}").on('id -> id).as(Version.simple.singleOpt)
@@ -65,10 +65,10 @@ object Version {
    * Retrieve all versions for a select in a template
    */
   def allSelect(): Map[String, String] = {
-    Cache.getOrElse(allVersionsCacheKey) {
+    Cache.getOrElse(allVersionsCacheKey, 60*60) {
       DB.withConnection {
         implicit connection =>
-          SQL("select id, name from version").as(int("id") ~ str("name") map(flatten) *).groupBy(_._1).map { case (k,v) => (k.toString,v.foldLeft("")((s,t) => s + t._2))}
+          SQL("select id, name from version").as(long("id") ~ str("name") map(flatten) *).groupBy(_._1).map { case (k,v) => (k.toString,v.foldLeft("")((s,t) => s + t._2))}
       }
     }
   }
@@ -102,7 +102,7 @@ object Version {
 
         //store object in cache for later retrieval
         val newVersion = version.copy(id = Id(id))
-        Cache.set(versionCacheKey + id, newVersion)
+        Cache.set(versionCacheKey + id, newVersion, 60)
         newVersion
     }
   }
@@ -132,9 +132,9 @@ object Version {
         //remove all version cache
         Cache.set(allVersionsCacheKey, None, 1)
 
-        //store object in cache for later retrieval. This user should be in cache already so this should be quick
+        //store object in cache for later retrieval.
         val cached = findById(id).get
-        Cache.set(versionCacheKey + id, cached.copy(name = version.name, parent = version.parent))
+        Cache.set(versionCacheKey + id, cached.copy(name = version.name, parent = version.parent), 60*60)
     }
   }
 

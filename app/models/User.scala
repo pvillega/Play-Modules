@@ -54,7 +54,7 @@ object User {
    * @param id the id of the user to retrieve
    */
   def findById(id: Long): Option[User] = {
-    Cache.getOrElse(userCacheKey + id) {
+    Cache.getOrElse(userCacheKey + id, 60*60) {
       DB.withConnection {
         implicit connection =>
           SQL("select * from publisher where id = {id}").on('id -> id).as(User.simple.singleOpt)
@@ -154,7 +154,7 @@ object User {
         val id = SQL("select currval(pg_get_serial_sequence('publisher', 'id'))").as(scalar[Long].single)
 
         //store object in cache for later retrieval
-        Cache.set(userCacheKey + id, user.copy(id = Id(id)))
+        Cache.set(userCacheKey + id, user.copy(id = Id(id)), 60*60)
         id
     }
   }
@@ -188,7 +188,7 @@ object User {
 
         //store object in cache for later retrieval. This user should be in cache already so this should be quick
         val cached = findById(id).get
-        Cache.set(userCacheKey + id, cached.copy(name = user.name, avatar = user.avatar, bio = user.bio, url = user.url, location = user.location))
+        Cache.set(userCacheKey + id, cached.copy(name = user.name, avatar = user.avatar, bio = user.bio, url = user.url, location = user.location), 60*60)
     }
   }
 
@@ -226,7 +226,7 @@ object User {
 
         //store object in cache for later retrieval. This user should be in cache already so this should be quick
         val cached = findById(id).get
-        Cache.set(userCacheKey + id, cached.copy(name = user.name, githubId = user.githubId, twitterId = user.twitterId, googleId = user.googleId, disabled = user.disabled, admin = user.admin, avatar = user.avatar, bio = user.bio, url = user.url, location = user.location))
+        Cache.set(userCacheKey + id, cached.copy(name = user.name, githubId = user.githubId, twitterId = user.twitterId, googleId = user.googleId, disabled = user.disabled, admin = user.admin, avatar = user.avatar, bio = user.bio, url = user.url, location = user.location), 60*60)
     }
   }
 
@@ -249,7 +249,7 @@ object User {
           'disabled -> true
         ).executeUpdate()
 
-        Cache.set(userCacheKey + user.id, user.copy(disabled = true))
+        Cache.set(userCacheKey + user.id, user.copy(disabled = true), 60*60)
     }
   }
 
@@ -272,7 +272,7 @@ object User {
           'disabled -> false
         ).executeUpdate()
 
-        Cache.set(userCacheKey + user.id, user.copy(disabled = false))
+        Cache.set(userCacheKey + user.id, user.copy(disabled = false), 60*60)
     }
   }
 
@@ -294,7 +294,7 @@ object User {
         ).executeUpdate()
 
         // empty cache
-        Cache.set(userCacheKey + id, None, 1)
+        Cache.set(userCacheKey + id, None, 60*60)
     }
   }
 

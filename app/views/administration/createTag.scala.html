@@ -1,0 +1,30 @@
+@(tagForm: Form[models.Tag])(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("tagadmin.create")) {
+<header>
+    <h1>@Messages("tagadmin.create")</h1>
+</header>
+
+@helper.form(action = routes.Administration.saveTag(), 'class -> "well") {
+
+@inputText(
+tagForm("name"),
+'_label -> Messages("tag.name"),
+'_error -> tagForm.globalError
+)
+
+<div class="form-actions">
+    <input type="submit" class="btn btn-primary" value="@Messages("administration.save")">
+    <a href="@routes.Administration.tags()" class="btn">@Messages("administration.cancel")</a>
+</div>
+
+}
+
+
+<div class="spacer">&nbsp;</div>
+}

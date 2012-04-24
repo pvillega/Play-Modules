@@ -7,7 +7,7 @@
 @implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
 
 @main(Messages("demos.edit")) {
-    <header>
+    <header id="menuDemosArea">
         <h1>@Messages("demos.edit")</h1>
     </header>
 
@@ -63,6 +63,16 @@
         '_help -> Messages("demo.demourl.help"),
         '_error -> demoForm.globalError
         )
+
+
+        @inputText(
+        demoForm("tags"),
+        '_id -> "tags",
+        '_label -> Messages("demo.tags"),
+        '_help -> Messages("demo.tags.help"),
+        '_error -> demoForm.globalError
+        )
+        @tagInput("tags", demoForm.data.foldRight(List[String]()) { (x,l) => if(x._1.startsWith("tags"))  x._2 :: l else l  })
 
         @textarea(
         demoForm("description"),

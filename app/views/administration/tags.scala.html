@@ -1,0 +1,58 @@
+@(currentPage: Page[models.Tag], currentOrderBy: Int, currentFilter: String)(implicit request: play.api.mvc.RequestHeader)
+
+@import tag._
+
+@main(Messages("administration.tags")) {
+<header>
+    <h1>@Messages("administration.tags")</h1>
+</header>
+
+@listSearch(routes.Administration.listTags(), Messages("tagadmin.search.placeholder"), Messages("tagadmin.search.button"), currentFilter)
+
+<div class="row">
+    <div class="span3 offset9">
+        <a class="btn btn-success" id="add" href="@routes.Administration.createTag()">@Messages("tagadmin.create")</a>
+        <a class="btn btn-warning" id="merge" href="@routes.Administration.mergeTags()">@Messages("tagadmin.merge")</a>
+    </div>
+</div>
+
+@Option(currentPage.items).filterNot(_.isEmpty).map { tags =>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    @headerEntry(1, Messages("administration.id"), currentFilter, currentOrderBy, routes.Administration.listTags)
+    @headerEntry(2, Messages("tag.name"), currentFilter, currentOrderBy, routes.Administration.listTags)
+</tr>
+</thead>
+<tbody>
+
+@tags.map { tag =>
+    <tr>
+        <td><a href="@routes.Administration.editTag(tag.id.get)">@tag.id.get</a></td>
+        <td><a href="@routes.Administration.editTag(tag.id.get)">@tag.name</a></td>
+    </tr>
+}
+
+</tbody>
+</table>
+
+
+@paginationFooter(currentPage, tags.size, currentFilter, currentOrderBy, routes.Administration.listTags)
+
+}.getOrElse {
+
+<div class="well">
+    <em>@Messages("administration.nothing")</em>
+</div>
+
+}
+<div class="form-actions">
+    <a href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
+</div>
+
+
+@* for style purposes *@
+<div class="spacer">&nbsp;</div>
+}
+

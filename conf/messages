@@ -92,6 +92,8 @@ demo.codeurl=Code at
 demo.codeurl.help=Url where the code can be found
 demo.demourl=Demo at
 demo.demourl.help=Optional url of a live deployment of the demo
+demo.tags=Tags
+demo.tags.help=Add Tags to your demo
 demo.description=Description
 demo.description.help=Brief explanation fo your demo
 
@@ -115,6 +117,7 @@ demos.voted=Thanks for voicing your opinion.
 administration.title=Admin Area
 administration.users=Manage Users
 administration.versions=Manage Versions
+administration.tags=Manage Tags
 administration.nothing=Nothing to display
 administration.save=Save
 administration.cancel=Cancel
@@ -132,6 +135,27 @@ versionadmin.search.placeholder=Filter by version number...
 versionadmin.search.button=Filter by version
 versionadmin.saved=Version created!
 versionadmin.updated=Version details updated!
+
+tagadmin.create=Add a new tag
+tagadmin.edit=Editing Tag
+tagadmin.delete=Delete Tag
+tagadmin.delete.text=Are you sure you want to delete this tag? This can't be undone.
+tagadmin.merge=Merge Tags
+tagadmin.merge.text=In this section you can select tags to be replaced by the selected one, to remove duplications in the system and consolidate the taxonomy. Be aware that, once merged, references to old tags will be replaced by a reference to the selected tag, and this step can''t be reverted. Tags selected to be merged which don't exist in the system will be ignored.
+tagadmin.merge.popup.text=Are you sure you want to merge the tags? The process is not reversible and all references to the old tags will be replaced by the selected tag.
+tagadmin.search.placeholder=Filter by tag name...
+tagadmin.search.button=Filter by tag
+tagadmin.saved=Tag created!
+tagadmin.updated=Tag details updated!
+tagadmin.merged=Tags merged successfully. The selected tags have been replaced by the new tag.
+tagadmin.merge.source=Source
+tagadmin.merge.source.text=This tag will replace the selected tags below
+tagadmin.toMerge=Tags to be merged
+
+
+# Tag
+tag.name=Name
+tag.source.default=-- Choose a Tag --
 
 # Version
 version.name=Version Number

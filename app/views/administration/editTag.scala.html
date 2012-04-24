@@ -1,0 +1,54 @@
+@(tagForm: Form[models.Tag], id: Long)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("tagadmin.edit")) {
+    <header>
+        <h1>@Messages("tagadmin.edit")</h1>
+    </header>
+
+    <div class="row">
+        <div class="span2 offset10">
+            <a class="btn btn-danger" data-toggle="modal" href="#deleteModal" >@Messages("tagadmin.delete")</a>
+        </div>
+    </div>
+
+    <div class="modal hide" id="deleteModal">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>@Messages("tagadmin.delete")</h3>
+        </div>
+        <div class="modal-body">
+            <p>@Messages("tagadmin.delete.text")</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>
+            @form(routes.Administration.deleteTag(id)) {
+            <input type="submit" value="@Messages("navigation.delete")" class="btn btn-danger">
+            }
+        </div>
+    </div>
+
+    @helper.form(action = routes.Administration.updateTag(id), 'class -> "well") {
+
+        @inputText(
+        tagForm("name"),
+        '_label -> Messages("tag.name"),
+        '_error -> tagForm.globalError
+        )
+
+
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("administration.save")">
+        <a href="@routes.Administration.tags()" class="btn">@Messages("administration.back")</a>
+    </div>
+
+
+    }
+
+    <div class="spacer">&nbsp;</div>
+}

@@ -71,10 +71,10 @@
                         </ul>
                         <ul class="nav pull-right">
                             @request.session.get("userId").map { userId =>
-                                <li><a href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
+                                <li id="menuProfileArea"><a href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
                                 <li><a href="@routes.Authentication.logout()">@Messages("area.logout")</a></li>
                             }.getOrElse{
-                                <li><a href="@routes.Authentication.index()">@Messages("area.login")</a></li>
+                                <li id="menuAuthArea"><a href="@routes.Authentication.index()">@Messages("area.login")</a></li>
                             }
 
                         </ul>

@@ -1,0 +1,27 @@
+@(id: String, list: List[String], view : Boolean = false)
+
+@**
+    Turns the input element with the id provided into a Tag input control
+        - id: id of the element to turn into tag input
+        - list: a list of tags added to be used when we get an error in the form so we don't lose the data
+        - view: only for view purposes if true
+*@
+<div class="listOfTags @id"> </div>
+<script>
+    $(function(){
+        @if(!view){
+            tagInput('@id',
+                    [@models.Tag.allTags().map { tag =>
+                        @("'"+tag.name +"',")
+                    }]
+            );
+        }
+
+        @list.map { tag =>
+           @if(tag.nonEmpty) {
+                addTag('@id', '@tag', @view);
+           }
+        }
+
+    });
+</script>

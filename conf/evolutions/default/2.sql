@@ -33,6 +33,9 @@ WITH (
 
 create index ix_tag_name on tag(name);
 
+insert into tag (name) values ('authentication');
+insert into tag (name) values ('websockets');
+
 
 CREATE TABLE demo (
     id SERIAL,
@@ -69,13 +72,28 @@ WITH (
   OIDS = FALSE
 );
 
-
 create index ix_votedemo_author on votedemo (author);
 create index ix_votedemo_demo on votedemo (demo);
 
 
+CREATE TABLE tagdemo (
+    id SERIAL,
+    demo bigint references demo,
+    tag bigint references tag,
+    created timestamp not null default now(),
+    CONSTRAINT pk_tagdemo PRIMARY KEY (id)
+)
+WITH (
+  OIDS = FALSE
+);
+
+create index ix_tagdemo_tag on tagdemo (tag);
+create index ix_tagdemo_demo on tagdemo (demo);
+
+
 # --- !Downs
 
+DROP TABLE if exists tagdemo;
 DROP TABLE if exists votedemo;
 DROP TABLE if exists demo;
 DROP TABLE if exists version;

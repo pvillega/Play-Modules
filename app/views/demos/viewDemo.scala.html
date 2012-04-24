@@ -7,7 +7,7 @@
 @implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
 
 @main(Messages("demos.view")) {
-    <header>
+    <header id="menuDemosArea">
         <h1>@Messages("demos.view")</h1>
     </header>
 
@@ -55,6 +55,13 @@
                 <div class="span5">@demo.description</div>
             </div>
 
+        </div>
+    </div>
+    @* tags *@
+    <br/>
+    <div class="row">
+        <div class="span12">
+            @tagInput("tags",demo.tags, true)
         </div>
     </div>
 

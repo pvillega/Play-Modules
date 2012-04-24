@@ -1,7 +1,7 @@
 @(user: models.User, itsMe: Boolean, currentDemoPage: Page[models.DemoView], currentDemoOrderBy: Int )(implicit request: play.api.mvc.RequestHeader)
 
 @main(Messages("profile.title", user.name)) {
-    <header>
+    <header id="menuProfileArea">
         <h1>@Messages("profile.title", user.name)</h1>
     </header>
 

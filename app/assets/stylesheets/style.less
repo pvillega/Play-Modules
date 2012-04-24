@@ -28,6 +28,13 @@ p {
  text-align: left;
 }
 
+.modal-footer {
+    form {
+        margin: 0px;
+        display: inline;
+    }
+}
+
 /* Landing page */
 
 header {
@@ -233,6 +240,37 @@ div {
   .voteArrow;
   .voteAlign;
 }
+
+/* Tags */
+.listOfTags {
+    height: 30px;
+    margin-bottom: 9px;
+    clear: both;
+}
+.tagLabel {
+    background-color: @lightText;
+    border-bottom: 1px solid @background;
+    border-right: 1px solid @background;
+    color: #ffffff;
+    font-size: 90%;
+    float: left;
+    margin: 2px 2px 2px 0;
+    padding: 3px 4px;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover{
+        background-color: @background;
+        border-bottom: 1px solid @borders;
+        border-right: 1px solid @borders;
+        color: @lightText;
+        text-decoration: none;
+    }
+    .tagClose {
+        font-size: smaller;
+    }
+}
+
 
 /* ===== Primary Styles ====================================================== */
 

@@ -1,0 +1,58 @@
+@(mergetagForm: Form[models.TagMerge])(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("tagadmin.merge")) {
+    <header>
+        <h1>@Messages("tagadmin.merge")</h1>
+    </header>
+
+    @helper.form(action = routes.Administration.doMergeTags(), 'class -> "well", 'id -> "formMerge") {
+        <h3>@Messages("tagadmin.merge")</h3>
+        <p>@Messages("tagadmin.merge.text")</p>
+
+        @select(
+            mergetagForm("sourceid"),
+            options = options(Tag.allSelect()),
+            '_default -> Messages("tag.source.default"),
+            '_label -> Messages("tagadmin.merge.source"),
+            '_help -> Messages("tagadmin.merge.source.text"),
+            '_error -> mergetagForm.globalError
+        )
+
+        @inputText(
+            mergetagForm("tags"),
+            '_id -> "tags",
+            '_label -> Messages("tagadmin.toMerge"),
+            '_error -> mergetagForm.globalError
+        )
+
+        @tagInput("tags", mergetagForm.data.foldRight(List[String]()) { (x,l) => x._2 :: l})
+
+        <div class="form-actions">
+            <a data-toggle="modal" href="#mergeModal"class="btn btn-primary">@Messages("tagadmin.merge")</a>
+        </div>
+    }
+
+    <div class="modal hide" id="mergeModal">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>@Messages("tagadmin.merge")</h3>
+        </div>
+        <div class="modal-body">
+            <p>@Messages("tagadmin.merge.popup.text")</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>            
+            <a href="#" class="btn btn-danger" data-dismiss="modal" onclick="$('#formMerge').submit();">@Messages("tagadmin.merge")</a>
+            
+        </div>
+    </div>
+
+
+    <div class="spacer">&nbsp;</div>
+}

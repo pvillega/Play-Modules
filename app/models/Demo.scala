@@ -17,9 +17,9 @@ import java.math.BigDecimal
  * Manages Demo entities
  */
 
-case class Demo(id: Pk[Long] = NotAssigned, name: String, version: Long, author: Long = -1, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, positive: Int = 0, negative: Int = 0, created: Date = new Date)
+case class Demo(id: Pk[Long] = NotAssigned, name: String, version: Long, author: Long = -1, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, positive: Int = 0, negative: Int = 0, created: Date = new Date, tags: List[String] = Nil)
 
-case class DemoView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, vote: Option[Int] = Some(0))
+case class DemoView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, vote: Option[Int] = Some(0), tags: List[String] = Nil)
 
 
 /**
@@ -77,7 +77,12 @@ object Demo {
     Cache.getOrElse(demoCacheKey + id, 60*60) {
       DB.withConnection {
         implicit connection =>
-          SQL("select * from demo where id = {id}").on('id -> id).as(Demo.simple.singleOpt)
+          SQL("select * from demo where id = {id}").on('id -> id).as(Demo.simple.singleOpt) match {
+            case Some(demo) =>
+              val list = Tag.findByDemo(demo.id.get)
+              Some(demo.copy(tags = list))
+            case None  => None
+          }
       }
     }
   }
@@ -106,8 +111,12 @@ object Demo {
               left join votedemo vd on vd.author = d.author and vd.demo = d.id
               where d.id = {id}
             """
-          ).on('id -> id).as(Demo.simpleView.singleOpt)
-
+          ).on('id -> id).as(Demo.simpleView.singleOpt) match {
+            case Some(demo) =>
+              val list = Tag.findByDemo(demo.id)
+              Some(demo.copy(tags = list))
+            case None  => None
+          }
       }
     }
   }
@@ -120,7 +129,7 @@ object Demo {
    * @return the version created (including id)
    */
   def create(demo: Demo, userid: Long) = {
-    DB.withConnection {
+    DB.withTransaction {
       implicit connection =>
       //we use many default values from the db
         SQL(
@@ -139,6 +148,9 @@ object Demo {
 
         // as per http://wiki.postgresql.org/wiki/FAQ this should not bring race issues
         val id = SQL("select currval(pg_get_serial_sequence('demo', 'id'))").as(scalar[Long].single)
+
+        //add tags to the demo
+        Tag.addToDemo(demo.tags, id)
 
         //author automatically votes his own creation +1
         SQL(
@@ -161,12 +173,12 @@ object Demo {
   /**
    * Updates the demo details in the database
    *
-   * @param id the id of the version to update
+   * @param id the id of the demo to update
    * @param userid the id of the user editing the demo
    * @param demo the details to update
    */
   def update(id: Long, userid: Long, demo: Demo) = {
-    DB.withConnection {
+    DB.withTransaction {
       implicit connection =>
 
         SQL(
@@ -185,9 +197,13 @@ object Demo {
           'description -> demo.description
         ).executeUpdate()
 
+        //add tags to the demo
+        Tag.addToDemo(demo.tags, id)
+
         //store object in cache for later retrieval. This user should be in cache already so this should be quick
         val cached = findById(id).get
-        Cache.set(demoCacheKey + id, cached.copy(name = demo.name, version = demo.version, codeurl = demo.codeurl, demourl = demo.demourl, description = demo.description), 60*60)
+        val copy = cached.copy(name = demo.name, version = demo.version, codeurl = demo.codeurl, demourl = demo.demourl, description = demo.description, tags = demo.tags)
+        Cache.set(demoCacheKey + id, copy, 60*60)
     }
   }
 
@@ -254,7 +270,7 @@ object Demo {
           'id -> demoid
         ).executeUpdate()
 
-        //removes from cache to see vote effect on next request
+        //updates cache to see vote effect on next request
         val cached = findByIdWithVersion(demoid).get
         Cache.set(demoViewCacheKey + demoid, cached.copy(vote = Some(vote)), 60)
     }

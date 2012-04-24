@@ -4,7 +4,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import anorm.NotAssigned
 import play.Logger
-import models.Demo
+import models.{Demo, Tag}
 import play.api.mvc.{Action, Controller}
 import play.api.i18n.Messages
 
@@ -22,17 +22,17 @@ object Demos extends Controller with Secured {
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "name" -> nonEmptyText,
-      "version" -> (longNumber verifying( _ > 0)),      
+      "version" -> (longNumber verifying( _ > 0)),
       "codeurl" -> text, // no regexp validation, see: http://stackoverflow.com/questions/3058138/is-it-safe-to-validate-a-url-with-a-regexp
+      "tags" -> list(nonEmptyText),
       "demourl" -> optional (text),
       "description" -> optional (text)
     ) {
-        (id, name, version, codeurl, demourl, description) => Demo(name = name, version = version, codeurl = codeurl, demourl = demourl, description = description)
+        (id, name, version, codeurl, tags, demourl, description) => Demo(name = name, version = version, codeurl = codeurl, demourl = demourl, description = description, tags = tags)
     }{
-        demo: Demo => Some(demo.id, demo.name, demo.version, demo.codeurl, demo.demourl, demo.description)
+        demo: Demo => Some(demo.id, demo.name, demo.version, demo.codeurl, demo.tags, demo.demourl, demo.description)
     }
   )
-
 
   /**
    * Creates a new demo
