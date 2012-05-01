@@ -32,8 +32,8 @@ object Administration extends Controller with Secured {
       "lastAccess" -> date,
       "avatar" -> optional(text),
       "url" -> optional(text),
-      "location" -> optional(text),
-      "bio" -> optional(text)
+      "bio" -> optional(text),
+      "location" -> optional(text)
     ) (User.apply)(User.unapply))
 
   // form to edit versions

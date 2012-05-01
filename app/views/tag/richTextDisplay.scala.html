@@ -1,0 +1,12 @@
+@(value: Option[String])
+
+@**
+    Displays the markdown edited via a rich text editor
+        - value: the markdown to render
+*@
+<div class="wmd-panel" style="display:none;" >
+    <textarea class="wmd-input" id="wmd-input">@value.getOrElse("-")</textarea>
+</div>
+@* preview area *@
+<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+<script>$(function(){var converter1 = Markdown.getSanitizingConverter();var editor1 = new Markdown.Editor(converter1);editor1.run();});</script>

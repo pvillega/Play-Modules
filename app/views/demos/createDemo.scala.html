@@ -51,12 +51,9 @@
     )
     @tagInput("tags", demoForm.data.foldRight(List[String]()) { (x,l) => if(x._1.startsWith("tags"))  x._2 :: l else l  })
 
-    @textarea(
+    @richTextEditor(
     demoForm("description"),
     '_label -> Messages("demo.description"),
-    '_help -> Messages("demo.description.help"),
-    'cols -> 50,
-    'rows -> 7,
     '_error -> demoForm.globalError
     )
 

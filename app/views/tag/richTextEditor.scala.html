@@ -1,0 +1,19 @@
+@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit handler: views.html.helper.FieldConstructor, lang: play.api.i18n.Lang)
+
+@**
+    Displays the text editor (markdown)
+        - field: the form field to render
+        - args: additional arguments for the textarea
+*@
+
+@* input area *@
+@views.html.helper.input(field, args:_*) { (id, name, value, htmlArgs) =>
+    <div class="wmd-panel">
+        <div id="wmd-button-bar"></div>
+        <textarea class="wmd-input" id="wmd-input" name="@name" @toHtmlArgs(htmlArgs)>@value</textarea>
+    </div>
+}
+
+@* preview area *@
+<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+<script>$(function(){var converter1 = Markdown.getSanitizingConverter();var editor1 = new Markdown.Editor(converter1);editor1.run();});</script>

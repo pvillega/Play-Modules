@@ -9,7 +9,6 @@ ENTER = 13
 SPACE = 32
 COMMA = 188
 
-
 #Enables the proper option in the navigation bar menu by reading the id attribute from the header of the section
 root.setNavigationBar = () ->
     $('#menuHomeArea').removeClass('active')
@@ -84,12 +83,10 @@ root.addTag = (id, value, view) ->
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Below there are core functional scripts, don't change
 
-
 # Allows $(function() {}); to be used even without Jquery loaded - This code fragments runs the stored calls.
 # This is useful so we can push all the $(function() { ...}); calls in templates without having to load jquery at head
 window.$.noConflict()
 window.$ = window.$.attachReady(jQuery)
-
 
 # Prevention of window hijack, run after all jquery scripts
 $('html').css 'display': 'none'

@@ -1,5 +1,7 @@
 @(user: models.User, itsMe: Boolean, currentDemoPage: Page[models.DemoView], currentDemoOrderBy: Int )(implicit request: play.api.mvc.RequestHeader)
 
+@import tag._
+
 @main(Messages("profile.title", user.name)) {
     <header id="menuProfileArea">
         <h1>@Messages("profile.title", user.name)</h1>
@@ -26,16 +28,16 @@
                 <div class="span5">@user.name</div>
             </div>
             <div class="row">
-                <div class="span1"><strong>@Messages("profile.bio")</strong></div>
-                <div class="span5">@user.bio</div>
-            </div>
-            <div class="row">
                 <div class="span1"><strong>@Messages("profile.url")</strong></div>
                 <div class="span5"><a href="@user.url">@user.url</a></div>
             </div>
             <div class="row">
                 <div class="span1"><strong>@Messages("profile.location")</strong></div>
                 <div class="span5">@user.location</div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("profile.bio")</strong></div>
+                <div class="span5">@richTextDisplay(user.bio)</div>
             </div>
             @if(itsMe && user.admin) {
                 <div class="row">

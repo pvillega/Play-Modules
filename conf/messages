@@ -63,6 +63,7 @@ profile.twitterId=TwitterId
 profile.googleId=GoogleId
 profile.isdisabled=Disabled
 profile.isadmin=Admin
+profile.created=Created
 profile.lastAccess=Last Access
 
 # Profile page
@@ -95,7 +96,7 @@ demo.demourl.help=Optional url of a live deployment of the demo
 demo.tags=Tags
 demo.tags.help=Add Tags to your demo
 demo.description=Description
-demo.description.help=Brief explanation fo your demo
+demo.description.help=Brief explanation of your demo
 
 # Demo pages
 demos.listDemos=List of Demos

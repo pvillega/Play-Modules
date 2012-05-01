@@ -2,6 +2,7 @@
 
 @import helper._
 @import helper.twitterBootstrap._
+@import tag._
 
 @implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
 
@@ -26,15 +27,6 @@
         '_error -> userForm.globalError
         )
 
-        @textarea(
-        userForm("bio"),
-        '_label -> Messages("profile.bio"),
-        '_help -> Messages("profile.bio.help"),
-        'cols -> 50,
-        'rows -> 7,
-        '_error -> userForm.globalError
-        )
-
         @inputText(
         userForm("url"),
         '_label -> Messages("profile.url"),
@@ -46,6 +38,13 @@
         userForm("location"),
         '_label -> Messages("profile.location"),
         '_help -> Messages("profile.location.help"),
+        '_error -> userForm.globalError
+        )
+
+        @richTextEditor(
+        userForm("bio"),
+        '_label -> Messages("profile.bio"),
+        '_help -> Messages("profile.bio.help"),
         '_error -> userForm.globalError
         )
 
