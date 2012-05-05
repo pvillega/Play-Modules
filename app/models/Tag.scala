@@ -231,16 +231,14 @@ object Tag {
     DB.withConnection {
       implicit connection =>
       //we use many default values from the db
-        SQL(
+        val id = SQL(
           """
             insert into tag (name) values ({name})
+            returning id
           """
         ).on(
           'name -> tag.name
-        ).executeUpdate()
-
-        // as per http://wiki.postgresql.org/wiki/FAQ this should not bring race issues
-        val id = SQL("select currval(pg_get_serial_sequence('tag', 'id'))").as(scalar[Long].single)
+        ).as(int("id").single)
 
         //store object in cache for later retrieval
         val newTag = tag.copy(id = Id(id))

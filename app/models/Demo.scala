@@ -132,10 +132,11 @@ object Demo {
     DB.withTransaction {
       implicit connection =>
       //we use many default values from the db
-        SQL(
+        val id = SQL(
           """
             insert into demo (name, version, author, codeurl, demourl, description)
             values ({name}, {version}, {author}, {codeurl}, {demourl}, {description})
+            returning id
           """
         ).on(
           'name -> demo.name,
@@ -144,10 +145,7 @@ object Demo {
           'codeurl -> demo.codeurl,
           'demourl -> demo.demourl,
           'description -> demo.description
-        ).executeUpdate()
-
-        // as per http://wiki.postgresql.org/wiki/FAQ this should not bring race issues
-        val id = SQL("select currval(pg_get_serial_sequence('demo', 'id'))").as(scalar[Long].single)
+        ).as(int("id").single)
 
         //add tags to the demo
         Tag.addToDemo(demo.tags, id)

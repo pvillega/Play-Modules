@@ -84,18 +84,16 @@ object Version {
     DB.withConnection {
       implicit connection =>
       //we use many default values from the db
-        SQL(
+       val id = SQL(
           """
             insert into version (name, parent)
             values ({name}, {parent})
+            returning id
           """
         ).on(
           'name -> version.name,
           'parent -> version.parent
-        ).executeUpdate()
-
-        // as per http://wiki.postgresql.org/wiki/FAQ this should not bring race issues
-        val id = SQL("select currval(pg_get_serial_sequence('version', 'id'))").as(scalar[Long].single)
+        ).as(int("id").single)
 
         //remove all version cache
         Cache.set(allVersionsCacheKey, None, 1)

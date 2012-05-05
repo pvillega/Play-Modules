@@ -134,10 +134,11 @@ object User {
     DB.withConnection {
       implicit connection =>
       //we use many default values from the db
-        SQL(
+      val id =  SQL(
           """
             insert into publisher (name, avatar, githubId, twitterId, googleId, url, bio, location)
             values ({name}, {avatar}, {githubId}, {twitterId}, {googleId}, {url}, {bio}, {location})
+            returning id
           """
         ).on(
           'name -> user.name,
@@ -148,10 +149,7 @@ object User {
           'url -> user.url,
           'bio -> user.bio,
           'location -> user.location
-        ).executeUpdate()
-
-        // as per http://wiki.postgresql.org/wiki/FAQ this should not bring race issues
-        val id = SQL("select currval(pg_get_serial_sequence('publisher', 'id'))").as(scalar[Long].single)
+        ).as(int("id").single)
 
         //store object in cache for later retrieval
         Cache.set(userCacheKey + id, user.copy(id = Id(id)), 60*60)
