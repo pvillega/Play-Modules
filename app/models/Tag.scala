@@ -216,7 +216,7 @@ object Tag {
           'filter -> filter
         ).as(scalar[Long].single)
 
-        Page(versions, page, offset, totalRows)
+        Page(versions, page, offset, totalRows, pageSize)
     }
 
   }
@@ -309,27 +309,47 @@ object Tag {
   def merge(mergeDetails: TagMerge) = {
     DB.withTransaction {
       implicit connection =>
-        //TODO: replace on demos and projects
+        //TODO: replace on projects
 
-        //replace in tags table
-        SQL(
-          """
-            delete from tag
-            where name in ({names})
-          """
-        ).on(
-          'names -> mergeDetails.tags.mkString(",")
-        ).executeUpdate()
-
-        //remove from cache
+        //remove from cache  and merge in demos
         mergeDetails.tags.map { name =>
           findByName(name) match {
             case Some(tag) =>
-              Cache.set(tagNameCacheKey + tag.name, None, 1)
-              Cache.set(tagCacheKey + tag.id, None, 1)
+              Cache.set(tagNameCacheKey + tag.name, None, 2)
+              Cache.set(tagCacheKey + tag.id, None, 2)
+              SQL(
+                """
+                  update tagdemo td set td.tag = {newId}
+                  where td.tag = {oldId}
+                """
+              ).on(
+                'newId -> mergeDetails.sourceid,
+                'oldId -> tag.id
+              )
             case _ =>  //tag not in cache, ignore
           }
         }
+
+        //remove duplicates from tagdemo table
+        SQL(
+          """
+            delete from tagdemo t1 using tagdemo t2
+            where t1.demo=t2.demo and t1.tag = t2.tag and t1.id < t2.id
+          """
+        ).executeUpdate()
+
+        //remove from tags table
+        val names = "('" + mergeDetails.tags.mkString("','") +"')"
+        SQL(
+          """
+            delete from tag
+            where name in %s
+          """.format(names)
+        ).executeUpdate()
+
+        //clean general list
+        val all = allTags().filterNot(mergeDetails.tags.contains(_))
+        Cache.set(allTagsCacheKey, all, 60)
     }
   }
 
