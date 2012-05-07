@@ -124,7 +124,7 @@ Helper generating the pagination footer for list views
         }
     </select>
     <input type="search" id="tagFilter" name="inputTagFilter" placeholder="@Messages("demos.search.tag")" class="input-medium search-query">
-    <input type="button" id="searchsubmit" value="@Messages("demos.search.button")" class="btn" onclick="addTag('tagFilter', $('#tagFilter').val(), true);this.form.submit();">
+    <input type="button" id="searchsubmit" value="@Messages("demos.search.button")" class="btn" onclick="addTag('tagFilter', $('#tagFilter').val(), false);this.form.submit();">
     <hr class="list" />
     <h6>@Messages("demos.search.tag.show"):</h6>
     @tagInput("tagFilter", tagFilter)

@@ -58,10 +58,16 @@ root.tagInput = (id, values) ->
 # value: value to add
 # view: if true we want read only tags
 root.addTag = (id, value, view) ->
+      # don't add empty strings
+      if not !!value.trim()
+        return
+
       #add tag representation
       el  = "<a class=\"tagLabel\" "
       if not view
         el += " onclick=\"$(this).remove();$('input[data="+value+"]').remove();\" "
+      else
+        el += " href=\""+id+"\" "
       el += " >"
       el += value
       if not view
