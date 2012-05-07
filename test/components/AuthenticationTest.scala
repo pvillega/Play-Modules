@@ -14,6 +14,7 @@ import play.api.test._
 import play.api.i18n.Messages
 import play.api.test.Helpers._
 
+//TODO: all testing needs to be redone in 2.1 as we need FakeRequest to be able to get session values
 class AuthenticationTest extends Specification {
 
   "Authentication controller" should {
