@@ -1,10 +1,11 @@
-@(id: String, list: List[String], view : Boolean = false)
+@(id: String, list: List[String], view : Boolean = false, demo: Boolean = true)
 
 @**
     Turns the input element with the id provided into a Tag input control
         - id: id of the element to turn into tag input
         - list: a list of tags added to be used when we get an error in the form so we don't lose the data
         - view: only for view purposes if true
+        - demo: if true the flag refers to a demo, if false is a project. It will be used in javascript to redirect to the proper search page
 *@
 <div class="listOfTags @id"> </div>
 <script>
@@ -13,13 +14,13 @@
             tagInput('@id',
                     [@models.Tag.allTags().map { tag =>
                         @("'"+tag.name +"',")
-                    }]
+                    }], @demo
             );
         }
 
         @list.map { tag =>
            @if(tag.nonEmpty) {
-                addTag('@id', '@tag', @view);
+                addTag('@id', '@tag', @view, @demo);
            }
         }
 

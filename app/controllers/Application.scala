@@ -6,6 +6,7 @@ import play.api.mvc.Results._
 import play.api.libs.iteratee._
 import play.api.mvc.BodyParsers._
 import models.User
+import controllers.routes.javascript._
 
 
 object Application extends Controller with Secured {
@@ -17,6 +18,19 @@ object Application extends Controller with Secured {
   }
 
   def browse() = TODO
+
+  /**
+   * Makes some routes available via javascript
+   */
+  def javascriptRoutes = Action {
+    import routes.javascript._
+
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+        Demos.listDemos
+      )
+    ).as("text/javascript")
+  }
 
 }
 

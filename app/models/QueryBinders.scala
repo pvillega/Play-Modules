@@ -45,7 +45,10 @@ object QueryBinders {
    * Convert a Scala List[T] to Javascript array
    */
   implicit def literalList[T](implicit jsl: JavascriptLitteral[T]) = new JavascriptLitteral[List[T]] {
-    def to(value: List[T]) = "[" + value.map { v => jsl.to(v)+"," } +"]"
+    def to(value: List[T]) = value match {
+      case l: List[_] if !l.isEmpty => "[" + value.map { v => jsl.to(v)+"," } +"]"
+      case _ => "[]"
+    }
   }
 
 }

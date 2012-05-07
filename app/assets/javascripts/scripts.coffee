@@ -24,7 +24,8 @@ setNavigationBar()
 #Function that turns a given element of which we get the id into a tag input component
 # id: id of the element to modify
 # values: array with valid suggestions
-root.tagInput = (id, values) ->
+# demo: if true is a demo, otherwise a module (we use it for search by tag)
+root.tagInput = (id, values, demo) ->
     #use bootstrap typeahead element
     $('#'+id).typeahead source: values
 
@@ -47,7 +48,7 @@ root.tagInput = (id, values) ->
             typed = typed.trim()
 
             if typed isnt ""
-                addTag(id, typed, false)
+                addTag(id, typed, false, demo)
 
             # Cleaning the input.
             $(this).val("")
@@ -57,7 +58,8 @@ root.tagInput = (id, values) ->
 # id: id of the element that manages tags
 # value: value to add
 # view: if true we want read only tags
-root.addTag = (id, value, view) ->
+# demo: if true is a demo, otherwise a module (we use it for search by tag)
+root.addTag = (id, value, view, demo) ->
       # don't add empty strings
       if not !!value.trim()
         return
@@ -66,8 +68,8 @@ root.addTag = (id, value, view) ->
       el  = "<a class=\"tagLabel\" "
       if not view
         el += " onclick=\"$(this).remove();$('input[data="+value+"]').remove();\" "
-      else
-        el += " href=\""+id+"\" "
+      else if demo
+        el += " href=\""+jsRoutes.controllers.Demos.listDemos(page = 0, orderBy = 1, nameFilter = '', versionFilter = -1, tagFilter = [value]).url+"\" "
       el += " >"
       el += value
       if not view
