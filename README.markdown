@@ -20,10 +20,21 @@ Features
 - Voting on Demos/Modules
 - Public search of Demos and Modules
 
+Deployment
+------------------
+The project is ready for deployment in Heroku, although it can be deployed in any environment given it uses PostgreSQL 9.1 (or newer) as database.
+
+You will need to set the following global variables:
++ github.clientId
++ github.secret
++ twitter.clientId
++ twitter.secret
++ disqus.forum
+
 
 TO DO
 ------------------
-- Update to 2.1 when released
+- Update to Play 2.1 when released
 - Add tests (currently due to the lack of support for session values in FakeRequest this can't be really done. This should be fixed in 2.1)
 - Improve with community suggestions
 
