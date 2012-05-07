@@ -15,7 +15,7 @@ object ApplicationBuild extends Build {
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
       // Add your own project settings here
       lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "stylesheets" ** "style.less"),
-      routesImport += "models.QueryBinders"
+      routesImport += "models.QueryBinders._"
     )
 
 }

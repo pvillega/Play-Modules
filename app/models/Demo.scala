@@ -295,7 +295,7 @@ object Demo {
       implicit connection =>
         //we can't use IN on anorm directly, so we have to resort to an insert into the string if required. We don't add the join if not required
         val (tagJoin , tags) = tagFilter match {
-            case l: List[String] if !l.isEmpty=> ("left join tagdemo td on td.demo = demo.id left join tag t on td.tag = t.id", "and t.name in ('"+ l.mkString("','") +"')")
+            case l: List[_] if !l.isEmpty=> ("left join tagdemo td on td.demo = demo.id left join tag t on td.tag = t.id", "and t.name in ('"+ l.mkString("','") +"')")
             case _ => ("","")
         }
 
