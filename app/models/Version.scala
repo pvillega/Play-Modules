@@ -68,7 +68,7 @@ object Version {
     Cache.getOrElse(allVersionsCacheKey, 60*60) {
       DB.withConnection {
         implicit connection =>
-          SQL("select id, name from version").as(long("id") ~ str("name") map(flatten) *).groupBy(_._1).map { case (k,v) => (k.toString,v.foldLeft("")((s,t) => s + t._2))}
+          SQL("select id, name from version order by name asc").as(long("id") ~ str("name") map(flatten) *).groupBy(_._1).map { case (k,v) => (k.toString,v.foldLeft("")((s,t) => s + t._2))}
       }
     }
   }

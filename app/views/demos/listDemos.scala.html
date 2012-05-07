@@ -1,23 +1,133 @@
-@(currentPage: Page[models.DemoView], currentOrderBy: Int, currentFilter: String)(implicit request: play.api.mvc.RequestHeader)
+@(currentPage: Page[models.DemoView], currentOrderBy: Int, nameFilter: String, versionFilter: Long, tagFilter: List[String])(implicit request: play.api.mvc.RequestHeader)
 
 @import tag._
+
+
+@**
+Helper generating table headers to reorder the table by a field
+
+@param newOrderBy new ordering for results
+@param title the title to display in the header
+@param nameFilter current filter being applied to the names
+@param versionFilter current filter being applied to the versions
+@param tagListFilter current filter being applied to the tags
+@param currentOrderBy current order being applied to the resultset
+@param call the 'list' method of a Controller that we will call to load the page
+*@
+@headerEntryDemo(newOrderBy: Int, title: String, nameFilter: String, versionFilter: Long, tagListFilter: List[String], currentOrderBy: Int, call: (Int, Int, String, Long, List[String]) => Call) = {
+    <th>
+        @if(scala.math.abs(currentOrderBy) == newOrderBy) {
+        @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
+        }
+        <a href="@pageLinkDemo(0, nameFilter, versionFilter, tagListFilter, currentOrderBy, call, Some(newOrderBy))">@title</a>
+    </th>
+}
+
+
+
+@**
+Helper generating navigation links between pages
+
+@param newPage destination page
+@param nameFilter current filter being applied to the names
+@param versionFilter current filter being applied to the versions
+@param tagListFilter current filter being applied to the tags
+@param currentOrderBy current order being applied to the resultset
+@param call the 'list' method of a Controller that we will call to load the page.
+@param newOrderBy new ordering for results. Default: None
+*@
+@pageLinkDemo(newPage: Int, nameFilter: String, versionFilter: Long, tagListFilter: List[String], currentOrderBy: Int, call: (Int, Int, String, Long, List[String]) => Call, newOrderBy: Option[Int] = None) = {
+
+    @{
+    call(newPage,
+        newOrderBy.map { orderBy =>
+            if(orderBy == scala.math.abs(currentOrderBy)) {
+                if(currentOrderBy > 0) {
+                    -currentOrderBy
+                } else {
+                    orderBy
+                }
+            } else {
+                orderBy
+            }
+        }.getOrElse(currentOrderBy),
+    nameFilter, versionFilter, tagListFilter)
+    }
+}
+
+
+@**
+Helper generating the pagination footer for list views
+
+@param currentPage the page currently being displayed
+@param pageSize number of elements in this page
+@param nameFilter current filter being applied to the names
+@param versionFilter current filter being applied to the versions
+@param tagListFilter current filter being applied to the tags
+@param currentOrderBy current order being applied to the resultset
+@param call the 'list' method of a Controller that we will call to load the page
+*@
+@paginationFooterDemo(currentPage: Page[Any], pageSize: Int, nameFilter: String, versionFilter: Long, tagListFilter: List[String], currentOrderBy: Int, call: (Int, Int, String, Long, List[String]) => Call) = {
+
+<div id="pagination" class="pagination">
+    <ul>
+        @currentPage.prev.map { page =>
+        <li class="prev">
+            <a href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.prev")</a>
+        </li>
+        }.getOrElse {
+        <li class="prev disabled">
+            <a>@Messages("pagination.prev")</a>
+        </li>
+        }
+        <li class="current">
+            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
+        </li>
+        @currentPage.next.map { page =>
+        <li class="next">
+            <a href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
+        </li>
+        }.getOrElse {
+        <li class="next disabled">
+            <a>@Messages("pagination.next")</a>
+        </li>
+        }
+    </ul>
+</div>
+}
 
 @main(Messages("demos.listDemos")) {
 <header id="menuDemosArea">
     <h1>@Messages("demos.listDemos")</h1>
 </header>
 
-@listSearch(routes.Demos.listDemos(), Messages("demos.search.placeholder"), Messages("demos.search.button"), currentFilter)
+@* Filtering for Demos *@
+<div id="actions">
+    @helper.form(action=routes.Demos.listDemos(), 'class -> "well form-inline list") {
+    <input type="search" id="searchbox" name="nameFilter" value="@nameFilter" placeholder="@Messages("demos.search.placeholder")" class="input-medium search-query">
+    <select id="versionFilter" name="versionFilter" >
+        <option class="blank" value="-1">@Messages("demos.search.version")</option>
+        @models.Version.allSelect().map { version =>
+            <option value="@version._1" @if(version._1.toLong == versionFilter){selected}>@version._2</option>
+        }
+    </select>
+    <input type="search" id="tagFilter" name="tagFilterInput" placeholder="@Messages("demos.search.tag")" class="input-medium search-query">
+    <input type="button" id="searchsubmit" value="@Messages("demos.search.button")" class="btn" onclick="addTag('tagFilter', $('#tagFilter').val(), true);this.form.submit();">
+    <hr class="list" />
+    <h6>@Messages("demos.search.tag.show"):</h6>
+    @tagInput("tagFilter", tagFilter)
+    }
+</div>
 
 @Option(currentPage.items).filterNot(_.isEmpty).map { demos =>
 
 <table class="table table-striped">
 <thead>
 <tr>
-    @headerEntry(2, Messages("demo.name"), currentFilter, currentOrderBy, routes.Demos.listDemos)
-    @headerEntry(8, Messages("demo.version"), currentFilter, currentOrderBy, routes.Demos.listDemos)
-    @headerEntry(10, Messages("demo.author"), currentFilter, currentOrderBy, routes.Demos.listDemos)
-    @headerEntry(3, Messages("demo.score"), currentFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntryDemo(2, Messages("demo.name"), nameFilter, versionFilter, tagFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntryDemo(8, Messages("demo.version"), nameFilter, versionFilter, tagFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntryDemo(10, Messages("demo.author"), nameFilter, versionFilter, tagFilter, currentOrderBy, routes.Demos.listDemos)
+    @headerEntryDemo(3, Messages("demo.score"), nameFilter, versionFilter, tagFilter, currentOrderBy, routes.Demos.listDemos)
 </tr>
 </thead>
 <tbody>
@@ -36,7 +146,7 @@
 </tbody>
 </table>
 
-@paginationFooter(currentPage, demos.size, currentFilter, currentOrderBy, routes.Demos.listDemos)
+@paginationFooterDemo(currentPage, demos.size, nameFilter, versionFilter, tagFilter, currentOrderBy, routes.Demos.listDemos)
 
 }.getOrElse {
 

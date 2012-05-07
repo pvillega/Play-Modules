@@ -5,8 +5,9 @@ import play.api.data.Forms._
 import anorm.NotAssigned
 import play.Logger
 import models.{Demo, Tag}
-import play.api.mvc.{Action, Controller}
 import play.api.i18n.Messages
+import scala.Int
+import play.api.mvc.{QueryStringBindable, Action, Controller}
 
 /**
  * Created by IntelliJ IDEA.
@@ -131,15 +132,19 @@ object Demos extends Controller with Secured {
    *
    * @param page Current page number (starts from 0)
    * @param orderBy Column to be sorted
-   * @param filter Filter applied on user names
+   * @param nameFilter Filter applied on demo names
+   * @param versionFilter filter applied on version
+   * @param tagFilter filter applied on tags
    */
-  def listDemos(page: Int, orderBy: Int, filter: String) = Action {
+  def listDemos(page: Int, orderBy: Int, nameFilter: String, versionFilter : Long, tagFilter: List[String]) = Action {
     implicit request =>
-      Logger.info("Demos.listDemos accessed params page[%d] orderBy[%d] filter[%s]".format(page, orderBy, filter))
+      Logger.info("Demos.listDemos accessed params page[%d] orderBy[%d] filter[%s | %d | %s]".format(page, orderBy, nameFilter, versionFilter, tagFilter))
       Ok(views.html.demos.listDemos(
-        Demo.list(page = page, orderBy = orderBy, filter = ("%" + filter + "%")),
+        Demo.list(page = page, orderBy = orderBy, nameFilter = ("%" + nameFilter + "%"), versionFilter = versionFilter, tagFilter = tagFilter),
         orderBy,
-        filter
+        nameFilter,
+        versionFilter,
+        tagFilter
       ))
   }
 

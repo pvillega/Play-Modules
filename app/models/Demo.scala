@@ -281,16 +281,22 @@ object Demo {
    * @param page Page to display
    * @param pageSize Number of elements per page
    * @param orderBy property used for sorting
-   * @param filter Filter applied on the elements
+   * @param nameFilter Filter applied on the elements
+   * @param versionFilter filter applied on version
+   * @param tagFilter filter applied on tags
    */
-  def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%") = {
+  def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, nameFilter: String = "%", versionFilter : Long = -1, tagFilter: List[String] = Nil) = {
     val offset = pageSize * page
     val mode = if (orderBy > 0) "ASC NULLS FIRST" else "DESC NULLS LAST"
 
-    Logger.debug("Demo.list with params: page[%d] pageSize[%d] orderBy[%d] filter[%s] order[%s]".format(page, pageSize, orderBy, filter, mode))
+    Logger.debug("Demo.list with params: page[%d] pageSize[%d] orderBy[%d] filter[%s | %s | %s] order[%s]".format(page, pageSize, orderBy, nameFilter, versionFilter, tagFilter, mode))
 
     DB.withConnection {
       implicit connection =>
+        //we can't use IN on anorm directly, so we have to resort to an insert into the string if required. We don't add the join if not required
+        val (tagJoin , tags) = if(tagFilter.size > 0 ) {
+          ("left join tagdemo td on td.demo = demo.id left join tag t on td.tag = t.id", "and t.name in ('"+ tagFilter.mkString("','") +"')")
+        } else { ("","") }
 
       // An explanation on the format applied to the SQL String: for some reason the JDBC driver for postgresql doesn't like it when you replace the
       // order by param in a statement. It gets ignored. So we have to provide it in the query before the driver processes the statement.
@@ -299,7 +305,7 @@ object Demo {
       // column corresponding to the given integer, the order by is ignored. So, not ideal, but not so bad.
         val demos = SQL(
           """
-            select demo.id as "id", demo.name as "name",
+            select distinct demo.id as "id", demo.name as "name",
             ((demo.positive + 1.9208) / (demo.positive + demo.negative) -
                    1.96 * SQRT((demo.positive * demo.negative) / (demo.positive + demo.negative) + 0.9604) /
                           (demo.positive + demo.negative)) / (1 + 3.8416 / (demo.positive + demo.negative)) as "score",
@@ -308,23 +314,31 @@ object Demo {
             from demo
             left join version  on version.id = demo.version
             left join publisher on publisher.id = demo.author
-            where demo.name ilike {filter}
+            %s
+            where demo.name ilike {nameFilter}
+            and ({versionFilter} <= 0 or demo.version = {versionFilter})
+            %s
             order by %d %s
             limit {pageSize} offset {offset}
-          """.format(scala.math.abs(orderBy), mode)
+          """.format(tagJoin, tags, scala.math.abs(orderBy), mode)
         ).on(
           'pageSize -> pageSize,
           'offset -> offset,
-          'filter -> filter
+          'nameFilter -> nameFilter,
+          'versionFilter -> versionFilter
         ).as(Demo.simpleView *)  //Vote is set to 0 as it won't be used, to avoid a join
 
         val totalRows = SQL(
           """
             select count(*) from demo
-            where name like {filter}
-          """
+            %s
+            where demo.name like {nameFilter}
+            and ({versionFilter} <= 0 or demo.version = {versionFilter})
+            %s
+          """.format(tagJoin, tags)
         ).on(
-          'filter -> filter
+          'nameFilter -> nameFilter,
+          'versionFilter -> versionFilter
         ).as(scalar[Long].single)
 
         Page(demos, page, offset, totalRows)
@@ -339,14 +353,15 @@ object Demo {
    * @param page Page to display
    * @param pageSize Number of elements per page
    * @param orderBy property used for sorting
-   * @param filter Filter applied on the elements
    * @param userId the id of the user that owns the demo
    */
-  def listByUser(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%", userId: Long) = {
+  def listByUser(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, userId: Long) = {
     val offset = pageSize * page
     val mode = if (orderBy > 0) "ASC NULLS FIRST" else "DESC NULLS LAST"
 
-    Logger.debug("Demo.listByUser with params: page[%d] pageSize[%d] orderBy[%d] filter[%s] order[%s]".format(page, pageSize, orderBy, filter, mode))
+    if(Logger.isDebugEnabled){
+      Logger.debug("Demo.listByUser with params: page[%d] pageSize[%d] orderBy[%d] order[%s]".format(page, pageSize, orderBy, mode))
+    }
 
     DB.withConnection {
       implicit connection =>
@@ -367,26 +382,22 @@ object Demo {
             from demo
             left join version  on version.id = demo.version
             left join publisher on publisher.id = demo.author
-            where demo.name ilike {filter}
-            and demo.author = {userid}
+            where demo.author = {userid}
             order by %d %s
             limit {pageSize} offset {offset}
           """.format(scala.math.abs(orderBy), mode)
         ).on(
           'pageSize -> pageSize,
           'offset -> offset,
-          'filter -> filter,
           'userid -> userId
         ).as(Demo.simpleView *)       //Vote is set to 0 as it won't be used, to avoid a join
 
         val totalRows = SQL(
           """
             select count(*) from demo
-            where name like {filter}
-            and author = {userid}
+            where author = {userid}
           """
         ).on(
-          'filter -> filter,
           'userid -> userId
         ).as(scalar[Long].single)
 

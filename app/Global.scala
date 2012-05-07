@@ -53,8 +53,6 @@ object Global extends GlobalSettings {
     )
   }
 
-
-
   /**
    * Route was found but we couldn't bind the parameters
    * We use the same scenario as Not Found to hide options from hackers but we notify ourselves with email

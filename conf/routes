@@ -22,7 +22,7 @@ POST    /profile/save               controllers.Profile.save()
 GET     /profile/$userid<[0-9]+>/filter  controllers.Profile.filteredProfile(userid :Long, demoPage: Int ?= 0, demoOrderBy: Int ?= 1)
 
 # Demos
-GET     /demo/list                  controllers.Demos.listDemos(page: Int ?= 0, orderBy: Int ?= 1, filter: String ?= "")
+GET     /demo/list                  controllers.Demos.listDemos(page: Int ?= 0, orderBy: Int ?= 1, nameFilter: String ?= "", versionFilter: Long ?= -1, tagFilter: List[String] ?= Nil)
 GET     /demo/edit/$id<[0-9]+>             controllers.Demos.editDemo(id: Long)
 POST    /demo/update/$id<[0-9]+>            controllers.Demos.updateDemo(id: Long)
 GET     /demo/create/               controllers.Demos.createDemo()

@@ -70,12 +70,13 @@ trait Secured {
    * @return Result of the action
    */
   def IsAdmin[A](p: BodyParser[A])(f: AuthenticatedRequest[A] => Result) = {
-    Authenticated(p) { implicit request =>
-      if(request.user.admin) {
-        f(AuthenticatedRequest(request.user, request))
-      }  else {
-        onUnauthorized(request)
-      }
+    Authenticated(p) {
+      implicit request =>
+        if (request.user.admin) {
+          f(AuthenticatedRequest(request.user, request))
+        } else {
+          onUnauthorized(request)
+        }
     }
   }
 
