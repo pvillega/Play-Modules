@@ -24,13 +24,13 @@ Deployment
 ------------------
 The project is ready for deployment in Heroku, although it can be deployed in any environment given it uses PostgreSQL 9.1 (or newer) as database.
 
-You will need to set the following global variables:
-+ github.clientId
-+ github.secret
-+ twitter.clientId
-+ twitter.secret
-+ disqus.forum
-
+You will need to set the following global variables with the corresponding keys:
++ github.clientId : id of your Github application, to enable Github authentication
++ github.secret : secret of your Github application, to enable Github authentication
++ twitter.clientId : id of your Twitter application, to enable Twitter authentication
++ twitter.secret : secret of your Twitter application, to enable Twitter authentication
++ disqus.forum  : id of your Disqus forum, to enable comments
++ google.analytics : Google Analytics code
 
 TO DO
 ------------------
