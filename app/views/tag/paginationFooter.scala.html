@@ -11,6 +11,7 @@
 *@
 
 <div id="pagination" class="pagination">
+    <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
     <ul>
         @currentPage.prev.map { page =>
         <li class="prev">
@@ -21,9 +22,19 @@
             <a>@Messages("pagination.prev")</a>
         </li>
         }
-        <li class="current">
-            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
-        </li>
+
+        @for(index <- currentPage.paginationStart to currentPage.paginationEnd) {
+            @if(index == currentPage.page + 1){
+                <li class="active">
+                    <a href="#">@index</a>
+                </li>
+            } else {
+                <li>
+                    <a href="@pageLink(index-1, currentFilter, currentOrderBy, call)">@index</a>
+                </li>
+            }
+        }
+
         @currentPage.next.map { page =>
         <li class="next">
             <a href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.next")</a>

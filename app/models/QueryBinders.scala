@@ -28,7 +28,7 @@ object QueryBinders {
     }
     for {
       listKey <- params.keys.filter(_.startsWith(key)).toList
-      values <- params.get(listKey).toList
+      values <- params.get(listKey).filterNot(_.isEmpty).toList
       rawValue <- values
       bound <- implicitly[QueryStringBindable[T]].bind(key, Map(key -> Seq(rawValue)))
       value <- bound.right.toOption

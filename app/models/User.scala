@@ -340,7 +340,7 @@ object User {
           'filter -> filter
         ).as(scalar[Long].single)
 
-        Page(users, page, offset, totalRows)
+        Page(users, page, offset, totalRows, pageSize)
     }
 
   }

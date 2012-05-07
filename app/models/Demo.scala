@@ -294,9 +294,10 @@ object Demo {
     DB.withConnection {
       implicit connection =>
         //we can't use IN on anorm directly, so we have to resort to an insert into the string if required. We don't add the join if not required
-        val (tagJoin , tags) = if(tagFilter.size > 0 ) {
-          ("left join tagdemo td on td.demo = demo.id left join tag t on td.tag = t.id", "and t.name in ('"+ tagFilter.mkString("','") +"')")
-        } else { ("","") }
+        val (tagJoin , tags) = tagFilter match {
+            case l: List[String] if !l.isEmpty=> ("left join tagdemo td on td.demo = demo.id left join tag t on td.tag = t.id", "and t.name in ('"+ l.mkString("','") +"')")
+            case _ => ("","")
+        }
 
       // An explanation on the format applied to the SQL String: for some reason the JDBC driver for postgresql doesn't like it when you replace the
       // order by param in a statement. It gets ignored. So we have to provide it in the query before the driver processes the statement.
@@ -341,7 +342,7 @@ object Demo {
           'versionFilter -> versionFilter
         ).as(scalar[Long].single)
 
-        Page(demos, page, offset, totalRows)
+        Page(demos, page, offset, totalRows, pageSize)
     }
 
   }
@@ -401,7 +402,7 @@ object Demo {
           'userid -> userId
         ).as(scalar[Long].single)
 
-        Page(demos, page, offset, totalRows)
+        Page(demos, page, offset, totalRows, pageSize)
     }
 
   }

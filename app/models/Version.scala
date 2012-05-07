@@ -182,7 +182,7 @@ object Version {
           'filter -> filter
         ).as(scalar[Long].single)
 
-        Page(versions, page, offset, totalRows)
+        Page(versions, page, offset, totalRows, pageSize)
     }
 
   }

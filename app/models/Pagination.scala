@@ -17,10 +17,14 @@ import play.api.mvc.QueryStringBindable
  * @param page page number
  * @param offset page offset
  * @param total total elements
+ * @param pageSize max elements in a page
  * @tparam A type of element to render
  */
-case class Page[+A](items: Seq[A], page: Int, offset: Long, total: Long) {
+case class Page[+A](items: Seq[A], page: Int, offset: Long, total: Long, pageSize: Int) {
   lazy val prev = Option(page - 1).filter(_ >= 0)
   lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
+  lazy val maxPages = (total.toDouble/pageSize).ceil.toInt
+  lazy val paginationStart = (page - 2).max(1)
+  lazy val paginationEnd = (page + 2).min(maxPages)
 }
 

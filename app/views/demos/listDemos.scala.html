@@ -70,6 +70,7 @@ Helper generating the pagination footer for list views
 @paginationFooterDemo(currentPage: Page[Any], pageSize: Int, nameFilter: String, versionFilter: Long, tagListFilter: List[String], currentOrderBy: Int, call: (Int, Int, String, Long, List[String]) => Call) = {
 
 <div id="pagination" class="pagination">
+    <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
     <ul>
         @currentPage.prev.map { page =>
         <li class="prev">
@@ -80,9 +81,19 @@ Helper generating the pagination footer for list views
             <a>@Messages("pagination.prev")</a>
         </li>
         }
-        <li class="current">
-            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
-        </li>
+
+        @for(index <- currentPage.paginationStart to currentPage.paginationEnd) {
+            @if(index == currentPage.page + 1){
+            <li class="active">
+                <a href="#">@index</a>
+            </li>
+            } else {
+            <li>
+                <a href="@pageLinkDemo(index-1, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@index</a>
+            </li>
+            }
+        }
+
         @currentPage.next.map { page =>
         <li class="next">
             <a href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
@@ -94,6 +105,7 @@ Helper generating the pagination footer for list views
         }
     </ul>
 </div>
+
 }
 
 @main(Messages("demos.listDemos")) {
@@ -111,7 +123,7 @@ Helper generating the pagination footer for list views
             <option value="@version._1" @if(version._1.toLong == versionFilter){selected}>@version._2</option>
         }
     </select>
-    <input type="search" id="tagFilter" name="tagFilterInput" placeholder="@Messages("demos.search.tag")" class="input-medium search-query">
+    <input type="search" id="tagFilter" name="inputTagFilter" placeholder="@Messages("demos.search.tag")" class="input-medium search-query">
     <input type="button" id="searchsubmit" value="@Messages("demos.search.button")" class="btn" onclick="addTag('tagFilter', $('#tagFilter').val(), true);this.form.submit();">
     <hr class="list" />
     <h6>@Messages("demos.search.tag.show"):</h6>
