@@ -1,12 +1,12 @@
 package controllers
 
 import play.api._
+import cache.Cache
 import play.api.mvc._
 import play.api.mvc.Results._
-import play.api.libs.iteratee._
+import play.api.Play.current
 import play.api.mvc.BodyParsers._
 import models.User
-import controllers.routes.javascript._
 
 
 object Application extends Controller with Secured {
@@ -25,10 +25,11 @@ object Application extends Controller with Secured {
   def javascriptRoutes = Action {
     import routes.javascript._
 
-    Ok(
-      Routes.javascriptRouter("jsRoutes")(
-        Demos.listDemos
-      )
+    Ok(Cache.getOrElse("javascriptRoutes", 60*60*24){
+        Routes.javascriptRouter("jsRoutes")(
+          Demos.listDemos
+        )
+      }
     ).as("text/javascript")
   }
 
