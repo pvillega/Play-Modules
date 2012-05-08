@@ -32,6 +32,12 @@ You will need to set the following global variables with the corresponding keys:
 + disqus.forum  : id of your Disqus forum, to enable comments
 + google.analytics : Google Analytics code
 
+Once deployed, there will be no users. Log into the application to create your user automatically.
+
+Then you will need to access the database to give yourself admin rights by enabling the 'admin' flag:
+$ heroku pg:psql
+>> update publisher set admin = true where id = <yourId>
+
 TO DO
 ------------------
 - Update to Play 2.1 when released
