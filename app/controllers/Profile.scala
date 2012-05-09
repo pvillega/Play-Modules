@@ -103,5 +103,3 @@ object Profile extends Controller with Secured {
 
 }
 
-//TODO: add pjax for all anchor not POST
-//TODO: check selected menu at top is the correct one (does jquery onload works fine with pjax request?)
