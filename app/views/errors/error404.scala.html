@@ -6,7 +6,7 @@
         <div class="inner">
             <h1>@Messages("notFound.header") <span frown>:(</span></h1>
             <p class="left">@Messages("notFound.text1")</p>
-            <p class="left">@Messages("notFound.text2") @Messages("notFound.text5") <a href="@routes.Application.index()">@Messages("notFound.textLink")</a></p>
+            <p class="left">@Messages("notFound.text2") @Messages("notFound.text5") <a data-pjax="#main-container" href="@routes.Application.index()">@Messages("notFound.textLink")</a></p>
 
 
         @* Notify google on the issue and provide search box *@

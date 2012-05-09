@@ -83,7 +83,7 @@
 
 <div class="form-actions">
         <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
-        <a href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+        <a data-pjax="#main-container" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
     </div>
 
     }

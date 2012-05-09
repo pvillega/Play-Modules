@@ -4,6 +4,15 @@
 
 @import tag._
 
+@* check for the pjax header. This should only be used on GET requests (so no notifications raised). It sets the menu bar selected item *@
+@if(request.headers.get("X-PJAX").isDefined) {
+    <title>@title</title>
+
+    @content
+    <script>setNavigationBar();</script>
+} else {
+@* normal request, not pjax *@
+
 <!DOCTYPE html>
 @* See see: paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ on usage of these classes *@
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
@@ -64,17 +73,17 @@
                     <div class="nav-collapse">
                         <!-- .nav, .navbar-search, .navbar-form, etc -->
                         <ul class="nav">
-                            <li id="menuHomeArea" class="active"><a href="@routes.Application.index()">@Messages("area.home")</a></li>
-                            <li id="menuModulesArea"><a href="@routes.Application.browse()">@Messages("area.modules")</a></li>
-                            <li id="menuDemosArea"><a href="@routes.Demos.listDemos()">@Messages("area.demos")</a></li>
+                            <li id="menuHomeArea" class="active"><a data-pjax="#main-container" href="@routes.Application.index()">@Messages("area.home")</a></li>
+                            <li id="menuModulesArea"><a data-pjax="#main-container" href="@routes.Application.browse()">@Messages("area.modules")</a></li>
+                            <li id="menuDemosArea"><a data-pjax="#main-container" href="@routes.Demos.listDemos()">@Messages("area.demos")</a></li>
                             <li class="divider-vertical"></li>
                         </ul>
                         <ul class="nav pull-right">
                             @request.session.get("userId").map { userId =>
-                                <li id="menuProfileArea"><a href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
+                                <li id="menuProfileArea"><a data-pjax="#main-container" href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
                                 <li><a href="@routes.Authentication.logout()">@Messages("area.logout")</a></li>
                             }.getOrElse{
-                                <li id="menuAuthArea"><a href="@routes.Authentication.index()">@Messages("area.login")</a></li>
+                                <li id="menuAuthArea"><a data-pjax="#main-container" href="@routes.Authentication.index()">@Messages("area.login")</a></li>
                             }
 
                         </ul>
@@ -89,6 +98,9 @@
             @notice(request.flash)
 
             @content
+        </div>
+        @* footer, out of main container to be rendered with Pjax requests *@
+        <div class="container">
             <hr class="soften">
             <footer class="footer">
                 <p class="pull-right"><a href="#">@Messages("back.top")</a></p>
@@ -107,8 +119,8 @@
 
         @* We add the Analytics var in here, from configuration, so it can be retrieved by the code and we can keep it as an environment var*@
         <script type="text/javascript">var googleAnalyticsCode= '@play.api.Play.current.configuration.getString("google.analytics").getOrElse("")';</script>
-        @* we added any jquery plugins used into bootstrap.min.js (all minified) to open less connections *@
-        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
+        @* we added any javascript tools or jquery plugins used into bootstrap.min.js (all minified) to open less connections from the client *@
+        <script src="@routes.Assets.at("javascripts/bootstrap_1.min.js")" type="text/javascript"></script>
         @* load javascript routes *@
         <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
         @* our javascript *@
@@ -116,3 +128,4 @@
 
     </body>
 </html>
+}

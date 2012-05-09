@@ -19,7 +19,7 @@ Helper generating table headers to reorder the table by a field
         @if(scala.math.abs(currentOrderBy) == newOrderBy) {
         @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
         }
-        <a href="@pageLinkDemo(0, nameFilter, versionFilter, tagListFilter, currentOrderBy, call, Some(newOrderBy))">@title</a>
+        <a data-pjax="#main-container" href="@pageLinkDemo(0, nameFilter, versionFilter, tagListFilter, currentOrderBy, call, Some(newOrderBy))">@title</a>
     </th>
 }
 
@@ -74,7 +74,7 @@ Helper generating the pagination footer for list views
     <ul>
         @currentPage.prev.map { page =>
         <li class="prev">
-            <a href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.prev")</a>
+            <a data-pjax="#main-container" href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.prev")</a>
         </li>
         }.getOrElse {
         <li class="prev disabled">
@@ -89,14 +89,14 @@ Helper generating the pagination footer for list views
             </li>
             } else {
             <li>
-                <a href="@pageLinkDemo(index-1, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@index</a>
+                <a data-pjax="#main-container" href="@pageLinkDemo(index-1, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@index</a>
             </li>
             }
         }
 
         @currentPage.next.map { page =>
         <li class="next">
-            <a href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
+            <a data-pjax="#main-container" href="@pageLinkDemo(page, nameFilter, versionFilter, tagListFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
         </li>
         }.getOrElse {
         <li class="next disabled">
@@ -147,9 +147,9 @@ Helper generating the pagination footer for list views
 @demos.map {
     case (demo) => {
     <tr>
-        <td><a href="@routes.Demos.viewDemo(demo.id)">@demo.name</a></td>
+        <td><a data-pjax="#main-container" href="@routes.Demos.viewDemo(demo.id)">@demo.name</a></td>
         <td>@demo.version</td>
-        <td><a href="@routes.Profile.index(demo.aid)">@demo.publisher</a></td>
+        <td><a data-pjax="#main-container" href="@routes.Profile.index(demo.aid)">@demo.publisher</a></td>
         <td>@demo.showScore</td>
     </tr>
     }
@@ -168,7 +168,7 @@ Helper generating the pagination footer for list views
 
 }
 <div class="form-actions">
-    <a href="@routes.Application.index()" class="btn">@Messages("navigation.back")</a>
+    <a data-pjax="#main-container" href="@routes.Application.index()" class="btn">@Messages("navigation.back")</a>
 </div>
 
 

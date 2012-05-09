@@ -19,6 +19,7 @@ Features
 - Publication of your own Demos and Modules
 - Voting on Demos/Modules
 - Public search of Demos and Modules
+- [Pjax](https://github.com/defunkt/jquery-pjax) for faster rendering on GET requests (not used on POST requests!)
 
 Deployment
 ------------------

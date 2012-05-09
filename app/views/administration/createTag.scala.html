@@ -20,7 +20,7 @@ tagForm("name"),
 
 <div class="form-actions">
     <input type="submit" class="btn btn-primary" value="@Messages("administration.save")">
-    <a href="@routes.Administration.tags()" class="btn">@Messages("administration.cancel")</a>
+    <a data-pjax="#main-container" href="@routes.Administration.tags()" class="btn">@Messages("administration.cancel")</a>
 </div>
 
 }

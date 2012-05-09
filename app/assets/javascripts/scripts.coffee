@@ -69,7 +69,7 @@ root.addTag = (id, value, view, demo) ->
       if not view
         el += " onclick=\"$(this).remove();$('input[data="+value+"]').remove();\" "
       else if demo
-        el += " href=\""+jsRoutes.controllers.Demos.listDemos(page = 0, orderBy = 1, nameFilter = '', versionFilter = -1, tagFilter = [value]).url+"\" "
+        el += " data-pjax=\"#main-container\" href=\""+jsRoutes.controllers.Demos.listDemos(page = 0, orderBy = 1, nameFilter = '', versionFilter = -1, tagFilter = [value]).url+"\" "
       el += " >"
       el += value
       if not view
@@ -95,6 +95,11 @@ root.addTag = (id, value, view, demo) ->
 # This is useful so we can push all the $(function() { ...}); calls in templates without having to load jquery at head
 window.$.noConflict()
 window.$ = window.$.attachReady(jQuery)
+
+# Enable Pjax on all anchors configured to use it
+# Anchors with attribute data-pjax="#main-container" will do Pjax requests
+# Example: <a href="#" data-pjax="#main-container">Pjax enabled</a>
+$('a[data-pjax]').pjax()
 
 # Prevention of window hijack, run after all jquery scripts
 $('html').css 'display': 'none'
