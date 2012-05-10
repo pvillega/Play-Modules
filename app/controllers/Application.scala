@@ -11,6 +11,9 @@ import models.User
 
 object Application extends Controller with Secured {
 
+  //Admin mail to be made available across app
+  val errorReportingMail = Play.configuration.getString("mail.onError").getOrElse("")
+
   def index = Action {
     implicit request =>
       Logger.info("Application.index accessed")
