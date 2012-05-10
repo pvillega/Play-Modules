@@ -32,6 +32,9 @@ You will need to set the following global variables with the corresponding keys:
 + twitter.secret : secret of your Twitter application, to enable Twitter authentication
 + disqus.forum  : id of your Disqus forum, to enable comments
 + google.analytics : Google Analytics code
++ smtp.host : the location of the smtp server
++ smtp.user : the user for your smtp server
++ smtp.password : the password of the smtp user
 
 Once deployed, there will be no users. Log into the application to create your user automatically.
 
