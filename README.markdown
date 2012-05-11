@@ -28,13 +28,21 @@ The project is ready for deployment in Heroku, although it can be deployed in an
 You will need to set the following global variables with the corresponding keys:
 + github.clientId : id of your Github application, to enable Github authentication
 + github.secret : secret of your Github application, to enable Github authentication
+
 + twitter.clientId : id of your Twitter application, to enable Twitter authentication
 + twitter.secret : secret of your Twitter application, to enable Twitter authentication
+
 + disqus.forum  : id of your Disqus forum, to enable comments
+
 + google.analytics : Google Analytics code
+
 + smtp.host : the location of the smtp server
 + smtp.user : the user for your smtp server
 + smtp.password : the password of the smtp user
+
++ memcached.host : host of your memcached instance
++ memcached.user : user of your memcached instance
++ memcached.password : password for your memcached user
 
 Once deployed, there will be no users. Log into the application to create your user automatically.
 

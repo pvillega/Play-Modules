@@ -7,6 +7,7 @@ import play.api.db.DB
 import anorm._
 import play.api.Play.current
 import play.Logger
+import com.github.mumoshu.play2.memcached.MemcachedPlugin
 
 /**
  * Created by IntelliJ IDEA.
@@ -96,7 +97,8 @@ object Version {
         ).as(int("id").single)
 
         //remove all version cache
-        Cache.set(allVersionsCacheKey, None, 1)
+        //TODO: use standard Cache method when added
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(allVersionsCacheKey)
 
         //store object in cache for later retrieval
         val newVersion = version.copy(id = Id(id))
@@ -128,7 +130,8 @@ object Version {
         ).executeUpdate()
 
         //remove all version cache
-        Cache.set(allVersionsCacheKey, None, 1)
+        //TODO: use standard Cache method when added
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(allVersionsCacheKey)
 
         //store object in cache for later retrieval.
         val cached = findById(id).get

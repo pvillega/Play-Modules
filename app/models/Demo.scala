@@ -224,7 +224,7 @@ object Demo {
         ).executeUpdate()
 
         //removes from cache
-        Cache.set(demoCacheKey + id, None, 1)
+        Cache.set(demoCacheKey + id, None, 60)
     }
   }
 

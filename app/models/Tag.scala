@@ -6,6 +6,7 @@ import play.api.db.DB
 import anorm._
 import play.api.Play.current
 import play.Logger
+import com.github.mumoshu.play2.memcached.MemcachedPlugin
 
 /**
  * Created by IntelliJ IDEA.
@@ -295,9 +296,10 @@ object Tag {
           'id -> id
         ).executeUpdate()
 
-        //removes from cache
-        Cache.set(tagCacheKey + id, None, 1)
-        Cache.set(tagNameCacheKey + cached.name, None, 1)
+        //removes from cache. We don't replace by None as a similar tag may be created right now, better delete from cache
+        //TODO: use standard Cache method when added
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(tagCacheKey + cached.name)
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(tagNameCacheKey + cached.name)
     }
   }
 
@@ -315,8 +317,8 @@ object Tag {
         mergeDetails.tags.map { name =>
           findByName(name) match {
             case Some(tag) =>
-              Cache.set(tagNameCacheKey + tag.name, None, 2)
-              Cache.set(tagCacheKey + tag.id, None, 2)
+              Cache.set(tagNameCacheKey + tag.name, None, 60)
+              Cache.set(tagCacheKey + tag.id, None, 60)
               SQL(
                 """
                   update tagdemo td set td.tag = {newId}
