@@ -67,10 +67,14 @@ root.addTag = (id, value, view, demo) ->
 
       #add tag representation
       el  = "<a class=\"tagLabel\" "
+
       if not view
         el += " onclick=\"$(this).remove();$('input[data="+value+"]').remove();\" "
       else if demo
         el += " data-pjax=\"#main-container\" href=\""+jsRoutes.controllers.Demos.listDemos(page = 0, orderBy = 1, nameFilter = '', versionFilter = -1, tagFilter = [value]).url+"\" "
+      else
+        el += " data-pjax=\"#main-container\" href=\""+jsRoutes.controllers.Modules.listModules(page = 0, orderBy = 1, nameFilter = '', versionFilter = -1, tagFilter = [value]).url+"\" "
+
       el += " >"
       el += value
       if not view

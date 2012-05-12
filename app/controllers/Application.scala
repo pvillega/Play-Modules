@@ -20,8 +20,6 @@ object Application extends Controller with Secured {
       Ok(views.html.index())
   }
 
-  def browse() = TODO
-
   /**
    * Makes some routes available via javascript
    */
@@ -30,7 +28,7 @@ object Application extends Controller with Secured {
 
     Ok(Cache.getOrElse("javascriptRoutes", 60*60*24){
         Routes.javascriptRouter("jsRoutes")(
-          Demos.listDemos
+          Demos.listDemos, Modules.listModules
         )
       }
     ).as("text/javascript")

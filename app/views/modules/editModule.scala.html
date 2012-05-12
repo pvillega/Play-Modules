@@ -1,0 +1,84 @@
+@(modForm: Form[models.Module], id: Long)(implicit request: controllers.AuthenticatedRequest[AnyContent])
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("mods.edit")) {
+    <header id="menuModulesArea">
+        <h1>@Messages("mods.edit")</h1>
+    </header>
+
+    <div class="row">
+        <div class="span2 offset10">
+            <a class="btn btn-danger" data-toggle="modal" href="#deleteModal" >@Messages("mods.delete")</a>
+        </div>
+    </div>
+
+    <div class="modal hide" id="deleteModal">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>@Messages("mods.delete")</h3>
+        </div>
+        <div class="modal-body">
+            <p>@Messages("mods.delete.text")</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>
+            @form(routes.Modules.deleteModule(id)) {
+            <input type="submit" value="@Messages("navigation.delete")" class="btn btn-danger">
+            }
+        </div>
+    </div>
+
+    @helper.form(action = routes.Modules.updateModule(id), 'class -> "well") {
+
+        @inputText(
+        modForm("name"),
+        '_label -> Messages("mod.name"),
+        '_error -> modForm.globalError
+        )
+
+        @select(
+        modForm("version"),
+        options = options(Version.allSelect),
+        '_default -> Messages("mod.version.default"),
+        '_label -> Messages("mod.version"),
+        '_help -> "",
+        '_error -> modForm.globalError
+        )
+
+        @inputText(
+        modForm("url"),
+        '_label -> Messages("mod.url"),
+        '_help -> Messages("mod.url.help"),
+        '_error -> modForm.globalError
+        )
+
+        @inputText(
+        modForm("tags"),
+        '_id -> "tags",
+        '_label -> Messages("mod.tags"),
+        '_help -> Messages("mod.tags.help"),
+        '_error -> modForm.globalError
+        )
+        @tagInput("tags", modForm.data.foldRight(List[String]()) { (x,l) => if(x._1.startsWith("tags"))  x._2 :: l else l  })
+
+        @richTextEditor(
+            modForm("description"),
+            '_label -> Messages("mod.description"),
+            '_error -> modForm.globalError
+        )
+
+
+<div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
+        <a data-pjax="#main-container" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    }
+
+    <div class="spacer">&nbsp;</div>
+}

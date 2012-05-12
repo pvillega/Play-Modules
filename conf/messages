@@ -101,7 +101,7 @@ demo.version.default=-- Choose a Version --
 demo.author=Author
 demo.score=Popularity
 demo.codeurl=Code at
-demo.codeurl.help=Url where the code can be found
+demo.codeurl.help=Url where can the code be found
 demo.demourl=Demo at
 demo.demourl.help=Optional url of a live deployment of the demo
 demo.tags=Tags
@@ -127,6 +127,40 @@ demos.deleted=Demo removed
 demos.view=View Demo details
 demos.comments=View Comments
 demos.voted=Thanks for voicing your opinion.
+
+# Module
+mod.id=#
+mod.name=Name
+mod.version=Version
+mod.version.default=-- Choose a Version --
+mod.author=Author
+mod.score=Popularity
+mod.url=Location
+mod.url.help=Url where can the code be found
+mod.tags=Tags
+mod.tags.help=Add Tags to your module
+mod.description=Description
+mod.description.help=Brief explanation of your module
+mod.updated=Updated
+
+# Module pages
+mods.listModules=List of Modules
+mods.userModules=List of Modules
+mods.search.placeholder=Filter by Module name...
+mods.search.version=Filter by Version
+mods.search.tag=Filter by any of these tag
+mods.search.tag.show=Results contain at least one of these tags (if any)
+mods.search.button=Filter results
+mods.create=Add a new Module
+mods.saved=Module added!
+mods.edit=Editing Module
+mods.updated=Module details updated!
+mods.delete=Delete this Module
+mods.delete.text=Are you sure you want to delete this module? This can't be undone.
+mods.deleted=Module removed
+mods.view=View Module details
+mods.comments=View Comments
+mods.voted=Thanks for voicing your opinion.
 
 # Administration
 administration.title=Admin Area

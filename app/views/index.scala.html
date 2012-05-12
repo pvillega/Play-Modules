@@ -8,7 +8,7 @@
             <h1>@Messages("app.title")</h1>
             <p>@Messages("app.pitch")</p>
             <p>
-                <a data-pjax="#main-container" class="btn btn-primary btn-large" href="@routes.Application.browse()">@Messages("landing.browseModules")</a>
+                <a data-pjax="#main-container" class="btn btn-primary btn-large" href="@routes.Modules.listModules()">@Messages("landing.browseModules")</a>
                 <a data-pjax="#main-container" class="btn btn-large" href="@routes.Demos.listDemos()">@Messages("landing.demos")</a>
                 <a data-pjax="#main-container" class="btn btn-success btn-large" href="@routes.Authentication.index()">@Messages("landing.upload")</a>
             </p>

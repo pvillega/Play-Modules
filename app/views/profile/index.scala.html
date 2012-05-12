@@ -1,4 +1,4 @@
-@(user: models.User, itsMe: Boolean, currentDemoPage: Page[models.DemoView], currentDemoOrderBy: Int )(implicit request: play.api.mvc.RequestHeader)
+@(user: models.User, itsMe: Boolean, currentDemoPage: Page[models.DemoView], currentDemoOrderBy: Int, currentModPage: Page[models.ModuleView], currentModOrderBy : Int )(implicit request: play.api.mvc.RequestHeader)
 
 @import tag._
 
@@ -52,7 +52,57 @@
     @* second row, modules *@
     <div class="page-header">
         <h2>@Messages("profile.modules")</h2>
+        @if(itsMe) {
+        <div class="span2 offset10 pinRight">
+            <a data-pjax="#main-container" class="btn btn-success" id="addMod" href="@routes.Modules.createModule()">@Messages("mods.create")</a>
+        </div>
+        }
     </div>
+
+        @Option(currentModPage.items).filterNot(_.isEmpty).map { mods =>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                @headerProfileMod(2, Messages("mod.name"), user.id.get, currentModOrderBy, routes.Profile.filteredProfile)
+                @headerProfileMod(8, Messages("mod.version"), user.id.get, currentModOrderBy, routes.Profile.filteredProfile)
+                @headerProfileMod(5, Messages("mod.url"), user.id.get, currentModOrderBy, routes.Profile.filteredProfile)
+                @headerProfileMod(3, Messages("mod.score"), user.id.get, currentModOrderBy, routes.Profile.filteredProfile)
+                @headerProfileMod(7, Messages("mod.updated"), user.id.get, currentModOrderBy, routes.Profile.filteredProfile)
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @mods.map {
+            case (mod) => {
+            <tr>
+                @if(itsMe) {
+                <td><a data-pjax="#main-container" href="@routes.Modules.editModule(mod.id)">@mod.name</a></td>
+                } else {
+                <td>@mod.name</td>
+                }
+                <td>@mod.version</td>
+                <td><a href="@mod.url">@mod.url</a></td>
+                <td>@mod.showScore</td>
+                <td>@mod.updated.format("dd-MM-yyyy")</td>
+                <td><a data-pjax="#main-container" href="@routes.Modules.viewModule(mod.id)" class="btn btn-info floatRight">@Messages("mods.comments")</a></td>
+            </tr>
+            }
+            }
+
+            </tbody>
+        </table>
+
+        @paginationFooterProfileMod(currentModPage, mods.size, user.id.get, currentDemoOrderBy, currentModOrderBy, routes.Profile.filteredProfile)
+
+        }.getOrElse {
+
+        <div class="well">
+            <em>@Messages("navigation.nothing")</em>
+        </div>
+
+        }
 
 
     @* third row, demos *@
@@ -60,7 +110,7 @@
         <h2>@Messages("profile.demos")</h2>
         @if(itsMe) {
         <div class="span2 offset10 pinRight">
-            <a data-pjax="#main-container" class="btn btn-success" id="add" href="@routes.Demos.createDemo()">@Messages("demos.create")</a>
+            <a data-pjax="#main-container" class="btn btn-success" id="addDemo" href="@routes.Demos.createDemo()">@Messages("demos.create")</a>
         </div>
         }
     </div>
@@ -70,10 +120,10 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                @headerProfile(2, Messages("demo.name"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
-                @headerProfile(8, Messages("demo.version"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
-                @headerProfile(6, Messages("demo.demourl"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
-                @headerProfile(3, Messages("demo.score"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
+                @headerProfileDemo(2, Messages("demo.name"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
+                @headerProfileDemo(8, Messages("demo.version"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
+                @headerProfileDemo(6, Messages("demo.demourl"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
+                @headerProfileDemo(3, Messages("demo.score"), user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
                 <th></th>
             </tr>
             </thead>
@@ -98,7 +148,7 @@
             </tbody>
         </table>
 
-        @paginationFooterProfile(currentDemoPage, demos.size, user.id.get, currentDemoOrderBy, routes.Profile.filteredProfile)
+        @paginationFooterProfileDemo(currentDemoPage, demos.size, user.id.get, currentDemoOrderBy, currentModOrderBy, routes.Profile.filteredProfile)
 
         }.getOrElse {
 
@@ -120,41 +170,63 @@
     <div class="spacer">&nbsp;</div>
 }
 
-@headerProfile(newOrderBy: Int, title: String, currentUser: Long, currentOrderBy: Int, call: (Long, Int, Int) => Call) = {
+@headerProfileDemo(newOrderBy: Int, title: String, currentUser: Long, currentOrderBy: Int, call: (Long, Int, Int, Int, Int) => Call) = {
     <th>
         @if(scala.math.abs(currentOrderBy) == newOrderBy) {
         @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
         }
-        <a data-pjax="#main-container" href="@pageLinkProfile(0, currentUser, currentOrderBy, call, Some(newOrderBy))">@title</a>
+        <a data-pjax="#main-container" href="@pageLinkProfile(0, currentModPage.page, currentUser, currentOrderBy, currentModOrderBy, call, Some(newOrderBy), None)">@title</a>
     </th>
 }
 
-@pageLinkProfile(newPage: Int, currentUser: Long, currentOrderBy: Int, call: (Long, Int, Int) => Call, newOrderBy: Option[Int] = None) = {
+@headerProfileMod(newOrderBy: Int, title: String, currentUser: Long, currentOrderBy: Int, call: (Long, Int, Int, Int, Int) => Call) = {
+<th>
+    @if(scala.math.abs(currentOrderBy) == newOrderBy) {
+    @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
+    }
+    <a data-pjax="#main-container" href="@pageLinkProfile(currentDemoPage.page, 0, currentUser, currentDemoOrderBy, currentOrderBy, call, None, Some(newOrderBy))">@title</a>
+</th>
+}
+
+@pageLinkProfile(demoNewPage: Int, modNewPage: Int, currentUser: Long, currentDemoOrderBy: Int, currentModOrderBy : Int, call: (Long, Int, Int, Int, Int) => Call, newDemoOrderBy: Option[Int] = None, newModOrderBy: Option[Int] = None) = {
 
     @{
-        call(currentUser, newPage,
-            newOrderBy.map { orderBy =>
-                if(orderBy == scala.math.abs(currentOrderBy)) {
-                    if(currentOrderBy > 0) {
-                        -currentOrderBy
+        call(currentUser, demoNewPage,
+            newDemoOrderBy.map { orderBy =>
+                if(orderBy == scala.math.abs(currentDemoOrderBy)) {
+                    if(currentDemoOrderBy > 0) {
+                        -currentDemoOrderBy
                     } else {
                         orderBy
                     }
                 } else {
                     orderBy
                 }
-            }.getOrElse(currentOrderBy))
+            }.getOrElse(currentDemoOrderBy),
+            modNewPage,
+            newModOrderBy.map { orderBy =>
+                if(orderBy == scala.math.abs(currentModOrderBy)) {
+                    if(currentModOrderBy > 0) {
+                        -currentModOrderBy
+                    } else {
+                        orderBy
+                    }
+                } else {
+                    orderBy
+                }
+            }.getOrElse(currentModOrderBy)
+        )
     }
 }
 
 
-@paginationFooterProfile(currentPage: Page[Any], pageSize: Int, currentUser: Long, currentOrderBy: Int, call: (Long, Int, Int) => Call) = {
-        <div id="pagination" class="pagination">
+@paginationFooterProfileDemo(currentPage: Page[Any], pageSize: Int, currentUser: Long, currentDemoOrderBy: Int, currentModOrderBy: Int, call: (Long, Int, Int, Int, Int) => Call) = {
+        <div id="paginationDemo" class="pagination">
             <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
             <ul>
                 @currentPage.prev.map { page =>
                 <li class="prev">
-                    <a data-pjax="#main-container" href="@pageLinkProfile(page, currentUser, currentOrderBy, call)">@Messages("pagination.prev")</a>
+                    <a data-pjax="#main-container" href="@pageLinkProfile(page, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.prev")</a>
                 </li>
                 }.getOrElse {
                 <li class="prev disabled">
@@ -169,14 +241,53 @@
                 </li>
                 } else {
                 <li>
-                    <a data-pjax="#main-container" href="@pageLinkProfile(index-1, currentUser, currentOrderBy, call)">@index</a>
+                    <a data-pjax="#main-container" href="@pageLinkProfile(index-1, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@index</a>
                 </li>
                 }
                 }
 
                 @currentPage.next.map { page =>
                 <li class="next">
-                    <a data-pjax="#main-container" href="@pageLinkProfile(page, currentUser, currentOrderBy, call)">@Messages("pagination.next")</a>
+                    <a data-pjax="#main-container" href="@pageLinkProfile(page, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.next")</a>
+                </li>
+                }.getOrElse {
+                <li class="next disabled">
+                    <a>@Messages("pagination.next")</a>
+                </li>
+                }
+            </ul>
+        </div>
+}
+
+@paginationFooterProfileMod(currentPage: Page[Any], pageSize: Int, currentUser: Long, currentDemoOrderBy: Int, currentModOrderBy: Int, call: (Long, Int, Int, Int, Int) => Call) = {
+        <div id="paginationMod" class="pagination">
+            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
+            <ul>
+                @currentPage.prev.map { page =>
+                <li class="prev">
+                    <a data-pjax="#main-container" href="@pageLinkProfile(currentDemoPage.page, page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.prev")</a>
+                </li>
+                }.getOrElse {
+                <li class="prev disabled">
+                    <a>@Messages("pagination.prev")</a>
+                </li>
+                }
+
+                @for(index <- currentPage.paginationStart to currentPage.paginationEnd) {
+                @if(index == currentPage.page + 1){
+                <li class="active">
+                    <a href="#">@index</a>
+                </li>
+                } else {
+                <li>
+                    <a data-pjax="#main-container" href="@pageLinkProfile(currentDemoPage.page, index-1, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@index</a>
+                </li>
+                }
+                }
+
+                @currentPage.next.map { page =>
+                <li class="next">
+                    <a data-pjax="#main-container" href="@pageLinkProfile(currentDemoPage.page, page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.next")</a>
                 </li>
                 }.getOrElse {
                 <li class="next disabled">

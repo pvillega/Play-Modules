@@ -11,6 +11,7 @@ CREATE TABLE plugin (
     description TEXT,
     positive int not null default 1,
     negative int not null default 0,
+    updated timestamp not null default now(),
     created timestamp not null default now(),
     CONSTRAINT pk_plugin PRIMARY KEY (id)
 )
@@ -26,8 +27,8 @@ create index ix_plugin_negative on plugin (negative);
 
 CREATE TABLE voteplugin (
     id SERIAL,
-    plugin bigint references plugin,
-    author bigint references publisher,
+    plugin bigint references plugin ON DELETE CASCADE,
+    author bigint references publisher ON DELETE CASCADE,
     vote int not null,
     created timestamp not null default now(),
     CONSTRAINT pk_voteplugin PRIMARY KEY (id)
@@ -42,8 +43,8 @@ create index ix_voteplugin_plugin on voteplugin (plugin);
 
 CREATE TABLE tagplugin (
     id SERIAL,
-    plugin bigint references plugin,
-    tag bigint references tag,
+    plugin bigint references plugin ON DELETE CASCADE,
+    tag bigint references tag ON DELETE CASCADE,
     created timestamp not null default now(),
     CONSTRAINT pk_tagplugin PRIMARY KEY (id)
 )
@@ -54,6 +55,13 @@ WITH (
 create index ix_tagplugin_tag on tagplugin (tag);
 create index ix_tagplugin_plugin on tagplugin (plugin);
 
+
+
+alter table votedemo ADD FOREIGN KEY (author) REFERENCES publisher (id) ON DELETE CASCADE;
+alter table votedemo ADD FOREIGN KEY (demo) REFERENCES demo (id) ON DELETE CASCADE;
+
+alter table tagdemo ADD FOREIGN KEY (demo) REFERENCES demo (id) ON DELETE CASCADE;
+alter table tagdemo ADD FOREIGN KEY (tag) REFERENCES tag (id) ON DELETE CASCADE;
 
 # --- !Downs
 

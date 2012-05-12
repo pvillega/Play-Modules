@@ -5,7 +5,7 @@ import play.Logger
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.Messages
-import models.{Demo, User}
+import models.{Module, Demo, User}
 
 /**
  * Controller for the profile-related actions
@@ -80,10 +80,12 @@ object Profile extends Controller with Secured {
    * Shows the profile of the requested user with some filters applied to the demo or projects tables
    * @param userid the id of the user we are checking
    * @param demoPage the current demos page
-   * @param demoOrderBy current order ny applied to demo table
+   * @param demoOrderBy current order by applied to demo table
+   * @param modPage the current modules page
+   * @param modOrderBy current order by applied to modules table
    * @return the profile for the requested user or not found
    */
-  def filteredProfile(userid :Long, demoPage: Int, demoOrderBy: Int) = Action {
+  def filteredProfile(userid :Long, demoPage: Int, demoOrderBy: Int, modPage: Int, modOrderBy: Int) = Action {
     implicit request =>
       val loggedId = session.get("userId").getOrElse("-1").toLong
       Logger.info("Profile.index with id %d accessed".format(userid))
@@ -95,7 +97,9 @@ object Profile extends Controller with Secured {
         }
         case Some(user) => Ok(views.html.profile.index(user, itsMe,
                 Demo.listByUser(page = demoPage, orderBy = demoOrderBy, userId = userid),
-                demoOrderBy
+                demoOrderBy,
+                Module.listByUser(page = modPage, orderBy = modOrderBy, userId = userid),
+                modOrderBy
         ))
       }
   }

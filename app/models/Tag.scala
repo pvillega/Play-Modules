@@ -28,6 +28,7 @@ object Tag {
   val tagCacheKey = "Tg"
   val tagNameCacheKey = tagCacheKey + "N"
   val tagDemoCacheKey = tagCacheKey + "d"
+  val tagModuleCacheKey = tagCacheKey + "m"
   val allTagsCacheKey = tagCacheKey + "All"
   //to avoid duplication
   val tagsByDemoQuery = """
@@ -36,6 +37,12 @@ object Tag {
               left join tag t on td.tag = t.id
               where td.demo = {demoid}
             """
+  val tagsByModuleQuery = """
+              select distinct t.name as "name"
+              from tagplugin td
+              left join tag t on td.tag = t.id
+              where td.plugin = {modid}
+                        """
 
   // Parsers
 
@@ -92,6 +99,23 @@ object Tag {
           SQL(
             tagsByDemoQuery
           ).on('demoid -> demoid).as(str("name") *)
+      }
+    }
+  }
+
+  /**
+   * Retrieve a list of tag names by the module associated to them
+   * As we may have introduced some duplications on edit, we do a filtering to return unique results
+   *
+   * @param modid id of the module that references the tags
+   */
+  def findByModule(modid: Long) : List[String] = {
+    Cache.getOrElse(tagModuleCacheKey + modid, 60*60) {
+      DB.withConnection {
+        implicit connection =>
+          SQL(
+            tagsByModuleQuery
+          ).on('modid -> modid).as(str("name") *)
       }
     }
   }
@@ -169,6 +193,59 @@ object Tag {
           'demoid -> demoid,
           'tagid -> tagId
         ).executeUpdate()
+  }
+
+
+  /**
+   * Adds tags in relation to the given module, creating the tag if required
+   *
+   * @param tags the list of tag names
+   * @param modid the id of the module
+   * @param connection the db connection, required to avoid nested connections (caused issues)
+   */
+  def addToModule(tags: List[String],  modid: Long)(implicit connection: java.sql.Connection): Any = {
+    SQL(
+      """
+            delete from tagplugin where plugin = {modid}
+      """
+    ).on(
+      'modid -> modid
+    ).executeUpdate()
+
+    tags.map { name => addToModule(name, modid) }
+
+    //after adding tags, we update cache
+    val newList = SQL(
+      tagsByModuleQuery
+    ).on('modid -> modid).as(str("name") *)
+
+    Cache.set(tagModuleCacheKey + modid, newList, 60*60);
+  }
+
+
+  /**
+   * Adds a new tag in relation to the given module, creating the tag if required.
+   * The tag must not be linked to the module
+   * Called from addToModule(List[String], Long)
+   *
+   * @param tag the tag name
+   * @param modid the id of the module
+   * @param connection the db connection, required to avoid nested connections (caused issues)
+   */
+  private def addToModule(tag: String,  modid: Long)(implicit connection: java.sql.Connection): Any = {
+    val tagId = findByName(tag) match {
+      case Some(tag) => tag.id.get
+      case None => create(Tag(name=tag)).id.get
+    }
+
+    SQL(
+      """
+            insert into tagplugin (plugin, tag) values ({modid}, {tagid})
+      """
+    ).on(
+      'modid -> modid,
+      'tagid -> tagId
+    ).executeUpdate()
   }
 
 
@@ -311,9 +388,8 @@ object Tag {
   def merge(mergeDetails: TagMerge) = {
     DB.withTransaction {
       implicit connection =>
-        //TODO: replace on projects
 
-        //remove from cache  and merge in demos
+        //remove from cache  and merge in demos and modules
         mergeDetails.tags.map { name =>
           findByName(name) match {
             case Some(tag) =>
@@ -328,7 +404,17 @@ object Tag {
                 'newId -> mergeDetails.sourceid,
                 'oldId -> tag.id
               )
-            case _ =>  //tag not in cache, ignore
+
+              SQL(
+                """
+                  update tagplugin td set td.tag = {newId}
+                  where td.tag = {oldId}
+                """
+              ).on(
+                'newId -> mergeDetails.sourceid,
+                'oldId -> tag.id
+              )
+            case _ =>  //tag does not exist anymore
           }
         }
 
@@ -337,6 +423,14 @@ object Tag {
           """
             delete from tagdemo t1 using tagdemo t2
             where t1.demo=t2.demo and t1.tag = t2.tag and t1.id < t2.id
+          """
+        ).executeUpdate()
+
+        //remove duplicates from tagplugin
+        SQL(
+          """
+            delete from tagplugin t1 using tagplugin t2
+            where t1.plugin=t2.plugin and t1.tag = t2.tag and t1.id < t2.id
           """
         ).executeUpdate()
 

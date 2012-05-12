@@ -1,0 +1,80 @@
+@(mod: models.ModuleView)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("mods.view")) {
+    <header id="menuModulesArea">
+        <h1>@Messages("mods.view")</h1>
+    </header>
+
+    @* first row, module details *@
+    <div class="row">
+        @* first colum, score*@
+        <div class="span1">
+            @request.session.get("userId").map { userId =>
+                <form id="voteUp" class="voteForm" action="@routes.Modules.voteModule(mod.id, 1, mod.vote.get)" method="POST">
+                    <a class="@if(mod.vote.get > 0) {voteUpSelected} else {voteUp}" href="#" onclick="$('#voteUp').submit()"></a>
+                </form>
+            }
+            <div class="voteBadge">
+                <span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error} biggerBadge">@mod.showScore</span>
+            </div>
+            @request.session.get("userId").map { userId =>
+                <form id="voteDown" class="voteForm" action="@routes.Modules.voteModule(mod.id, -1, mod.vote.get)" method="POST">
+                    <a class="@if(mod.vote.get < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
+                </form>
+            }
+        </div>
+        <div class="span11">
+            <div class="row">
+                <div class="span1"><strong>@Messages("mod.name")</strong></div>
+                <div class="span5">@mod.name</div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("mod.author")</strong></div>
+                <div class="span5"><a data-pjax="#main-container" href="@routes.Profile.index(mod.aid)">@mod.publisher</a></div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("mod.version")</strong></div>
+                <div class="span5">@mod.version</div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("mod.url")</strong></div>
+                <div class="span5"><a href="@mod.url">@mod.url</a></div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("mod.updated")</strong></div>
+                <div class="span5">@mod.updated.format("dd-MM-yyyy")</div>
+            </div>
+            <div class="row">
+                <div class="span1"><strong>@Messages("mod.description")</strong></div>
+                <div class="span5">@richTextDisplay(mod.description)</div>
+            </div>
+
+        </div>
+    </div>
+    @* tags *@
+    <br/>
+    <div class="row">
+        <div class="span12">
+            @tagInput(id = "tags", list = mod.tags, view = true, demo = false)
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="#" onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    @* second row, comments *@
+    @disqus("mod"+mod.id)
+
+    <div class="form-actions">
+        <a href="#" onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    <div class="spacer">&nbsp;</div>
+}

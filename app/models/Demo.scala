@@ -211,7 +211,7 @@ object Demo {
    * @param userid the id of the user deleting the demo
    */
   def delete(id: Long, userid: Long) = {
-    DB.withConnection {
+    DB.withTransaction {
       implicit connection =>
         SQL(
           """
