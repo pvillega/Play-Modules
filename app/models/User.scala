@@ -149,7 +149,7 @@ object User {
           'url -> user.url,
           'bio -> user.bio,
           'location -> user.location
-        ).as(int("id").single)
+        ).as(long("id").single)
 
         //store object in cache for later retrieval
         Cache.set(userCacheKey + id, user.copy(id = Id(id)), 60*60)

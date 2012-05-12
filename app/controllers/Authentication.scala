@@ -283,17 +283,14 @@ object Authentication extends Controller with Secured {
           // We got the verifier; now get the access token and log user
           TWITTER.retrieveAccessToken(tokenPair, verifier) match {
             case Right(t) => {
-              // We received the authorized tokens in the OAuth object
-              //Redirect(routes.Profile.index(userId)).withSession("token" -> t.token, "secret" -> t.secret)
 
-              // Get user data
-              val userData: Promise[ws.Response] = {
-                Logger.info("Authentication.twitterAuth retrieving user data")
-                val userRequest = WS.url(twitterCredentials).sign(OAuthCalculator(KEY, t))
-                userRequest.get()
-              }
+                // Get user data
+                val userData: Promise[ws.Response] = {
+                  Logger.info("Authentication.twitterAuth retrieving user data")
+                  WS.url(twitterCredentials).sign(OAuthCalculator(KEY, t)).get()
+                }
 
-              retrieveUserDataFromService(userData, Twitter)
+                retrieveUserDataFromService(userData, Twitter)
             }
             case Left(e) => {
               Logger.error("Authentication.twitterAuth error while creating request token", e)
