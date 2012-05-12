@@ -145,7 +145,7 @@ object Demo {
           'codeurl -> demo.codeurl,
           'demourl -> demo.demourl,
           'description -> demo.description
-        ).as(int("id").single)
+        ).as(long("id").single)
 
         //add tags to the demo
         Tag.addToDemo(demo.tags, id)

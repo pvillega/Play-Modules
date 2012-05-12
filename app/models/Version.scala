@@ -94,7 +94,7 @@ object Version {
         ).on(
           'name -> version.name,
           'parent -> version.parent
-        ).as(int("id").single)
+        ).as(long("id").single)
 
         //remove all version cache
         //TODO: use standard Cache method when added

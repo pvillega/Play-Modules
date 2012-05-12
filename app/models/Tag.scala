@@ -239,7 +239,7 @@ object Tag {
           """
         ).on(
           'name -> tag.name
-        ).as(int("id").single)
+        ).as(long("id").single)
 
         //store object in cache for later retrieval
         val newTag = tag.copy(id = Id(id))
