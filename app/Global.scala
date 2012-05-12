@@ -39,11 +39,13 @@ object Global extends GlobalSettings {
   override def onError(request: RequestHeader, ex: Throwable) = {
     Logger.error("onError executed for request %s".format(request), ex)
 
-    val mail = use[MailerPlugin].email
-    mail.setSubject("Error in Play Modules")
-    mail.addRecipient("Administrator <%s>".format(Application.errorReportingMail), Application.errorReportingMail)
-    mail.addFrom("Play Modules <noreply@playmodules.net>")
-    mail.send( "Error detected in Play modules. \n Request: \n %s  \n\n Exception: \n %s \n\n %s".format(request, ex.getMessage, ex.getStackTrace.toList.mkString("\n")) )
+    if(play.api.Play.isProd) {
+      val mail = use[MailerPlugin].email
+      mail.setSubject("Error in Play Modules")
+      mail.addRecipient("Administrator <%s>".format(Application.errorReportingMail), Application.errorReportingMail)
+      mail.addFrom("Play Modules <noreply@playmodules.net>")
+      mail.send( "Error detected in Play modules. \n Request: \n %s  \n\n Exception: \n %s \n\n %s".format(request, ex.getMessage, ex.getStackTrace.toList.mkString("\n")) )
+    }
 
     InternalServerError(
       views.html.errors.error(ex)(request)
@@ -68,11 +70,13 @@ object Global extends GlobalSettings {
   override def onBadRequest(request : RequestHeader, error : scala.Predef.String) = {
     Logger.error("onBadRequest executed for request %s on error %s".format(request, error))
 
-    val mail = use[MailerPlugin].email
-    mail.setSubject("Bad Request in Play Modules")
-    mail.addRecipient("Administrator <%s>".format(Application.errorReportingMail), Application.errorReportingMail)
-    mail.addFrom("Play Modules <noreply@playmodules.net>")
-    mail.send( "Bad Request received in Play modules\n. Request: %s  \n\n Error: \n %s".format(request, error) )
+    if(play.api.Play.isProd) {
+      val mail = use[MailerPlugin].email
+      mail.setSubject("Bad Request in Play Modules")
+      mail.addRecipient("Administrator <%s>".format(Application.errorReportingMail), Application.errorReportingMail)
+      mail.addFrom("Play Modules <noreply@playmodules.net>")
+      mail.send( "Bad Request received in Play modules\n. Request: %s  \n\n Error: \n %s".format(request, error) )
+    }
 
     NotFound(
       views.html.errors.error404(request.path)(request)
