@@ -49,7 +49,8 @@ Once deployed, there will be no users. Log into the application to create your u
 Then you will need to access the database to give yourself admin rights by enabling the 'admin' flag:
 
 > $ heroku pg:psql
-> $> update publisher set admin = true where id = <yourId>
+>
+> $> update publisher set admin = true where id = xx
 
 TO DO
 ------------------
