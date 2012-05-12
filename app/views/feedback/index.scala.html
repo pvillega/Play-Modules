@@ -1,0 +1,44 @@
+@(fbForm: Form[controllers.Feedback])(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("feedback.title")) {
+    <header id="menuFeedbackArea">
+        <h1>@Messages("feedback.title")</h1>
+    </header>
+
+    @helper.form(action = routes.Feedback.send(), 'class -> "well") {
+
+    @inputText(
+    fbForm("name"),
+    '_label -> Messages("feedback.name"),
+    '_error -> fbForm.globalError
+    )
+
+    @inputText(
+    fbForm("email"),
+    '_label -> Messages("feedback.email"),
+    '_help -> Messages("feedback.email.help"),
+    '_error -> fbForm.globalError
+    )
+
+    @richTextEditor(
+    fbForm("content"),
+    '_label -> Messages("feedback.content"),
+    '_error -> fbForm.globalError
+    )
+
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("navigation.send")">
+        <a data-pjax="#main-container" href="@routes.Application.index()" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+    }
+    @* for style purposes *@
+    <div class="spacer">&nbsp;</div>
+}

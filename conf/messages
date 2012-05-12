@@ -12,12 +12,14 @@ alerts.info=Notification
 area.home=Home
 area.modules=Modules
 area.demos=Demos
+area.feedback=Feedback
 area.login=Login to publish
 area.logout=Logout
 area.profile=My Profile
 
 # navigation
 navigation.save=Save
+navigation.send=Send your Feedback!
 navigation.cancel=Cancel
 navigation.delete=Delete
 navigation.back=Back
@@ -51,6 +53,15 @@ login.backend.disabled=Your user has been disabled. Please contact us for more d
 login.backend.failed=There''s been an error and your login request could not be processed. Please try again.
 login.backend.logout=See you again soon!
 login.backend.cancel=You cancelled the authentication process
+
+# Feedback
+feedback.title=Feedback
+feedback.name=Name
+feedback.email=Email
+feedback.email.help=So we can contact you
+feedback.content=Your suggestions or feedback
+feedback.sent=Thanks for your comments, we really value them!
+
 
 # Profile
 profile.name=Name

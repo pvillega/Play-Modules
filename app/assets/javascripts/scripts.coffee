@@ -14,6 +14,7 @@ root.setNavigationBar = () ->
     $('#menuHomeArea').removeClass('active')
     $('#menuModulesArea').removeClass('active')
     $('#menuDemosArea').removeClass('active')
+    $('#menuFeedbackArea').removeClass('active')
     $('#menuProfileArea').removeClass('active')
     $('#menuAuthArea').removeClass('active')
     option = $('header').attr('id')

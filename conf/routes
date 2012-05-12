@@ -14,6 +14,9 @@ GET     /twitterAuth                controllers.Authentication.twitterAuth
 GET     /googleAuth                 controllers.Authentication.googleAuth
 GET     /openIdcallback             controllers.Authentication.openIDCallback
 
+# Feedback
+GET     /feedback/                  controllers.Feedback.index()
+POST    /feedback/send              controllers.Feedback.send()
 
 # Profile
 GET     /profile/$id<[0-9]+>        controllers.Profile.index(id: Long)
