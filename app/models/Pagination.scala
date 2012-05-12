@@ -24,7 +24,7 @@ case class Page[+A](items: Seq[A], page: Int, offset: Long, total: Long, pageSiz
   lazy val prev = Option(page - 1).filter(_ >= 0)
   lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
   lazy val maxPages = (total.toDouble/pageSize).ceil.toInt
-  lazy val paginationStart = (page - 3).max(1)
-  lazy val paginationEnd = (page + 3).min(maxPages)  //TODO: modify pagination calculation so pagination doesn't grow
+  lazy val paginationStart = (page - 2).max(1)
+  lazy val paginationEnd = (page + 3).min(maxPages)
 }
 
