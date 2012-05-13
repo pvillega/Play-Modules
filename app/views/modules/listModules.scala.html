@@ -151,7 +151,7 @@ Helper generating the pagination footer for list views
         <td><a data-pjax="#main-container" href="@routes.Modules.viewModule(mod.id)">@mod.name</a></td>
         <td>@mod.version</td>
         <td><a data-pjax="#main-container" href="@routes.Profile.index(mod.aid)">@mod.publisher</a></td>
-        <td>@mod.showScore</td>
+        <td><span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error}">@mod.showScore</span></td>
         <td>@mod.updated.format("dd-MM-yyyy")</td>
     </tr>
     }

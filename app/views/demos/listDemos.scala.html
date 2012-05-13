@@ -150,7 +150,7 @@ Helper generating the pagination footer for list views
         <td><a data-pjax="#main-container" href="@routes.Demos.viewDemo(demo.id)">@demo.name</a></td>
         <td>@demo.version</td>
         <td><a data-pjax="#main-container" href="@routes.Profile.index(demo.aid)">@demo.publisher</a></td>
-        <td>@demo.showScore</td>
+        <td><span class="badge @if(demo.showScore > 0) {badge-success} else {badge-error}">@demo.showScore</span></td>
     </tr>
     }
 }
