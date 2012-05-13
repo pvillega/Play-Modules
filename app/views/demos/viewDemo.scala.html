@@ -10,7 +10,14 @@
     <header id="menuDemosArea">
         <h1>@Messages("demos.view")</h1>
     </header>
-
+    @* tags *@
+    <div class="row">
+        <div class="span1"><strong>@Messages("tag.list")</strong></div>
+        <div class="span11">
+            @tagInput("tags",demo.tags, true)
+        </div>
+    </div>
+    <hr class="view"/>
     @* first row, demo details *@
     <div class="row">
         @* first colum, score*@
@@ -50,18 +57,12 @@
                 <div class="span1"><strong>@Messages("demo.demourl")</strong></div>
                 <div class="span5"><a href="@demo.demourl">@demo.demourl</a></div>
             </div>
-            <div class="row">
+
+            <div class="row description">
                 <div class="span1"><strong>@Messages("demo.description")</strong></div>
-                <div class="span5">@richTextDisplay(demo.description)</div>
+                <div class="span10">@richTextDisplay(demo.description)</div>
             </div>
 
-        </div>
-    </div>
-    @* tags *@
-    <br/>
-    <div class="row">
-        <div class="span12">
-            @tagInput("tags",demo.tags, true)
         </div>
     </div>
 

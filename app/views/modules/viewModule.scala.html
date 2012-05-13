@@ -10,7 +10,14 @@
     <header id="menuModulesArea">
         <h1>@Messages("mods.view")</h1>
     </header>
-
+    @* tags *@
+    <div class="row">
+        <div class="span1"><strong>@Messages("tag.list")</strong></div>
+        <div class="span11">
+            @tagInput(id = "tags", list = mod.tags, view = true, demo = false)
+        </div>
+    </div>
+    <hr class="view"/>
     @* first row, module details *@
     <div class="row">
         @* first colum, score*@
@@ -50,18 +57,11 @@
                 <div class="span1"><strong>@Messages("mod.updated")</strong></div>
                 <div class="span5">@mod.updated.format("dd-MM-yyyy")</div>
             </div>
-            <div class="row">
+            <div class="row description">
                 <div class="span1"><strong>@Messages("mod.description")</strong></div>
-                <div class="span5">@richTextDisplay(mod.description)</div>
+                <div class="span10">@richTextDisplay(mod.description)</div>
             </div>
 
-        </div>
-    </div>
-    @* tags *@
-    <br/>
-    <div class="row">
-        <div class="span12">
-            @tagInput(id = "tags", list = mod.tags, view = true, demo = false)
         </div>
     </div>
 

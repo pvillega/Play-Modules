@@ -205,6 +205,7 @@ tagadmin.toMerge=Tags to be merged
 # Tag
 tag.name=Name
 tag.source.default=-- Choose a Tag --
+tag.list=Tags:
 
 # Version
 version.name=Version Number
