@@ -341,7 +341,7 @@ object Demo {
             left join publisher on publisher.id = demo.author
             %s
             where demo.name ilike {nameFilter}
-            and ({versionFilter} <= 0 or demo.version = {versionFilter})
+            and ({versionFilter} <= 0 or demo.version = {versionFilter} or version.parent = {versionFilter})
             %s
             order by %d %s
             limit {pageSize} offset {offset}
@@ -356,9 +356,10 @@ object Demo {
         val totalRows = SQL(
           """
             select count(*) from demo
+            left join version  on version.id = demo.version
             %s
             where demo.name like {nameFilter}
-            and ({versionFilter} <= 0 or demo.version = {versionFilter})
+            and ({versionFilter} <= 0 or demo.version = {versionFilter} or version.parent = {versionFilter})
             %s
           """.format(tagJoin, tags)
         ).on(

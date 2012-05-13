@@ -17,6 +17,12 @@ import com.github.mumoshu.play2.memcached.MemcachedPlugin
  * Model of Version entity
  */
 
+/**
+ * A note on parents:
+ * When filtering by version currently we only check 1 level (filtered version or its direct children).
+ * This may need to be modified later but it was a compromise for performance, as we don't expect long tree hierarchies in
+ * the system. If that's added, filtering will need to be fixed.
+ */
 case class Version(id: Pk[Long] = NotAssigned, name: String, parent: Option[Long] = None)
 
 /**

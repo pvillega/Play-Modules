@@ -340,7 +340,7 @@ object Module {
             left join publisher on publisher.id = pl.author
             %s
             where pl.name ilike {nameFilter}
-            and ({versionFilter} <= 0 or pl.version = {versionFilter})
+            and ({versionFilter} <= 0 or pl.version = {versionFilter} or version.parent = {versionFilter})
             %s
             order by %d %s
             limit {pageSize} offset {offset}
@@ -355,9 +355,10 @@ object Module {
         val totalRows = SQL(
           """
             select count(*) from plugin pl
+            left join version  on version.id = pl.version
             %s
             where pl.name like {nameFilter}
-            and ({versionFilter} <= 0 or pl.version = {versionFilter})
+            and ({versionFilter} <= 0 or pl.version = {versionFilter}  or version.parent = {versionFilter})
             %s
           """.format(tagJoin, tags)
         ).on(
