@@ -292,6 +292,7 @@ object Module {
         ).executeUpdate()
 
         //updates cache to see vote effect on next request
+        //TODO: update when Cache api adds this option
         play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(modViewCacheKey + modid)
     }
   }

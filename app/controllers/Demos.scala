@@ -157,7 +157,10 @@ object Demos extends Controller with Secured {
     implicit request =>
       Logger.info("Demos.viewDemo accessed to view demo[%d]".format(id))
       Demo.findByIdWithVersion(id) match {
-        case Some(demo) => Ok(views.html.demos.viewDemo(demo))
+        case Some(demo) => {
+          val vote = Demo.getUserVote(request.session.get("userId"), demo.id)
+          Ok(views.html.demos.viewDemo(demo, vote))
+        }
         case _ => {
           Logger.warn("Demos.viewDemo can't find the demo[%d]".format(id))
           NotFound(views.html.errors.error404(request.path)(request))

@@ -8,6 +8,7 @@ import play.api.Play.current
 import play.Logger
 import java.util.Date
 import java.math.BigDecimal
+import com.github.mumoshu.play2.memcached.MemcachedPlugin
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +20,7 @@ import java.math.BigDecimal
 
 case class Demo(id: Pk[Long] = NotAssigned, name: String, version: Long, author: Long = -1, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, positive: Int = 0, negative: Int = 0, created: Date = new Date, tags: List[String] = Nil)
 
-case class DemoView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, vote: Option[Int] = Some(0), tags: List[String] = Nil)
+case class DemoView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, tags: List[String] = Nil)
 
 
 /**
@@ -60,9 +61,8 @@ object Demo {
       get[Option[String]]("demo.description") ~
       get[String]("version") ~
       get[Long]("aid") ~
-      get[String]("publisher") ~
-      get[Option[Int]]("vote") map {
-      case id ~ name ~ score ~ showScore ~ codeurl ~ demourl ~ description ~ version ~ aid ~ publisher ~ vote => DemoView(id, name, score, showScore, version, aid, publisher, codeurl, demourl, description, vote)
+      get[String]("publisher") map {
+      case id ~ name ~ score ~ showScore ~ codeurl ~ demourl ~ description ~ version ~ aid ~ publisher => DemoView(id, name, score, showScore, version, aid, publisher, codeurl, demourl, description)
     }
   }
 
@@ -104,11 +104,10 @@ object Demo {
                    1.96 * SQRT((d.positive * d.negative) / (d.positive + d.negative) + 0.9604) /
                           (d.positive + d.negative)) / (1 + 3.8416 / (d.positive + d.negative)) as "score",
               (d.positive - d.negative) as "showScore",
-              d.codeurl, d.demourl, d.description, v.name as "version", p.id as "aid", p.name as "publisher", vd.vote as "vote"
+              d.codeurl, d.demourl, d.description, v.name as "version", p.id as "aid", p.name as "publisher"
               from demo d
               left join version v on v.id = d.version
               left join publisher p on p.id = d.author
-              left join votedemo vd on vd.author = d.author and vd.demo = d.id
               where d.id = {id}
             """
           ).on('id -> id).as(Demo.simpleView.singleOpt) match {
@@ -229,6 +228,31 @@ object Demo {
   }
 
   /**
+   * Obtains the vote option of the current user in the current demo
+   * @param userid the id of the user
+   * @param demoid the id of the demo
+   */
+  def getUserVote(userid: Option[String], demoid: Long) : Option[Int] = {
+    userid match {
+      case Some(user) =>
+        DB.withConnection {
+          implicit connection =>
+            SQL(
+              """
+                select vote from votedemo
+                where author = {author} and demo = {demoid}
+              """
+            ).on(
+              'demoid -> demoid,
+              'author -> user.toLong
+            ).as(int("vote").singleOpt)
+        }
+
+      case _ => None
+    }
+  }
+
+  /**
    * Stores the vote of a user for the given demo
    * @param userid id of the user voting
    * @param demoid id of the demo for which the user voted
@@ -269,8 +293,8 @@ object Demo {
         ).executeUpdate()
 
         //updates cache to see vote effect on next request
-        val cached = findByIdWithVersion(demoid).get
-        Cache.set(demoViewCacheKey + demoid, cached.copy(vote = Some(vote)), 60)
+        //TODO: update when Cache api adds this option
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(demoViewCacheKey + demoid)
     }
   }
 
@@ -311,7 +335,7 @@ object Demo {
                    1.96 * SQRT((demo.positive * demo.negative) / (demo.positive + demo.negative) + 0.9604) /
                           (demo.positive + demo.negative)) / (1 + 3.8416 / (demo.positive + demo.negative)) as "score",
             (demo.positive - demo.negative) as "showScore",
-            demo.codeurl, demo.demourl, demo.description, version.name as "version", publisher.id as "aid", publisher.name as "publisher", 0 as "vote"
+            demo.codeurl, demo.demourl, demo.description, version.name as "version", publisher.id as "aid", publisher.name as "publisher"
             from demo
             left join version  on version.id = demo.version
             left join publisher on publisher.id = demo.author
@@ -379,7 +403,7 @@ object Demo {
                    1.96 * SQRT((demo.positive * demo.negative) / (demo.positive + demo.negative) + 0.9604) /
                           (demo.positive + demo.negative)) / (1 + 3.8416 / (demo.positive + demo.negative)) as "score",
             (demo.positive - demo.negative) as "showScore",
-            demo.codeurl, demo.demourl, demo.description, version.name as "version", publisher.id as "aid", publisher.name as "publisher", 0 as "vote"
+            demo.codeurl, demo.demourl, demo.description, version.name as "version", publisher.id as "aid", publisher.name as "publisher"
             from demo
             left join version  on version.id = demo.version
             left join publisher on publisher.id = demo.author
