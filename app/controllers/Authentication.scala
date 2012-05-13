@@ -76,7 +76,7 @@ case object GitHub extends OauthService {
   override def processUser(response: Response) = {
     val id = (response.json \ "id").as[Int]
     val name = (response.json \ "name").as[String]
-    val url = (response.json \ "url").as[String]
+    val url = (response.json \ "html_url").as[String]
     val bio = (response.json \ "bio").as[String]
     val location = (response.json \ "location").as[String]
     val avatar = (response.json \ "avatar_url").as[String]
