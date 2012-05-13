@@ -212,8 +212,8 @@ version.parent=Parent Version
 version.parent.default=-- Choose a Parent --
 
 # Pagination
-pagination.prev=< Previous
-pagination.next=Next >
+pagination.prev=<<
+pagination.next=>>
 
 # Footer
 footer.design1=Designed and built by
