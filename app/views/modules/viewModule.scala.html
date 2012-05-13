@@ -1,4 +1,4 @@
-@(mod: models.ModuleView)(implicit request: play.api.mvc.RequestHeader)
+@(mod: models.ModuleView, vote: Option[Int])(implicit request: play.api.mvc.RequestHeader)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -16,18 +16,18 @@
         @* first colum, score*@
         <div class="span1">
             @request.session.get("userId").map { userId =>
-                <form id="voteUp" class="voteForm" action="@routes.Modules.voteModule(mod.id, 1, mod.vote.get)" method="POST">
-                    <a class="@if(mod.vote.get > 0) {voteUpSelected} else {voteUp}" href="#" onclick="$('#voteUp').submit()"></a>
+                <form id="voteUp" class="voteForm" action="@routes.Modules.voteModule(mod.id, 1, vote)" method="POST">
+                    <a class="@if(vote.getOrElse(0) > 0) {voteUpSelected} else {voteUp}" href="#" onclick="$('#voteUp').submit()"></a>
                 </form>
-            }
+            }.get
             <div class="voteBadge">
                 <span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error} biggerBadge">@mod.showScore</span>
             </div>
             @request.session.get("userId").map { userId =>
-                <form id="voteDown" class="voteForm" action="@routes.Modules.voteModule(mod.id, -1, mod.vote.get)" method="POST">
-                    <a class="@if(mod.vote.get < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
+                <form id="voteDown" class="voteForm" action="@routes.Modules.voteModule(mod.id, -1, vote)" method="POST">
+                    <a class="@if(vote.getOrElse(0) < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
                 </form>
-            }
+            }.get
         </div>
         <div class="span11">
             <div class="row">

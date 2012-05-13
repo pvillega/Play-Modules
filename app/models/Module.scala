@@ -8,6 +8,7 @@ import anorm._
 import play.Logger
 import java.math.BigDecimal
 import play.api.Play.current
+import com.github.mumoshu.play2.memcached.MemcachedPlugin
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +20,7 @@ import play.api.Play.current
 
 case class Module(id: Pk[Long] = NotAssigned, name: String, version: Long, author: Long = -1, url: String, description: Option[String] = None, positive: Int = 0, negative: Int = 0, updated: Date = new Date, created: Date = new Date, tags: List[String] = Nil)
 
-case class ModuleView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, url: String, description: Option[String] = None, updated: Date, vote: Option[Int] = Some(0), tags: List[String] = Nil)
+case class ModuleView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, url: String, description: Option[String] = None, updated: Date, tags: List[String] = Nil)
 
 
 /**
@@ -60,9 +61,8 @@ object Module {
       get[String]("version") ~
       get[Long]("aid") ~
       get[String]("publisher") ~
-      get[Date]("updated") ~
-      get[Option[Int]]("vote") map {
-      case id ~ name ~ score ~ showScore ~ url ~ description ~ version ~ aid ~ publisher ~ updated ~ vote => ModuleView(id, name, score, showScore, version, aid, publisher, url, description, updated, vote)
+      get[Date]("updated") map {
+      case id ~ name ~ score ~ showScore ~ url ~ description ~ version ~ aid ~ publisher ~ updated => ModuleView(id, name, score, showScore, version, aid, publisher, url, description, updated)
     }
   }
 
@@ -104,11 +104,10 @@ object Module {
                    1.96 * SQRT((pl.positive * pl.negative) / (pl.positive + pl.negative) + 0.9604) /
                           (pl.positive + pl.negative)) / (1 + 3.8416 / (pl.positive + pl.negative)) as "score",
               (pl.positive - pl.negative) as "showScore",
-              pl.url as "url", pl.description as "description", pl.updated as "updated", v.name as "version", p.id as "aid", p.name as "publisher", vd.vote as "vote"
+              pl.url as "url", pl.description as "description", pl.updated as "updated", v.name as "version", p.id as "aid", p.name as "publisher"
               from plugin pl
               left join version v on v.id = pl.version
               left join publisher p on p.id = pl.author
-              left join votedemo vd on vd.author = pl.author and vd.demo = pl.id
               where pl.id = {id}
             """
           ).on('id -> id).as(Module.simpleView.singleOpt) match {
@@ -228,6 +227,31 @@ object Module {
   }
 
   /**
+   * Obtains the vote option of the current user in the current module
+   * @param userid the id of the user
+   * @param modid the id of the module
+   */
+  def getUserVote(userid: Option[String], modid: Long) : Option[Int] = {
+    userid match {
+      case Some(user) =>
+        DB.withConnection {
+            implicit connection =>
+          SQL(
+            """
+                select vote from voteplugin
+                where author = {author} and plugin = {modid}
+            """
+          ).on(
+            'modid -> modid,
+            'author -> user.toLong
+          ).as(int("vote").singleOpt)
+        }
+
+      case _ => None
+    }
+  }
+
+  /**
    * Stores the vote of a user for the given module
    * @param userid id of the user voting
    * @param modid id of the module for which the user voted
@@ -259,7 +283,7 @@ object Module {
         //update module table
         SQL(
           """
-            update demo set positive = (select count(*) from voteplugin where plugin = {id} and vote > 0),
+            update plugin set positive = (select count(*) from voteplugin where plugin = {id} and vote > 0),
              negative = (select count(*) from voteplugin where plugin = {id} and vote < 0)
             where id = {id}
           """
@@ -268,8 +292,7 @@ object Module {
         ).executeUpdate()
 
         //updates cache to see vote effect on next request
-        val cached = findByIdWithVersion(modid).get
-        Cache.set(modViewCacheKey + modid, cached.copy(vote = Some(vote)), 60)
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(modViewCacheKey + modid)
     }
   }
 
@@ -310,7 +333,7 @@ object Module {
                    1.96 * SQRT((pl.positive * pl.negative) / (pl.positive + pl.negative) + 0.9604) /
                           (pl.positive + pl.negative)) / (1 + 3.8416 / (pl.positive + pl.negative)) as "score",
             (pl.positive - pl.negative) as "showScore",
-            pl.url as "url", pl.description as "description", pl.updated as "updated", version.name as "version", publisher.id as "aid", publisher.name as "publisher", 0 as "vote"
+            pl.url as "url", pl.description as "description", pl.updated as "updated", version.name as "version", publisher.id as "aid", publisher.name as "publisher"
             from plugin pl
             left join version  on version.id = pl.version
             left join publisher on publisher.id = pl.author
@@ -378,7 +401,7 @@ object Module {
                    1.96 * SQRT((pl.positive * pl.negative) / (pl.positive + pl.negative) + 0.9604) /
                           (pl.positive + pl.negative)) / (1 + 3.8416 / (pl.positive + pl.negative)) as "score",
             (pl.positive - pl.negative) as "showScore",
-            pl.url as "url", pl.description as "description", pl.updated as "updated", version.name as "version", publisher.id as "aid", publisher.name as "publisher", 0 as "vote"
+            pl.url as "url", pl.description as "description", pl.updated as "updated", version.name as "version", publisher.id as "aid", publisher.name as "publisher"
             from plugin pl
             left join version  on version.id = pl.version
             left join publisher on publisher.id = pl.author

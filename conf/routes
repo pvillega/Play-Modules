@@ -31,7 +31,7 @@ GET     /demo/create/               controllers.Demos.createDemo()
 POST    /demo/save/                 controllers.Demos.saveDemo()
 POST    /demo/delete/$id<[0-9]+>               controllers.Demos.deleteDemo(id: Long)
 GET     /demo/$id<[0-9]+>           controllers.Demos.viewDemo(id: Long)
-POST    /demo/vote/$id<[0-9]+>      controllers.Demos.voteDemo(id: Long, vote: Int, oldVote: Int ?= 0)
+POST    /demo/vote/$id<[0-9]+>      controllers.Demos.voteDemo(id: Long, vote: Int, oldVote: Option[Int] ?= None)
 
 # Modules
 GET     /module/list                  controllers.Modules.listModules(page: Int ?= 0, orderBy: Int ?= 1, nameFilter: String ?= "", versionFilter: Long ?= -1, tagFilter: List[String] ?= Nil)
@@ -41,7 +41,7 @@ GET     /module/create/               controllers.Modules.createModule()
 POST    /module/save/                 controllers.Modules.saveModule()
 POST    /module/delete/$id<[0-9]+>               controllers.Modules.deleteModule(id: Long)
 GET     /module/$id<[0-9]+>           controllers.Modules.viewModule(id: Long)
-POST    /module/vote/$id<[0-9]+>      controllers.Modules.voteModule(id: Long, vote: Int, oldVote: Int ?= 0)
+POST    /module/vote/$id<[0-9]+>      controllers.Modules.voteModule(id: Long, vote: Int, oldVote: Option[Int] ?= None)
 
 # Administration
 GET     /admin                      controllers.Administration.index()

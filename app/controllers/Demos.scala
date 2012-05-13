@@ -171,12 +171,12 @@ object Demos extends Controller with Secured {
    * @param vote the vote given (+1/-1)
    * @param oldVote the previous vote given (+1/-1/0)
    */
-  def voteDemo(id: Long, vote: Int, oldVote: Int) = Authenticated {
+  def voteDemo(id: Long, vote: Int, oldVote: Option[Int]) = Authenticated {
     implicit request =>
       Logger.info("Demos.voteDemo accessed by user %d to add vote[%d] to demo[%d]".format(request.user.id.get, vote, id))
       Demo.findById(id) match {
         case Some(demo) => {
-          Demo.vote(request.user.id.get, id, vote, oldVote)
+          Demo.vote(request.user.id.get, id, vote, oldVote.getOrElse(0))
           Redirect(routes.Demos.viewDemo(id)).flashing("success" -> Messages("demos.voted"))
         }
         case _ => {

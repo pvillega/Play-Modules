@@ -156,7 +156,10 @@ object Modules extends Controller with Secured {
     implicit request =>
       Logger.info("Modules.viewModule accessed to view module[%d]".format(id))
       Module.findByIdWithVersion(id) match {
-        case Some(mod) => Ok(views.html.modules.viewModule(mod))
+        case Some(mod) => {
+          val vote = Module.getUserVote(request.session.get("userId"), mod.id)
+          Ok(views.html.modules.viewModule(mod, vote))
+        }
         case _ => {
           Logger.warn("Modules.viewModule can't find the module[%d]".format(id))
           NotFound(views.html.errors.error404(request.path)(request))
@@ -170,12 +173,12 @@ object Modules extends Controller with Secured {
    * @param vote the vote given (+1/-1)
    * @param oldVote the previous vote given (+1/-1/0)
    */
-  def voteModule(id: Long, vote: Int, oldVote: Int) = Authenticated {
+  def voteModule(id: Long, vote: Int, oldVote: Option[Int]) = Authenticated {
     implicit request =>
       Logger.info("Modules.voteModule accessed by user %d to add vote[%d] to module[%d]".format(request.user.id.get, vote, id))
       Module.findById(id) match {
         case Some(mod) => {
-          Module.vote(request.user.id.get, id, vote, oldVote)
+          Module.vote(request.user.id.get, id, vote, oldVote.getOrElse(0))
           Redirect(routes.Modules.viewModule(id)).flashing("success" -> Messages("mods.voted"))
         }
         case _ => {
