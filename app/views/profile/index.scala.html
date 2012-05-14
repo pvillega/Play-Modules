@@ -84,7 +84,7 @@
                 }
                 <td>@mod.version</td>
                 <td><a href="@mod.url">@mod.url</a></td>
-                <td>@mod.showScore</td>
+                <td><span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error}">@mod.showScore</span></td>
                 <td>@mod.updated.format("dd-MM-yyyy")</td>
                 <td><a data-pjax="#main-container" href="@routes.Modules.viewModule(mod.id)" class="btn btn-info floatRight">@Messages("mods.comments")</a></td>
             </tr>
@@ -139,7 +139,7 @@
                 }
                 <td>@demo.version</td>
                 <td><a href="@demo.demourl">@demo.demourl</a></td>
-                <td>@demo.showScore</td>
+                <td><span class="badge @if(demo.showScore > 0) {badge-success} else {badge-error}">@demo.showScore</span></td>
                 <td><a data-pjax="#main-container" href="@routes.Demos.viewDemo(demo.id)" class="btn btn-info floatRight">@Messages("demos.comments")</a></td>
             </tr>
             }
