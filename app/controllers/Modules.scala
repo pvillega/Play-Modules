@@ -3,6 +3,7 @@ package controllers
 import play.api.data.Form
 import models.Module
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import anorm.NotAssigned
 import play.Logger
 import play.api.i18n.Messages
@@ -25,7 +26,7 @@ object Modules extends Controller with Secured {
       "name" -> nonEmptyText,
       "version" -> (longNumber verifying( _ > 0)),
       "url" -> text, // no regexp validation, see: http://stackoverflow.com/questions/3058138/is-it-safe-to-validate-a-url-with-a-regexp
-      "tags" -> list(nonEmptyText),
+      "tags" -> list(nonEmptyText verifying pattern("""[\w. ]+""".r)),
       "description" -> optional (text)
     ) {
       (id, name, version, url, tags, description) => Module(name = name, version = version, url = url, description = description, tags = tags)

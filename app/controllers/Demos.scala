@@ -2,6 +2,7 @@ package controllers
 
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import anorm.NotAssigned
 import play.Logger
 import models.{Demo, Tag}
@@ -25,7 +26,7 @@ object Demos extends Controller with Secured {
       "name" -> nonEmptyText,
       "version" -> (longNumber verifying( _ > 0)),
       "codeurl" -> text, // no regexp validation, see: http://stackoverflow.com/questions/3058138/is-it-safe-to-validate-a-url-with-a-regexp
-      "tags" -> list(nonEmptyText),
+      "tags" -> list(nonEmptyText verifying pattern("""[\w. ]+""".r)),
       "demourl" -> optional (text),
       "description" -> optional (text)
     ) {

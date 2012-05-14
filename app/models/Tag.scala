@@ -78,7 +78,7 @@ object Tag {
    * @param name the name of the tag to retrieve
    */
   def findByName(name: String): Option[Tag] = {
-    Cache.getOrElse(tagNameCacheKey + name, 60*60) {
+    Cache.getOrElse(tagNameCacheKey + name.replaceAll("\\s",""), 60*60) {
       DB.withConnection {
         implicit connection =>
           SQL("select * from tag where name = {name}").on('name -> name).as(Tag.simple.singleOpt)
@@ -321,7 +321,7 @@ object Tag {
         //store object in cache for later retrieval
         val newTag = tag.copy(id = Id(id))
         Cache.set(tagCacheKey + id, newTag, 60*60)
-        Cache.set(tagNameCacheKey + newTag.name, newTag, 60*60)
+        Cache.set(tagNameCacheKey + newTag.name.replaceAll("\\s",""), newTag, 60*60)
         newTag
     }
   }
@@ -352,7 +352,7 @@ object Tag {
         val cached = findById(id).get
         val copy = cached.copy(name = tag.name)
         Cache.set(tagCacheKey + id, copy, 60*60)
-        Cache.set(tagNameCacheKey + tag.name, copy, 60*60)
+        Cache.set(tagNameCacheKey + tag.name.replaceAll("\\s",""), copy, 60*60)
     }
   }
 
@@ -375,8 +375,8 @@ object Tag {
 
         //removes from cache. We don't replace by None as a similar tag may be created right now, better delete from cache
         //TODO: use standard Cache method when added
-        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(tagCacheKey + cached.name)
-        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(tagNameCacheKey + cached.name)
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(tagCacheKey + cached.id)
+        play.api.Play.current.plugin[MemcachedPlugin].get.api.remove(tagNameCacheKey + cached.name.replaceAll("\\s",""))
     }
   }
 
@@ -393,7 +393,7 @@ object Tag {
         mergeDetails.tags.map { name =>
           findByName(name) match {
             case Some(tag) =>
-              Cache.set(tagNameCacheKey + tag.name, None, 60)
+              Cache.set(tagNameCacheKey + tag.name.replaceAll("\\s",""), None, 60)
               Cache.set(tagCacheKey + tag.id, None, 60)
               SQL(
                 """

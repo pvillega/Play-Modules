@@ -45,7 +45,8 @@ root.tagInput = (id, values, demo) ->
 
             #clean and trim input
             typed = $(this).val()
-            typed = typed.replace(/,/g,'')
+            typed = typed.replace(/,/g,'') # remove comma
+            typed = typed.replace(/[^\w. ]/gi,'') # remove non alphanumeric characters except dot, underscore, whitespace
             typed = typed.trim()
 
             if typed isnt ""
@@ -65,11 +66,14 @@ root.addTag = (id, value, view, demo) ->
       if not !!value.trim()
         return
 
+      # store value for remove reference
+      dataTag = value.replace(/[\s.]/gi, '_')
+
       #add tag representation
       el  = "<a class=\"tagLabel\" "
 
       if not view
-        el += " onclick=\"$(this).remove();$('input[data="+value+"]').remove();\" "
+        el += " onclick=\"$(this).remove();$('input[data="+dataTag+"]').remove();\" "
       else if demo
         el += " data-pjax=\"#main-container\" href=\""+jsRoutes.controllers.Demos.listDemos(page = 0, orderBy = 1, nameFilter = '', versionFilter = -1, tagFilter = [value]).url+"\" "
       else
@@ -83,7 +87,7 @@ root.addTag = (id, value, view, demo) ->
 
       #add input control
       if not view
-        el += "<input type=\"hidden\" name=\""+id+"[0]\" value=\""+value+"\" data=\""+value+"\">"
+        el += "<input type=\"hidden\" name=\""+id+"[0]\" value=\""+value+"\" data=\""+dataTag+"\">"
 
       $('.listOfTags.'+id).append(el)
 
