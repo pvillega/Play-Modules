@@ -39,8 +39,8 @@ root.tagInput = (id, values, demo) ->
 
     $('#'+id).keyup (event) ->
         #console.log(event.which)
-        # Comma/Space/Enter are all valid delimiters for new tags.
-        if event.which is COMMA or event.which is SPACE or event.which is ENTER
+        # Comma/Enter are all valid delimiters for new tags.
+        if event.which is COMMA or event.which is ENTER
             event.preventDefault()
 
             #clean and trim input
