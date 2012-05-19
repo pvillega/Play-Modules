@@ -1,0 +1,150 @@
+@(demoid: Long, currentPage: Page[models.VotesDemo], currentOrderBy: Int)(implicit request: play.api.mvc.RequestHeader)
+
+@import tag._
+
+@main(Messages("mods.votes.view")) {
+<header id="menuDemosArea">
+    <h1>@Messages("mods.votes.view")</h1>
+</header>
+
+@Option(currentPage.items).filterNot(_.isEmpty).map { votes =>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    @headerEntryVotes(2, Messages("mods.votes.user"), currentOrderBy, routes.Demos.viewVotes)
+    @headerEntryVotes(3, Messages("mods.votes.date"), currentOrderBy, routes.Demos.viewVotes)
+    @headerEntryVotes(4, Messages("mods.votes.value"), currentOrderBy, routes.Demos.viewVotes)
+</tr>
+</thead>
+<tbody>
+
+@votes.map { vote =>
+    <tr>
+        <td><a data-pjax="#main-container" href="@routes.Profile.index(vote.userid)">@vote.name</a></td>
+        <td>@vote.date.format("dd-MM-yyyy")</td>
+        <td><span class="badge @if(vote.value > 0) {badge-success} else {badge-error}">@vote.value</span></td>
+    </tr>
+}
+
+</tbody>
+</table>
+
+
+@paginationFooterVotes(currentPage, votes.size, currentOrderBy, routes.Demos.viewVotes)
+
+}.getOrElse {
+
+<div class="well">
+    <em>@Messages("navigation.nothing")</em>
+</div>
+
+}
+<div class="form-actions">
+    <a data-pjax="#main-container" href="@routes.Demos.viewDemo(demoid)" class="btn">@Messages("navigation.back")</a>
+</div>
+
+
+@* for style purposes *@
+<div class="spacer">&nbsp;</div>
+}
+
+
+
+
+@**
+Helper generating table headers to reorder the table by a field
+
+@param newOrderBy new ordering for results
+@param title the title to display in the header
+@param currentOrderBy current order being applied to the resultset
+@param call the 'list' method of a Controller that we will call to load the page
+*@
+@headerEntryVotes(newOrderBy: Int, title: String, currentOrderBy: Int, call: (Long, Int, Int) => Call) = {
+<th>
+    @if(scala.math.abs(currentOrderBy) == newOrderBy) {
+    @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
+    }
+    <a data-pjax="#main-container" href="@pageLinkVotes(0, currentOrderBy, call, Some(newOrderBy))">@title</a>
+</th>
+}
+
+
+
+@**
+Helper generating navigation links between pages
+
+@param newPage destination page
+@param currentOrderBy current order being applied to the resultset
+@param call the 'list' method of a Controller that we will call to load the page.
+@param newOrderBy new ordering for results. Default: None
+*@
+@pageLinkVotes(newPage: Int, currentOrderBy: Int, call: (Long, Int, Int) => Call, newOrderBy: Option[Int] = None) = {
+
+@{
+    call(
+        demoid,
+        newPage,
+        newOrderBy.map { orderBy =>
+            if(orderBy == scala.math.abs(currentOrderBy)) {
+                if(currentOrderBy > 0) {
+                    -currentOrderBy
+                } else {
+                    orderBy
+                }
+            } else {
+                orderBy
+            }
+        }.getOrElse(currentOrderBy))
+    }
+}
+
+
+@**
+Helper generating the pagination footer for list views
+
+@param currentPage the page currently being displayed
+@param pageSize number of elements in this page
+@param currentOrderBy current order being applied to the resultset
+@param call the 'list' method of a Controller that we will call to load the page
+*@
+@paginationFooterVotes(currentPage: Page[Any], pageSize: Int, currentOrderBy: Int, call: (Long, Int, Int) => Call) = {
+
+<div id="pagination" class="pagination">
+    <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + pageSize) of @currentPage.total</a>
+    <ul>
+        @currentPage.prev.map { page =>
+        <li class="prev">
+            <a data-pjax="#main-container" href="@pageLinkVotes(page, currentOrderBy, call)">@Messages("pagination.prev")</a>
+        </li>
+        }.getOrElse {
+        <li class="prev disabled">
+            <a>@Messages("pagination.prev")</a>
+        </li>
+        }
+
+        @for(index <- currentPage.paginationStart to currentPage.paginationEnd) {
+        @if(index == currentPage.page + 1){
+        <li class="active">
+            <a href="#">@index</a>
+        </li>
+        } else {
+        <li>
+            <a data-pjax="#main-container" href="@pageLinkVotes(index-1, currentOrderBy, call)">@index</a>
+        </li>
+        }
+        }
+
+        @currentPage.next.map { page =>
+        <li class="next">
+            <a data-pjax="#main-container" href="@pageLinkVotes(page, currentOrderBy, call)">@Messages("pagination.next")</a>
+        </li>
+        }.getOrElse {
+        <li class="next disabled">
+            <a>@Messages("pagination.next")</a>
+        </li>
+        }
+    </ul>
+</div>
+
+}

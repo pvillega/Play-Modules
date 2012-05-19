@@ -22,6 +22,7 @@ case class Demo(id: Pk[Long] = NotAssigned, name: String, version: Long, author:
 
 case class DemoView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, codeurl: String, demourl: Option[String] = None, description: Option[String] = None, tags: List[String] = Nil)
 
+case class VotesDemo(userid: Long, name: String, date: Date, value: Int)
 
 /**
  * Demo object
@@ -63,6 +64,15 @@ object Demo {
       get[Long]("aid") ~
       get[String]("publisher") map {
       case id ~ name ~ score ~ showScore ~ codeurl ~ demourl ~ description ~ version ~ aid ~ publisher => DemoView(id, name, score, showScore, version, aid, publisher, codeurl, demourl, description)
+    }
+  }
+
+  val votesView = {
+    get[Long]("userid") ~
+      get[String]("name") ~
+      get[Date]("date") ~
+      get[Int]("value") map {
+      case userid ~ name ~ date ~ value => VotesDemo(userid, name, date, value)
     }
   }
 
@@ -269,16 +279,18 @@ object Demo {
           """
         } else {
           """
-            update votedemo set vote = {vote}
+            update votedemo set vote = {vote}, created = {created}
             where author = {author} and demo = {demo}
           """
         }
+        val now = new Date()
         SQL(
           voteQuery
         ).on(
           'demo -> demoid,
           'author -> userid,
-          'vote -> vote
+          'vote -> vote,
+          'created -> now
         ).executeUpdate()
 
         //upate demo table
@@ -432,4 +444,56 @@ object Demo {
 
   }
 
+  /**
+   * Returns a page of list of votes for a Demo
+   *
+   * @param page Page to display
+   * @param pageSize Number of elements per page
+   * @param orderBy property used for sorting
+   * @param demoid id of the demo of which we are checking the votes
+   */
+  def listOfVotes(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, demoid: Long) = {
+    val offset = pageSize * page
+    val mode = if (orderBy > 0) "ASC NULLS FIRST" else "DESC NULLS LAST"
+
+    Logger.debug("Module.listOfVotes with params: page[%d] pageSize[%d] orderBy[%d] order[%s]".format(page, pageSize, orderBy, mode))
+
+    DB.withConnection {
+      implicit connection =>
+      // An explanation on the format applied to the SQL String: for some reason the JDBC driver for postgresql doesn't like it when you replace the
+      // order by param in a statement. It gets ignored. So we have to provide it in the query before the driver processes the statement.
+      // Now you'll be screaming "SQL INJECTION". Relax. Although it could happen, orderBy is an integer (which we turn into abs value for more safety).
+      // If you try to call the controller that provides orderBy with a string, Play returns a 404 error. So only integers are allowed. And if there is no
+      // column corresponding to the given integer, the order by is ignored. So, not ideal, but not so bad.
+        val votes = SQL(
+          """
+            select d.id as "userid", d.name as "name", vp.created as "date", vp.vote as "value"
+            from demo d
+            left join votedemo vp on vp.demo = d.id
+            left join publisher p on vp.author = p.id
+            where d.id = {demo}
+            order by %d %s
+            limit {pageSize} offset {offset}
+          """.format(scala.math.abs(orderBy), mode)
+        ).on(
+          'demo -> demoid,
+          'pageSize -> pageSize,
+          'offset -> offset
+        ).as(Demo.votesView *)  //Vote is set to 0 as it won't be used, to avoid a join
+
+        val totalRows = SQL(
+          """
+            select count(*)
+            from demo d
+            left join votedemo vp on vp.demo = d.id
+            where d.id = {demo}
+          """
+        ).on(
+          'demo -> demoid
+        ).as(scalar[Long].single)
+
+        Page(votes, page, offset, totalRows, pageSize)
+    }
+
+  }
 }

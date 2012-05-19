@@ -210,6 +210,28 @@ object Modules extends Controller with Secured {
   }
 
   /**
+   * Shows who has voted the current module
+   *
+   * @param id the id of the module from which we want the votes
+   * @param page Current page number (starts from 0)
+   * @param orderBy Column to be sorted
+   */
+  def viewVotes(id: Long, page: Int, orderBy: Int) = Action {
+    implicit request =>
+      Logger.info("Modules.viewVotes accessed for module[%d]".format(id))
+      Module.findById(id) match {
+        case Some(mod) => {
+          val votes = Module.listOfVotes(page = page, orderBy = orderBy, pageSize = 20, modid = id)
+          Ok(views.html.modules.viewVotes(id, votes, orderBy))
+        }
+        case _ => {
+          Logger.warn("Modules.viewVotes can't find the module[%d]".format(id))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
+      }
+  }
+
+  /**
    * Retrieves a list of Releases linked to the given module. Used on Ajax requests
    * @param modid id of the module that owns the releases
    * @param start we want to start from this release

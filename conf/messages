@@ -164,6 +164,11 @@ mods.voted=Thanks for voicing your opinion.
 mods.details=Details
 mods.releases=Releases
 
+mods.votes.view=View votes
+mods.votes.user=User
+mods.votes.date=Date
+mods.votes.value=Vote
+
 release.create=Add Release
 release.edit=Edit Release
 release.name=Name

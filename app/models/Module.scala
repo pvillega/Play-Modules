@@ -22,6 +22,7 @@ case class Module(id: Pk[Long] = NotAssigned, name: String, version: Long, autho
 
 case class ModuleView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, url: String, description: Option[String] = None, updated: Date, tags: List[String] = Nil)
 
+case class VotesModule(userid: Long, name: String, date: Date, value: Int)
 
 
 /**
@@ -64,6 +65,15 @@ object Module {
       get[String]("publisher") ~
       get[Date]("updated") map {
       case id ~ name ~ score ~ showScore ~ url ~ description ~ version ~ aid ~ publisher ~ updated => ModuleView(id, name, score, showScore, version, aid, publisher, url, description, updated)
+    }
+  }
+
+  val votesView = {
+      get[Long]("userid") ~
+      get[String]("name") ~
+      get[Date]("date") ~
+      get[Int]("value") map {
+      case userid ~ name ~ date ~ value => VotesModule(userid, name, date, value)
     }
   }
 
@@ -269,16 +279,18 @@ object Module {
           """
         } else {
           """
-            update voteplugin set vote = {vote}
+            update voteplugin set vote = {vote}, created = {created}
             where author = {author} and plugin = {mod}
           """
         }
+        val now = new Date()
         SQL(
           voteQuery
         ).on(
           'mod -> modid,
           'author -> userid,
-          'vote -> vote
+          'vote -> vote,
+          'created -> now
         ).executeUpdate()
 
         //update module table
@@ -428,6 +440,59 @@ object Module {
         ).as(scalar[Long].single)
 
         Page(mods, page, offset, totalRows, pageSize)
+    }
+
+  }
+
+  /**
+   * Returns a page of list of votes for a Module
+   *
+   * @param page Page to display
+   * @param pageSize Number of elements per page
+   * @param orderBy property used for sorting
+   * @param modid id of the module of which we are checking the votes
+   */
+  def listOfVotes(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, modid: Long) = {
+    val offset = pageSize * page
+    val mode = if (orderBy > 0) "ASC NULLS FIRST" else "DESC NULLS LAST"
+
+    Logger.debug("Module.listOfVotes with params: page[%d] pageSize[%d] orderBy[%d] order[%s]".format(page, pageSize, orderBy, mode))
+
+    DB.withConnection {
+      implicit connection =>
+        // An explanation on the format applied to the SQL String: for some reason the JDBC driver for postgresql doesn't like it when you replace the
+        // order by param in a statement. It gets ignored. So we have to provide it in the query before the driver processes the statement.
+        // Now you'll be screaming "SQL INJECTION". Relax. Although it could happen, orderBy is an integer (which we turn into abs value for more safety).
+        // If you try to call the controller that provides orderBy with a string, Play returns a 404 error. So only integers are allowed. And if there is no
+        // column corresponding to the given integer, the order by is ignored. So, not ideal, but not so bad.
+        val votes = SQL(
+          """
+            select pl.id as "userid", pl.name as "name", vp.created as "date", vp.vote as "value"
+            from plugin pl
+            left join voteplugin vp on vp.plugin = pl.id
+            left join publisher p on vp.author = p.id
+            where pl.id = {mod}
+            order by %d %s
+            limit {pageSize} offset {offset}
+          """.format(scala.math.abs(orderBy), mode)
+        ).on(
+          'mod -> modid,
+          'pageSize -> pageSize,
+          'offset -> offset
+        ).as(Module.votesView *)  //Vote is set to 0 as it won't be used, to avoid a join
+
+        val totalRows = SQL(
+          """
+            select count(*)
+            from plugin pl
+            left join voteplugin vp on vp.plugin = pl.id
+            where pl.id = {mod}
+          """
+        ).on(
+          'mod -> modid
+        ).as(scalar[Long].single)
+
+        Page(votes, page, offset, totalRows, pageSize)
     }
 
   }

@@ -190,5 +190,26 @@ object Demos extends Controller with Secured {
       }
   }
 
+  /**
+   * Shows who has voted the current demo
+   *
+   * @param id the id of the de,p from which we want the votes
+   * @param page Current page number (starts from 0)
+   * @param orderBy Column to be sorted
+   */
+  def viewVotes(id: Long, page: Int, orderBy: Int) = Action {
+    implicit request =>
+      Logger.info("Demos.viewVotes accessed for demo[%d]".format(id))
+      Demo.findById(id) match {
+        case Some(demo) => {
+          val votes = Demo.listOfVotes(page = page, orderBy = orderBy, pageSize = 20, demoid = id)
+          Ok(views.html.demos.viewVotes(id, votes, orderBy))
+        }
+        case _ => {
+          Logger.warn("Demos.viewVotes can't find the demo[%d]".format(id))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
+      }
+  }
 
 }

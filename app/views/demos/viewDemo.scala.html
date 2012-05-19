@@ -35,6 +35,7 @@
                     <a class="@if(vote.getOrElse(0) < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
                 </form>
             }
+            <a data-pjax="#main-container" href="@routes.Demos.viewVotes(demo.id)" class="smallLink">@Messages("mods.votes.view")</a>
         </div>
         <div class="span11">
             <div class="row">
