@@ -7,6 +7,7 @@ import play.api.mvc.Results._
 import play.api.Play.current
 import play.api.mvc.BodyParsers._
 import models.User
+import jsmessages.api.JsMessages
 
 
 object Application extends Controller with Secured {
@@ -28,8 +29,21 @@ object Application extends Controller with Secured {
 
     Ok(Cache.getOrElse("javascriptRoutes", 60*60*24){
         Routes.javascriptRouter("jsRoutes")(
-          Demos.listDemos, Modules.listModules
+          Demos.listDemos, Modules.listModules, Modules.fetchReleases, Modules.editRelease, Modules.viewRelease
         )
+      }
+    ).as("text/javascript")
+  }
+
+  /**
+   * Exports the subset of I18N we may need on Javascript
+   * @return
+   */
+  def jsMessages = Action { implicit request =>
+
+    Ok(Cache.getOrElse("javascriptI18N", 60*60*24){
+        JsMessages.subset(Some("window.Messages"))(
+          "release.loadDocumentationError")
       }
     ).as("text/javascript")
   }

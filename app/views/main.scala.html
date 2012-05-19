@@ -121,8 +121,9 @@
         <script type="text/javascript">var googleAnalyticsCode= '@play.api.Play.current.configuration.getString("google.analytics").getOrElse("")';</script>
         @* we added any javascript tools or jquery plugins used into bootstrap.min.js (all minified) to open less connections from the client *@
         <script src="@routes.Assets.at("javascripts/bootstrap_1.min.js")" type="text/javascript"></script>
-        @* load javascript routes *@
+        @* load javascript routes and I18n *@
         <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+        <script type="text/javascript" src="@routes.Application.jsMessages"></script>
         @* our javascript *@
         <script src="@routes.Assets.at("javascripts/scripts.min.js")" type="text/javascript"></script>
 

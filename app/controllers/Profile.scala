@@ -46,7 +46,6 @@ object Profile extends Controller with Secured {
 
   /**
    * Edits the profile of the authenticated user
-   *
    */
   def edit() = Authenticated {
     implicit request =>

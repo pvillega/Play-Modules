@@ -1,0 +1,61 @@
+@(releaseForm: Form[models.Release], modid: Long, id: Long)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("release.edit")) {
+    <header>
+        <h1>@Messages("release.edit")</h1>
+    </header>
+
+    <div class="row">
+        <div class="span2 offset10">
+            <a class="btn btn-danger" data-toggle="modal" href="#deleteModal" >@Messages("release.delete")</a>
+        </div>
+    </div>
+
+    <div class="modal hide" id="deleteModal">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>@Messages("release.delete")</h3>
+        </div>
+        <div class="modal-body">
+            <p>@Messages("release.delete.text")</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>
+            @form(routes.Modules.deleteRelease(id, modid)) {
+            <input type="submit" value="@Messages("navigation.delete")" class="btn btn-danger">
+            }
+        </div>
+    </div>
+
+    @helper.form(action = routes.Modules.updateRelease(id, modid), 'class -> "well") {
+
+        @inputText(
+        releaseForm("name"),
+        '_label -> Messages("release.name"),
+        '_error -> releaseForm.globalError
+        )
+
+        @richTextEditor(
+        releaseForm("description"),
+        '_label -> Messages("release.description"),
+        '_error -> releaseForm.globalError
+        )
+
+
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
+        <a data-pjax="#main-container" href="@routes.Modules.editModule(modid, true)" class="btn">@Messages("navigation.back")</a>
+    </div>
+
+
+    }
+
+    <div class="spacer">&nbsp;</div>
+}

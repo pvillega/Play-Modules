@@ -1,0 +1,21 @@
+@(release: models.Release)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+<header id="menuModulesArea">
+    <h1>@release.name</h1>
+</header>
+
+<div class="row">
+    <div class="span1"><strong>@Messages("release.created")</strong></div>
+    <div class="span5">@release.created.format("dd-MM-yyyy")</div>
+</div>
+
+<div class="row description">
+    <div class="span1"><strong>@Messages("release.description")</strong></div>
+</div>
+<div class="row">
+    <div class="span5">@richTextDisplay(release.description)</div>
+</div>

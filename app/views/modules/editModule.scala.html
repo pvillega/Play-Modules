@@ -1,4 +1,4 @@
-@(modForm: Form[models.Module], id: Long)(implicit request: controllers.AuthenticatedRequest[AnyContent])
+@(modForm: Form[models.Module], id: Long, latestReleases: List[models.Release], showReleases: Boolean)(implicit request: controllers.AuthenticatedRequest[AnyContent])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -15,6 +15,9 @@
         <div class="span2 offset10">
             <a class="btn btn-danger" data-toggle="modal" href="#deleteModal" >@Messages("mods.delete")</a>
         </div>
+    </div>
+    <div class="row">
+        <div class="span12">&nbsp;</div>
     </div>
 
     <div class="modal hide" id="deleteModal">
@@ -33,52 +36,144 @@
         </div>
     </div>
 
-    @helper.form(action = routes.Modules.updateModule(id), 'class -> "well") {
+    <ul class="nav nav-tabs" id="myTabs">
+        <li><a href="#details" data-toggle="tab">@Messages("mods.details")</a></li>
+        <li><a href="#releases" data-toggle="tab">@Messages("mods.releases")</a></li>
+    </ul>
 
-        @inputText(
-        modForm("name"),
-        '_label -> Messages("mod.name"),
-        '_error -> modForm.globalError
-        )
+    <div class="tab-content">
+        <div class="tab-pane active" id="details">
+            @helper.form(action = routes.Modules.updateModule(id), 'class -> "well") {
 
-        @select(
-        modForm("version"),
-        options = options(Version.allSelect),
-        '_default -> Messages("mod.version.default"),
-        '_label -> Messages("mod.version"),
-        '_help -> "",
-        '_error -> modForm.globalError
-        )
+                @inputText(
+                modForm("name"),
+                '_label -> Messages("mod.name"),
+                '_error -> modForm.globalError
+                )
 
-        @inputText(
-        modForm("url"),
-        '_label -> Messages("mod.url"),
-        '_help -> Messages("mod.url.help"),
-        '_error -> modForm.globalError
-        )
+                @select(
+                modForm("version"),
+                options = options(Version.allSelect),
+                '_default -> Messages("mod.version.default"),
+                '_label -> Messages("mod.version"),
+                '_help -> "",
+                '_error -> modForm.globalError
+                )
 
-        @inputText(
-        modForm("tags"),
-        '_id -> "tags",
-        '_label -> Messages("mod.tags"),
-        '_help -> Messages("mod.tags.help"),
-        '_error -> modForm.globalError
-        )
-        @tagInput("tags", modForm.data.foldRight(List[String]()) { (x,l) => if(x._1.startsWith("tags"))  x._2 :: l else l  })
+                @inputText(
+                modForm("url"),
+                '_label -> Messages("mod.url"),
+                '_help -> Messages("mod.url.help"),
+                '_error -> modForm.globalError
+                )
 
-        @richTextEditor(
-            modForm("description"),
-            '_label -> Messages("mod.description"),
-            '_error -> modForm.globalError
-        )
+                @inputText(
+                modForm("tags"),
+                '_id -> "tags",
+                '_label -> Messages("mod.tags"),
+                '_help -> Messages("mod.tags.help"),
+                '_error -> modForm.globalError
+                )
+                @tagInput("tags", modForm.data.foldRight(List[String]()) { (x,l) => if(x._1.startsWith("tags"))  x._2 :: l else l  })
+
+                @richTextEditor(
+                    modForm("description"),
+                    '_label -> Messages("mod.description"),
+                    '_error -> modForm.globalError
+                )
 
 
-<div class="form-actions">
-        <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
-        <a data-pjax="#main-container" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
+                <a data-pjax="#main-container" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+            </div>
+
+            }
+        </div>
+        <div class="tab-pane" id="releases">
+            <div class="row">
+                <div class="span2 offset10">
+                    <a data-pjax="#main-container" class="btn btn-success" id="add" href="@routes.Modules.addRelease(id)">@Messages("release.create")</a>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>@Messages("release.created")</th>
+                    <th>@Messages("release.name")</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="releasesContainer">
+
+                @if(latestReleases.isEmpty) {
+                    <tr>
+                        <td colspan="5"><em>@Messages("navigation.nothing")</em></td>
+                    </tr>
+                } else {
+                    @latestReleases.map { release =>
+                    <tr>
+                        <td>@release.created.format("dd-MM-yyyy")</td>
+                        <td><a data-pjax="#main-container" href="@routes.Modules.editRelease(release.id.get, id)">@release.name</a></td>
+                        <td><a data-pjax="#main-container" href="@routes.Modules.editRelease(release.id.get, id)">@Messages("release.description.edit")</a></td>
+                    </tr>
+                    }
+                }
+
+                </tbody>
+            </table>
+            @* We allow loading more via ajax if not empty *@
+            @if(!latestReleases.isEmpty){
+                <a id="releasesLoad">@Messages("release.seeMore")</a>
+            }
+        </div>
+
     </div>
 
-    }
+
+    <script>
+        $(function () {
+            @* activate right tab *@
+            @if(showReleases){
+                $('#myTabs a:last').tab('show');
+            } else {
+                $('#myTabs a:first').tab('show');
+            }
+
+            @* ajax call to retrieve more releases *@
+            var releasesLoaded = @latestReleases.size;
+            $('#releasesLoad').on("click", function(event) {
+                event.stopPropagation();
+
+                jsRoutes.controllers.Modules.fetchReleases(modid = @id, start = releasesLoaded).ajax({
+                    context: this,
+                    success: function(data) {
+                            if(jQuery.isEmptyObject(data)){
+                                $('#releasesLoad').text('@Messages("release.noMore")');
+                                $('#releasesLoad').off("click");
+                                return;
+                            }
+                            for(var r in data) {
+                                var html = "<tr>";
+                                html +="<td>"+data[r].created+"</td>";
+                                html +="<td><a data-pjax='#main-container' href='"+ jsRoutes.controllers.Modules.editRelease(id = data[r].id, modid = @id).url +"'>"+data[r].name+"</a></td>";
+                                html +="<td><a data-pjax='#main-container' href='"+ jsRoutes.controllers.Modules.editRelease(id = data[r].id, modid = @id).url +"'>@Messages("release.description.edit")</a></td>";
+                                html += "<tr>";
+                                $('#releasesContainer').append(html);
+                                releasesLoaded = releasesLoaded + 1;
+                            }
+                            //relink anchors with pjax
+                            $('a[data-pjax]').pjax()
+                    },
+                    error: function(err) {
+                          $('#releasesLoad').text('@Messages("release.loadMoreError")');
+                    }
+                });
+            });
+        })
+    </script>
+
 
     <div class="spacer">&nbsp;</div>
 }

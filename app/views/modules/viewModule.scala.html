@@ -1,4 +1,4 @@
-@(mod: models.ModuleView, vote: Option[Int])(implicit request: play.api.mvc.RequestHeader)
+@(mod: models.ModuleView, vote: Option[Int], latestReleases: List[models.Release])(implicit request: play.api.mvc.RequestHeader)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -18,65 +18,159 @@
         </div>
     </div>
     <hr class="view"/>
-    @* first row, module details *@
-    <div class="row">
-        @* first colum, score*@
-        <div class="span1">
-            @request.session.get("userId").map { userId =>
-                <form id="voteUp" class="voteForm" action="@routes.Modules.voteModule(mod.id, 1, vote)" method="POST">
-                    <a class="@if(vote.getOrElse(0) > 0) {voteUpSelected} else {voteUp}" href="#" onclick="$('#voteUp').submit()"></a>
-                </form>
-            }
-            <div class="voteBadge">
-                <span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error} biggerBadge">@mod.showScore</span>
+    <ul class="nav nav-tabs" id="myTabs">
+        <li><a href="#details" data-toggle="tab">@Messages("mods.details")</a></li>
+        <li><a href="#releases" data-toggle="tab">@Messages("mods.releases")</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="details">
+            @* first row, module details *@
+            <div class="row">
+                @* first colum, score*@
+                <div class="span1">
+                    @request.session.get("userId").map { userId =>
+                        <form id="voteUp" class="voteForm" action="@routes.Modules.voteModule(mod.id, 1, vote)" method="POST">
+                            <a class="@if(vote.getOrElse(0) > 0) {voteUpSelected} else {voteUp}" href="#" onclick="$('#voteUp').submit()"></a>
+                        </form>
+                    }
+                    <div class="voteBadge">
+                        <span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error} biggerBadge">@mod.showScore</span>
+                    </div>
+                    @request.session.get("userId").map { userId =>
+                        <form id="voteDown" class="voteForm" action="@routes.Modules.voteModule(mod.id, -1, vote)" method="POST">
+                            <a class="@if(vote.getOrElse(0) < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
+                        </form>
+                    }
+                </div>
+                <div class="span11">
+                    <div class="row">
+                        <div class="span1"><strong>@Messages("mod.name")</strong></div>
+                        <div class="span5">@mod.name</div>
+                    </div>
+                    <div class="row">
+                        <div class="span1"><strong>@Messages("mod.author")</strong></div>
+                        <div class="span5"><a data-pjax="#main-container" href="@routes.Profile.index(mod.aid)">@mod.publisher</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="span1"><strong>@Messages("mod.version")</strong></div>
+                        <div class="span5">@mod.version</div>
+                    </div>
+                    <div class="row">
+                        <div class="span1"><strong>@Messages("mod.url")</strong></div>
+                        <div class="span5"><a href="@mod.url">@mod.url</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="span1"><strong>@Messages("mod.updated")</strong></div>
+                        <div class="span5">@mod.updated.format("dd-MM-yyyy")</div>
+                    </div>
+
+                    <div class="row description">
+                        <div class="span1"><strong>@Messages("mod.description")</strong></div>
+                    </div>
+                    <div class="row">
+                        <div class="span11">@richTextDisplay(mod.description)</div>
+                    </div>
+
+                </div>
             </div>
-            @request.session.get("userId").map { userId =>
-                <form id="voteDown" class="voteForm" action="@routes.Modules.voteModule(mod.id, -1, vote)" method="POST">
-                    <a class="@if(vote.getOrElse(0) < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
-                </form>
-            }
         </div>
-        <div class="span11">
-            <div class="row">
-                <div class="span1"><strong>@Messages("mod.name")</strong></div>
-                <div class="span5">@mod.name</div>
-            </div>
-            <div class="row">
-                <div class="span1"><strong>@Messages("mod.author")</strong></div>
-                <div class="span5"><a data-pjax="#main-container" href="@routes.Profile.index(mod.aid)">@mod.publisher</a></div>
-            </div>
-            <div class="row">
-                <div class="span1"><strong>@Messages("mod.version")</strong></div>
-                <div class="span5">@mod.version</div>
-            </div>
-            <div class="row">
-                <div class="span1"><strong>@Messages("mod.url")</strong></div>
-                <div class="span5"><a href="@mod.url">@mod.url</a></div>
-            </div>
-            <div class="row">
-                <div class="span1"><strong>@Messages("mod.updated")</strong></div>
-                <div class="span5">@mod.updated.format("dd-MM-yyyy")</div>
-            </div>
+        <div class="tab-pane" id="releases">
+            @* the list of releases *@
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>@Messages("release.created")</th>
+                    <th>@Messages("release.name")</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="releasesContainer">
 
-            <div class="row description">
-                <div class="span1"><strong>@Messages("mod.description")</strong></div>
-            </div>
-            <div class="row">
-                <div class="span11">@richTextDisplay(mod.description)</div>
-            </div>
+                @if(latestReleases.isEmpty) {
+                    <tr>
+                        <td colspan="5"><em>@Messages("navigation.nothing")</em></td>
+                    </tr>
+                } else {
+                    @latestReleases.map { release =>
+                    <tr>
+                        <td>@release.created.format("dd-MM-yyyy")</td>
+                        <td><a onclick="displayDocumentation(@release.id);">@release.name</a></td>
+                        <td><a onclick="displayDocumentation(@release.id);">@Messages("release.description")</a></td>
+                    </tr>
+                    }
+                }
 
+                </tbody>
+            </table>
+
+            @* We allow loading more via ajax if not empty *@
+            @if(!latestReleases.isEmpty){
+                <a id="releasesLoad">@Messages("release.seeMore")</a>
+            }
         </div>
     </div>
+
+    <div class="modal hide" id="displayModal">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>@Messages("release.description")</h3>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            @* activate right tab *@
+            $('#myTabs a:first').tab('show');
+
+            @* ajax call to retrieve more releases *@
+            var releasesLoaded = @latestReleases.size;
+            $('#releasesLoad').on("click", function(event) {
+                event.stopPropagation();
+
+                jsRoutes.controllers.Modules.fetchReleases(modid = @mod.id, start = releasesLoaded).ajax({
+                    context: this,
+                    success: function(data) {
+                        if(jQuery.isEmptyObject(data)){
+                            $('#releasesLoad').text('@Messages("release.noMore")');
+                            $('#releasesLoad').off("click");
+                            return;
+                        }
+                        for(var r in data) {
+                            var html = "<tr>";
+                            html +="<td>"+data[r].created+"</td>";
+                            html +="<td><a onclick='displayDocumentation("+data[r].id+");'>"+data[r].name+"</a></td>";
+                            html +="<td><a onclick='displayDocumentation("+data[r].id+");'>@Messages("release.description")</a></td>";
+                            html += "<tr>";
+                            $('#releasesContainer').append(html);
+                            releasesLoaded = releasesLoaded + 1;
+                        }
+                    },
+                    error: function(err) {
+                        $('#releasesLoad').text('@Messages("release.loadMoreError")');
+                    }
+                });
+            });
+        })
+    </script>
+
 
     <div class="form-actions">
-        <a href="#" onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
+        <a onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
     </div>
+
 
     @* second row, comments *@
     @disqus("mod"+mod.id)
 
     <div class="form-actions">
-        <a href="#" onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
+        <a onclick="window.history.back();" class="btn">@Messages("navigation.back")</a>
     </div>
 
     <div class="spacer">&nbsp;</div>

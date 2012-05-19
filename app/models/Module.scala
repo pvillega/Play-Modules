@@ -23,6 +23,7 @@ case class Module(id: Pk[Long] = NotAssigned, name: String, version: Long, autho
 case class ModuleView(id: Long, name: String, score: BigDecimal, showScore: Int, version: String, aid: Long, publisher: String, url: String, description: Option[String] = None, updated: Date, tags: List[String] = Nil)
 
 
+
 /**
  * Module object
  */

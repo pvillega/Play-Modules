@@ -1,0 +1,38 @@
+@(releaseForm: Form[models.Release], modid: Long)(implicit request: play.api.mvc.RequestHeader)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import tag._
+
+@implicitField = @{ FieldConstructor(views.html.tag.formElement.f) }
+
+@main(Messages("release.create")) {
+<header id="menuModulesArea">
+    <h1>@Messages("release.create")</h1>
+</header>
+
+@helper.form(action = routes.Modules.saveRelease(modid), 'class -> "well") {
+
+@inputText(
+releaseForm("name"),
+'_label -> Messages("release.name"),
+'_error -> releaseForm.globalError
+)
+
+@richTextEditor(
+releaseForm("description"),
+'_label -> Messages("release.description"),
+'_error -> releaseForm.globalError
+)
+
+
+<div class="form-actions">
+    <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
+    <a data-pjax="#main-container" href="@routes.Modules.editModule(modid, true)" class="btn">@Messages("navigation.cancel")</a>
+</div>
+
+}
+
+
+<div class="spacer">&nbsp;</div>
+}

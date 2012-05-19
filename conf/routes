@@ -35,13 +35,20 @@ POST    /demo/vote/$id<[0-9]+>      controllers.Demos.voteDemo(id: Long, vote: I
 
 # Modules
 GET     /module/list                  controllers.Modules.listModules(page: Int ?= 0, orderBy: Int ?= 1, nameFilter: String ?= "", versionFilter: Long ?= -1, tagFilter: List[String] ?= Nil)
-GET     /module/edit/$id<[0-9]+>             controllers.Modules.editModule(id: Long)
+GET     /module/edit/$id<[0-9]+>             controllers.Modules.editModule(id: Long, showReleases: Boolean ?= false)
 POST    /module/update/$id<[0-9]+>            controllers.Modules.updateModule(id: Long)
 GET     /module/create/               controllers.Modules.createModule()
 POST    /module/save/                 controllers.Modules.saveModule()
 POST    /module/delete/$id<[0-9]+>               controllers.Modules.deleteModule(id: Long)
 GET     /module/$id<[0-9]+>           controllers.Modules.viewModule(id: Long)
 POST    /module/vote/$id<[0-9]+>      controllers.Modules.voteModule(id: Long, vote: Int, oldVote: Option[Int] ?= None)
+GET     /module/$modid<[0-9]+>/release/create  controllers.Modules.addRelease(modid: Long)
+POST    /module/$modid<[0-9]+>/release/save  controllers.Modules.saveRelease(modid: Long)
+GET     /module/$modid<[0-9]+>/release/$id<[0-9]+>/edit             controllers.Modules.editRelease(id: Long, modid: Long)
+POST    /module/$modid<[0-9]+>/release/$id<[0-9]+>/update            controllers.Modules.updateRelease(id: Long, modid: Long)
+POST    /module/$modid<[0-9]+>/release/$id<[0-9]+>/delete               controllers.Modules.deleteRelease(id: Long, modid: Long)
+GET     /release/$id<[0-9]+>/view               controllers.Modules.viewRelease(id: Long)
+GET     /releases/fetch               controllers.Modules.fetchReleases(modid: Long, start: Int)
 
 # Administration
 GET     /admin                      controllers.Administration.index()
@@ -67,6 +74,7 @@ POST    /admin/tags/delete/       controllers.Administration.deleteTag(id: Long)
 
 # Javascript routing
 GET     /assets/javascripts/routes          controllers.Application.javascriptRoutes
+GET     /assets/javascripts/i18n            controllers.Application.jsMessages
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

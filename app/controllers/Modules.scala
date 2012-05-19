@@ -1,13 +1,16 @@
 package controllers
 
 import play.api.data.Form
-import models.Module
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import anorm.NotAssigned
 import play.Logger
 import play.api.i18n.Messages
 import play.api.mvc.{Action, Controller}
+import play.libs.Json._
+import models.{Release, Module}
+import play.api.libs.json._
+import java.util.Date
+import anorm.{Id, NotAssigned}
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +35,19 @@ object Modules extends Controller with Secured {
       (id, name, version, url, tags, description) => Module(name = name, version = version, url = url, description = description, tags = tags)
     }{
       mod: Module => Some(mod.id, mod.name, mod.version, mod.url, mod.tags, mod.description)
+    }
+  )
+
+  // form to edit release
+  val releaseForm: Form[Release] = Form(
+    mapping(
+      "id" -> ignored(NotAssigned: anorm.Pk[Long]),
+      "name" -> nonEmptyText,
+      "description" -> optional (text)
+    ) {
+      (id, name, description) => Release(name = name, description = description)
+    }{
+      release: Release => Some(release.id, release.name, release.description)
     }
   )
 
@@ -70,12 +86,15 @@ object Modules extends Controller with Secured {
    * Edits the selected module
    *
    * @param id the id of the module to edit
+   * @param showReleases if true the releases tab is active by default
    */
-  def editModule(id: Long) = Authenticated {
+  def editModule(id: Long, showReleases: Boolean = false) = Authenticated {
     implicit request =>
       Logger.info("Modules.editModule accessed by user %d to edit module[%d]".format(request.user.id.get, id))
       Module.findById(id) match {
-        case Some(mod) if mod.author == request.user.id.get => Ok(views.html.modules.editModule(modForm.fill(mod), mod.id.get))
+        case Some(mod) if mod.author == request.user.id.get =>
+          Ok(views.html.modules.editModule(modForm.fill(mod), mod.id.get, Release.fetchRecentReleases(mod.id.get), showReleases)
+        )
         case _ => {
           Logger.warn("Modules.editModule can't find the module[%d]".format(id))
           NotFound(views.html.errors.error404(request.path)(request))
@@ -95,7 +114,7 @@ object Modules extends Controller with Secured {
         // Form has errors, redisplay it
         errors => {
           Logger.error("Modules.updateModule Errors while updating Module %d: %s".format(id, errors))
-          BadRequest(views.html.modules.editModule(errors, id))
+          BadRequest(views.html.modules.editModule(errors, id, Release.fetchRecentReleases(id), false))
         },
         // We got a valid value, update
         mod => {
@@ -151,6 +170,7 @@ object Modules extends Controller with Secured {
 
   /**
    * Shows the selected module
+   *
    * @param id the id of the module to show
    */
   def viewModule(id: Long) =  Action {
@@ -159,7 +179,7 @@ object Modules extends Controller with Secured {
       Module.findByIdWithVersion(id) match {
         case Some(mod) => {
           val vote = Module.getUserVote(request.session.get("userId"), mod.id)
-          Ok(views.html.modules.viewModule(mod, vote))
+          Ok(views.html.modules.viewModule(mod, vote, Release.fetchRecentReleases(id)))
         }
         case _ => {
           Logger.warn("Modules.viewModule can't find the module[%d]".format(id))
@@ -189,5 +209,155 @@ object Modules extends Controller with Secured {
       }
   }
 
+  /**
+   * Retrieves a list of Releases linked to the given module. Used on Ajax requests
+   * @param modid id of the module that owns the releases
+   * @param start we want to start from this release
+   */
+  def fetchReleases(modid: Long, start: Int) = Action {
+    implicit request =>
+
+      //required implicit conversion for Json formatting
+      implicit object releaseToJson extends Format[Release] {
+        val format = new java.text.SimpleDateFormat("dd-MM-yyyy")
+
+        def writes(o: Release): JsValue = JsObject(
+          List(
+            "id" -> JsNumber(o.id.get),
+            "name" -> JsString(o.name),
+            "created" -> JsString(format.format(o.created))
+          )
+        )
+        //not used, added for compliance
+        def reads(json: JsValue): Release = Release(
+          id = Id((json \ "name").as[Long]),
+          name = (json \ "name").as[String],
+          created = format.parse((json \ "created").as[String])
+        )
+      }
+      Logger.info("Modules.fetchReleases accessed for module[%d] from position[%d]".format(modid, start))
+      Ok(Json.toJson(
+        Release.fetchRecentReleases(modid = modid, from = start))).as("application/json")
+  }
+
+  /**
+   * Adds a release to the current Module
+   * @param modid the id of the module that owns the release
+   */
+  def addRelease(modid: Long) = Authenticated {
+    implicit request =>
+      Logger.info("Modules.addRelease accessed by user %d to create a new release for module[%d]".format(request.user.id.get, modid))
+      Ok(views.html.modules.addRelease(releaseForm, modid))
+  }
+
+  /**
+   * Saves the release to the given module
+   * @param modid the id of the module that owns the release
+   */
+  def saveRelease(modid: Long) = Authenticated {
+    implicit request =>
+      releaseForm.bindFromRequest.fold(
+        // Form has errors, redisplay it
+        errors => {
+          Logger.warn("Modules.saveRelease errors while saving release [%s]".format(errors))
+          BadRequest(views.html.modules.addRelease(errors, modid))
+        },
+        // We got a valid User value, update
+        release => {
+          Module.findById(modid) match {
+            case Some(mod) if mod.author == request.user.id.get => {
+              Logger.info("Modules.saveRelease saving new release [%s]".format(release))
+              val newRelease = Release.create(release, modid)
+              Redirect(routes.Modules.editRelease(newRelease.id.get, modid)).flashing("success" -> Messages("release.saved"))
+            }
+            case _ => {
+              Logger.warn("Modules.saveRelease can't find the module[%d]".format(modid))
+              NotFound(views.html.errors.error404(request.path)(request))
+            }
+          }
+        }
+      )
+  }
+
+  /**
+   * Edits the selected release
+   *
+   * @param id the id of the release to edit
+   * @param modid the id of the module that owns the release
+   */
+  def editRelease(id: Long, modid: Long) = Authenticated {
+    implicit request =>
+      Logger.info("Modules.editRelease accessed by user %d to edit release [%d] for module[%d]".format(request.user.id.get, id, modid))
+      Release.findById(id) match {
+        case Some(release) if release.moduleid == modid => Ok(views.html.modules.editRelease(releaseForm.fill(release), modid, release.id.get))
+        case _ => {
+          Logger.warn("Modules.editRelease can't find release [%d] for module[%d]".format(id, modid))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
+      }
+  }
+
+  /**
+   * Saves the changes to the release
+   *
+   * @param id the id of the release we modified
+   * @param modid the id of the module that owns the release
+   */
+  def updateRelease(id: Long, modid: Long) = Authenticated {
+    implicit request =>
+      releaseForm.bindFromRequest.fold(
+        // Form has errors, redisplay it
+        errors => {
+          Logger.warn("Modules.updateRelease errors while updating release %d [%s]".format(id, errors))
+          BadRequest(views.html.modules.editRelease(errors, id, modid))
+        },
+        // We got a valid value, update
+        release => {
+          Logger.info("Modules.updateRelease updating release %d [%s]".format(id, release))
+          Release.update(id, release, modid, request.user.id.get)
+          Redirect(routes.Modules.editRelease(id, modid)).flashing("success" -> Messages("release.updated"))
+        }
+      )
+  }
+
+  /**
+   * Deletes the given release
+   *
+   * @param id the id of the release to remove
+   * @param modid the id of the module that owns the release
+   */
+  def deleteRelease(id: Long, modid: Long) = Authenticated {
+    implicit request =>
+      Logger.info("Modules.deleteRelease accessed by user %d to delete release[%d] from module[%d]".format(request.user.id.get, id, modid))
+      Release.findById(id) match {
+        case Some(release) => {
+          Release.delete(id, modid, request.user.id.get)
+          Redirect(routes.Modules.editModule(modid, true)).flashing("success" -> Messages("release.deleted"))
+        }
+        case _ => {
+          Logger.warn("Modules.deleteModule can't find the release[%d] in module[%d]".format(id, modid))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
+      }
+  }
+
+  /**
+   * Shows the selected release
+   *
+   * @param id the id of the release
+   */
+  def viewRelease(id: Long) =  Action {
+    implicit request =>
+      Logger.info("Modules.viewRelease accessed to view release[%d]".format(id))
+      Release.findById(id) match {
+        case Some(release) => {
+          Ok(views.html.modules.viewRelease(release))
+        }
+        case _ => {
+          Logger.warn("Modules.viewRelease can't find the release[%d]".format(id))
+          NotFound(views.html.errors.error404(request.path)(request))
+        }
+      }
+  }
 
 }

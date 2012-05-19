@@ -161,6 +161,24 @@ mods.deleted=Module removed
 mods.view=View Module details
 mods.comments=View Comments
 mods.voted=Thanks for voicing your opinion.
+mods.details=Details
+mods.releases=Releases
+
+release.create=Add Release
+release.edit=Edit Release
+release.name=Name
+release.description=Documentation
+release.description.edit=Edit Documentation
+release.created=Released
+release.saved=Release saved!
+release.delete=Delete Release
+release.delete.text=Are you sure you want to delete this release? This can't be undone.
+release.deleted=Release removed from the database
+release.updated=Release details updated
+release.seeMore=Load older releases
+release.noMore=No more releases to load
+release.loadMoreError=Error while loading additional releases, please try again
+release.loadDocumentationError=Error while loading the documentation
 
 # Administration
 administration.title=Admin Area
