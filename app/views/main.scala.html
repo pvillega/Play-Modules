@@ -120,7 +120,7 @@
         @* We add the Analytics var in here, from configuration, so it can be retrieved by the code and we can keep it as an environment var*@
         <script type="text/javascript">var googleAnalyticsCode= '@play.api.Play.current.configuration.getString("google.analytics").getOrElse("")';</script>
         @* we added any javascript tools or jquery plugins used into bootstrap.min.js (all minified) to open less connections from the client *@
-        <script src="@routes.Assets.at("javascripts/bootstrap_1.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap_2.min.js")" type="text/javascript"></script>
         @* load javascript routes and I18n *@
         <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
         <script type="text/javascript" src="@routes.Application.jsMessages"></script>

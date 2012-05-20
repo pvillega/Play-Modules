@@ -1,0 +1,36 @@
+@(header: String = "")(implicit request: play.api.mvc.RequestHeader)
+
+@* Adds some social media controls *@
+<div class="row">
+    <div class="span1"><strong>@Messages("social.label")</strong></div>
+</div>
+<div class="row">
+    <!-- Twitter -->
+    <div class="span1">
+        <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+    </div>
+
+    <!-- Reddit -->
+    <div class="span1">
+        <script type="text/javascript" src="http://www.reddit.com/buttonlite.js?i=2&styled=off&url=http://@request.host@request.uri&newwindow=1"></script>
+    </div>
+
+    <!-- Hacker News -->
+    <div class="span1">
+    <a target="_blank" href="http://news.ycombinator.com/submitlink?u=http://@request.host@request.uri&t=@header">
+        <img title="@Messages("social.submit.newsyc")" src="@routes.Assets.at("images/social/yc500.gif")">
+    </a>
+    </div>
+
+    <!-- Instapaper -->
+    <div class="span1">
+    <a target="_blank" href="http://www.instapaper.com/hello2?url=http://@request.host@request.uri&title=@header">@Messages("social.submit.instapaper")</a>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(function(){
+        //twitter
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    });
+</script>

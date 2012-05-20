@@ -62,6 +62,10 @@ feedback.email.help=So we can contact you
 feedback.content=Your suggestions or feedback
 feedback.sent=Thanks for your comments, we really value them!
 
+# Social
+social.label=Share this
+social.submit.newsyc=Submit to Hacker News
+social.submit.instapaper=Read Later
 
 # Profile
 profile.name=Name
