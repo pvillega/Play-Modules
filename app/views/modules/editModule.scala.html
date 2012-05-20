@@ -127,6 +127,10 @@
             @if(!latestReleases.isEmpty){
                 <a id="releasesLoad">@Messages("release.seeMore")</a>
             }
+
+            <div class="form-actions">
+                <a data-pjax="#mainContainer" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+            </div>
         </div>
 
     </div>
