@@ -15,7 +15,7 @@
     <ul>
         @currentPage.prev.map { page =>
         <li class="prev">
-            <a data-pjax="#main-container" href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.prev")</a>
+            <a data-pjax="#mainContainer" href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.prev")</a>
         </li>
         }.getOrElse {
         <li class="prev disabled">
@@ -30,14 +30,14 @@
                 </li>
             } else {
                 <li>
-                    <a data-pjax="#main-container" href="@pageLink(index-1, currentFilter, currentOrderBy, call)">@index</a>
+                    <a data-pjax="#mainContainer" href="@pageLink(index-1, currentFilter, currentOrderBy, call)">@index</a>
                 </li>
             }
         }
 
         @currentPage.next.map { page =>
         <li class="next">
-            <a data-pjax="#main-container" href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
+            <a data-pjax="#mainContainer" href="@pageLink(page, currentFilter, currentOrderBy, call)">@Messages("pagination.next")</a>
         </li>
         }.getOrElse {
         <li class="next disabled">

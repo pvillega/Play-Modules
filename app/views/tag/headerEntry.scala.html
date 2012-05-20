@@ -14,5 +14,5 @@
     @if(scala.math.abs(currentOrderBy) == newOrderBy) {
         @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
     }
-    <a data-pjax="#main-container" href="@pageLink(0, currentFilter, currentOrderBy, call, Some(newOrderBy))">@title</a>
+    <a data-pjax="#mainContainer" href="@pageLink(0, currentFilter, currentOrderBy, call, Some(newOrderBy))">@title</a>
 </th>

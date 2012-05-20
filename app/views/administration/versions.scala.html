@@ -11,7 +11,7 @@
 
 <div class="row">
     <div class="span2 offset10">
-        <a data-pjax="#main-container" class="btn btn-success" id="add" href="@routes.Administration.createVersion()">@Messages("versionadmin.create")</a>
+        <a data-pjax="#mainContainer" class="btn btn-success" id="add" href="@routes.Administration.createVersion()">@Messages("versionadmin.create")</a>
     </div>
 </div>
 
@@ -30,8 +30,8 @@
 @versions.map {
     case (version, parent) => {
     <tr>
-        <td><a data-pjax="#main-container" href="@routes.Administration.editVersion(version.id.get)">@version.id.get</a></td>
-        <td><a data-pjax="#main-container" href="@routes.Administration.editVersion(version.id.get)">@version.name</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Administration.editVersion(version.id.get)">@version.id.get</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Administration.editVersion(version.id.get)">@version.name</a></td>
         <td>
             @parent.getOrElse { <em>-</em> }
         </td>
@@ -53,7 +53,7 @@
 
 }
 <div class="form-actions">
-    <a data-pjax="#main-container" href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
+    <a data-pjax="#mainContainer" href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
 </div>
 
 

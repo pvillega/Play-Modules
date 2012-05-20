@@ -128,8 +128,8 @@ window.$.noConflict()
 window.$ = window.$.attachReady(jQuery)
 
 # Enable Pjax on all anchors configured to use it
-# Anchors with attribute data-pjax="#main-container" will do Pjax requests
-# Example: <a href="#" data-pjax="#main-container">Pjax enabled</a>
+# Anchors with attribute data-pjax="#mainContainer" will do Pjax requests
+# Example: <a href="#" data-pjax="#mainContainer">Pjax enabled</a>
 $('a[data-pjax]').pjax()
 
 # Prevention of window hijack, run after all jquery scripts

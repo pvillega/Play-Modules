@@ -85,7 +85,7 @@
 
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
-                <a data-pjax="#main-container" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+                <a data-pjax="#mainContainer" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
             </div>
 
             }
@@ -93,7 +93,7 @@
         <div class="tab-pane" id="releases">
             <div class="row">
                 <div class="span2 offset10">
-                    <a data-pjax="#main-container" class="btn btn-success" id="add" href="@routes.Modules.addRelease(id)">@Messages("release.create")</a>
+                    <a data-pjax="#mainContainer" class="btn btn-success" id="add" href="@routes.Modules.addRelease(id)">@Messages("release.create")</a>
                 </div>
             </div>
 
@@ -115,8 +115,8 @@
                     @latestReleases.map { release =>
                     <tr>
                         <td>@release.created.format("dd-MM-yyyy")</td>
-                        <td><a data-pjax="#main-container" href="@routes.Modules.editRelease(release.id.get, id)">@release.name</a></td>
-                        <td><a data-pjax="#main-container" href="@routes.Modules.editRelease(release.id.get, id)">@Messages("release.description.edit")</a></td>
+                        <td><a data-pjax="#mainContainer" href="@routes.Modules.editRelease(release.id.get, id)">@release.name</a></td>
+                        <td><a data-pjax="#mainContainer" href="@routes.Modules.editRelease(release.id.get, id)">@Messages("release.description.edit")</a></td>
                     </tr>
                     }
                 }

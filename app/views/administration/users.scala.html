@@ -26,8 +26,8 @@
 @users.map {
     case user => {
     <tr>
-        <td><a data-pjax="#main-container" href="@routes.Administration.editUser(user.id.get)">@user.id.get</a></td>
-        <td><a data-pjax="#main-container" href="@routes.Administration.editUser(user.id.get)">@user.name</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Administration.editUser(user.id.get)">@user.id.get</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Administration.editUser(user.id.get)">@user.name</a></td>
         <td>
             @user.disabled
         </td>
@@ -55,7 +55,7 @@
 
 }
 <div class="form-actions">
-    <a data-pjax="#main-container" href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
+    <a data-pjax="#mainContainer" href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
 </div>
 
 

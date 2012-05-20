@@ -11,8 +11,8 @@
 
 <div class="row">
     <div class="span3 offset9">
-        <a data-pjax="#main-container" class="btn btn-success" id="add" href="@routes.Administration.createTag()">@Messages("tagadmin.create")</a>
-        <a data-pjax="#main-container" class="btn btn-warning" id="merge" href="@routes.Administration.mergeTags()">@Messages("tagadmin.merge")</a>
+        <a data-pjax="#mainContainer" class="btn btn-success" id="add" href="@routes.Administration.createTag()">@Messages("tagadmin.create")</a>
+        <a data-pjax="#mainContainer" class="btn btn-warning" id="merge" href="@routes.Administration.mergeTags()">@Messages("tagadmin.merge")</a>
     </div>
 </div>
 
@@ -29,8 +29,8 @@
 
 @tags.map { tag =>
     <tr>
-        <td><a data-pjax="#main-container" href="@routes.Administration.editTag(tag.id.get)">@tag.id.get</a></td>
-        <td><a data-pjax="#main-container" href="@routes.Administration.editTag(tag.id.get)">@tag.name</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Administration.editTag(tag.id.get)">@tag.id.get</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Administration.editTag(tag.id.get)">@tag.name</a></td>
     </tr>
 }
 
@@ -48,7 +48,7 @@
 
 }
 <div class="form-actions">
-    <a data-pjax="#main-container" href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
+    <a data-pjax="#mainContainer" href="@routes.Administration.index()" class="btn">@Messages("administration.back")</a>
 </div>
 
 

@@ -21,7 +21,7 @@
 
 @votes.map { vote =>
     <tr>
-        <td><a data-pjax="#main-container" href="@routes.Profile.index(vote.userid)">@vote.name</a></td>
+        <td><a data-pjax="#mainContainer" href="@routes.Profile.index(vote.userid)">@vote.name</a></td>
         <td>@vote.date.format("dd-MM-yyyy")</td>
         <td><span class="badge @if(vote.value > 0) {badge-success} else {badge-error}">@vote.value</span></td>
     </tr>
@@ -41,7 +41,7 @@
 
 }
 <div class="form-actions">
-    <a data-pjax="#main-container" href="@routes.Modules.viewModule(modid)" class="btn">@Messages("navigation.back")</a>
+    <a data-pjax="#mainContainer" href="@routes.Modules.viewModule(modid)" class="btn">@Messages("navigation.back")</a>
 </div>
 
 
@@ -65,7 +65,7 @@ Helper generating table headers to reorder the table by a field
     @if(scala.math.abs(currentOrderBy) == newOrderBy) {
     @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
     }
-    <a data-pjax="#main-container" href="@pageLinkVotes(0, currentOrderBy, call, Some(newOrderBy))">@title</a>
+    <a data-pjax="#mainContainer" href="@pageLinkVotes(0, currentOrderBy, call, Some(newOrderBy))">@title</a>
 </th>
 }
 
@@ -115,7 +115,7 @@ Helper generating the pagination footer for list views
     <ul>
         @currentPage.prev.map { page =>
         <li class="prev">
-            <a data-pjax="#main-container" href="@pageLinkVotes(page, currentOrderBy, call)">@Messages("pagination.prev")</a>
+            <a data-pjax="#mainContainer" href="@pageLinkVotes(page, currentOrderBy, call)">@Messages("pagination.prev")</a>
         </li>
         }.getOrElse {
         <li class="prev disabled">
@@ -130,14 +130,14 @@ Helper generating the pagination footer for list views
         </li>
         } else {
         <li>
-            <a data-pjax="#main-container" href="@pageLinkVotes(index-1, currentOrderBy, call)">@index</a>
+            <a data-pjax="#mainContainer" href="@pageLinkVotes(index-1, currentOrderBy, call)">@index</a>
         </li>
         }
         }
 
         @currentPage.next.map { page =>
         <li class="next">
-            <a data-pjax="#main-container" href="@pageLinkVotes(page, currentOrderBy, call)">@Messages("pagination.next")</a>
+            <a data-pjax="#mainContainer" href="@pageLinkVotes(page, currentOrderBy, call)">@Messages("pagination.next")</a>
         </li>
         }.getOrElse {
         <li class="next disabled">

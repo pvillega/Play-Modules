@@ -35,7 +35,7 @@
                     <a class="@if(vote.getOrElse(0) < 0) {voteDownSelected} else {voteDown}" href="#" onclick="$('#voteDown').submit()"></a>
                 </form>
             }
-            <a data-pjax="#main-container" href="@routes.Demos.viewVotes(demo.id)" class="smallLink">@Messages("mods.votes.view")</a>
+            <a data-pjax="#mainContainer" href="@routes.Demos.viewVotes(demo.id)" class="smallLink">@Messages("mods.votes.view")</a>
         </div>
         <div class="span11">
             <div class="row">
@@ -44,7 +44,7 @@
             </div>
             <div class="row">
                 <div class="span1"><strong>@Messages("demo.author")</strong></div>
-                <div class="span5"><a data-pjax="#main-container" href="@routes.Profile.index(demo.aid)">@demo.publisher</a></div>
+                <div class="span5"><a data-pjax="#mainContainer" href="@routes.Profile.index(demo.aid)">@demo.publisher</a></div>
             </div>
             <div class="row">
                 <div class="span1"><strong>@Messages("demo.version")</strong></div>
