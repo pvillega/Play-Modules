@@ -75,16 +75,16 @@ case object GitHub extends OauthService {
 
   override def processUser(response: Response) = {
     val id = (response.json \ "id").as[Int]
-    val name = (response.json \ "name").as[String]
-    val url = (response.json \ "html_url").as[String]
-    val bio = (response.json \ "bio").as[String]
-    val location = (response.json \ "location").as[String]
-    val avatar = (response.json \ "avatar_url").as[String]
+    val name = (response.json \ "name").as[Option[String]].getOrElse("-")
+    val url = (response.json \ "html_url").as[Option[String]]
+    val bio = (response.json \ "bio").as[Option[String]]
+    val location = (response.json \ "location").as[Option[String]]
+    val avatar = (response.json \ "avatar_url").as[Option[String]]
     Logger.debug("Received from github: %d, %s, %s, %s, %s".format(id, name, url, bio, avatar))
 
     User.findByGithubId(id) match {
       case Some(user) => Right(user)
-      case None => Left(User(name = name, githubId = Option(id), avatar = Option(avatar), url = Option(url), bio = Option(bio), location = Option(location)) )
+      case None => Left(User(name = name, githubId = Option(id), avatar = avatar, url = url, bio = bio, location = location) )
     }
   }
 }
@@ -93,15 +93,15 @@ case object Twitter extends OauthService {
 
   override def processUser(response: Response) = {
     val id = (response.json \ "id").as[Int]
-    val name = (response.json \ "name").as[String]
-    val url = (response.json \ "url").as[String]
-    val bio = (response.json \ "description").as[String]
-    val avatar = (response.json \ "profile_image_url").as[String]
+    val name = (response.json \ "name").as[Option[String]].getOrElse("-")
+    val url = (response.json \ "url").as[Option[String]]
+    val bio = (response.json \ "description").as[Option[String]]
+    val avatar = (response.json \ "profile_image_url").as[Option[String]]
     Logger.debug("Received from Twitter: %d, %s, %s, %s, %s".format(id, name, url, bio, avatar))
 
     User.findByTwitterId(id) match {
       case Some(user) => Right(user)
-      case None => Left(User(name = name, twitterId = Option(id), avatar = Option(avatar), url = Option(url), bio = Option(bio)))
+      case None => Left(User(name = name, twitterId = Option(id), avatar = avatar, url = url, bio = bio))
     }
   }
 }
