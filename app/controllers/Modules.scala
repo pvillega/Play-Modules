@@ -367,16 +367,17 @@ object Modules extends Controller with Secured {
    * Shows the selected release
    *
    * @param id the id of the release
+   * @param modid the id of the module that owns the release
    */
-  def viewRelease(id: Long) =  Action {
+  def viewRelease(id: Long, modid: Long) =  Action {
     implicit request =>
-      Logger.info("Modules.viewRelease accessed to view release[%d]".format(id))
+      Logger.info("Modules.viewRelease accessed to view release[%d] of module[%d]".format(id, modid))
       Release.findById(id) match {
         case Some(release) => {
-          Ok(views.html.modules.viewRelease(release))
+          Ok(views.html.modules.viewRelease(release, modid))
         }
         case _ => {
-          Logger.warn("Modules.viewRelease can't find the release[%d]".format(id))
+          Logger.warn("Modules.viewRelease can't find the release[%d] of module[%d]".format(id, modid))
           NotFound(views.html.errors.error404(request.path)(request))
         }
       }

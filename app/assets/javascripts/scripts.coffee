@@ -97,28 +97,6 @@ root.addTag = (id, value, view, demo) ->
             newName = $(this).attr('name').replace(/\[.+\]/g, '[' + i + ']')
             $(this).attr('name', newName)
 
-
-# Loads documentation into a modal
-# id: id of the Release
-root.displayDocumentation = (id) ->
-    jsRoutes.controllers.Modules.viewRelease(id = id).ajax
-        context: this
-        success: (data) ->
-            $('.modal-body').empty().html(data)
-
-            #we need to trigger the markdown rendering to be able to see it
-            converter = Markdown.getSanitizingConverter()
-            mkd = $('.modal-body #wmd-input').val()
-            html = converter.makeHtml(mkd)
-            $('.modal-body #wmd-preview').append(html)
-
-            $('#displayModal').modal('show')
-        error: (err) ->
-            $('.modal-body').html('<p>' + Messages('release', 'loadDocumentationError') + '</p>')
-            $('#displayModal').modal('show')
-
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Below there are core functional scripts, don't change
 

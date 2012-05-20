@@ -96,8 +96,8 @@
                     @latestReleases.map { release =>
                     <tr>
                         <td>@release.created.format("dd-MM-yyyy")</td>
-                        <td><a onclick="displayDocumentation(@release.id);">@release.name</a></td>
-                        <td><a onclick="displayDocumentation(@release.id);">@Messages("release.description")</a></td>
+                        <td><a data-pjax="#mainContainer" href="@routes.Modules.viewRelease(release.id.get, mod.id)">@release.name</a></td>
+                        <td><a data-pjax="#mainContainer" href="@routes.Modules.viewRelease(release.id.get, mod.id)">@Messages("release.description")</a></td>
                     </tr>
                     }
                 }
@@ -109,19 +109,6 @@
             @if(!latestReleases.isEmpty){
                 <a id="releasesLoad">@Messages("release.seeMore")</a>
             }
-        </div>
-    </div>
-
-    <div class="modal hide" id="displayModal">
-        <div class="modal-header">
-            <a class="close" data-dismiss="modal">×</a>
-            <h3>@Messages("release.description")</h3>
-        </div>
-        <div class="modal-body">
-
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn" data-dismiss="modal">@Messages("navigation.cancel")</a>
         </div>
     </div>
 
@@ -146,8 +133,8 @@
                         for(var r in data) {
                             var html = "<tr>";
                             html +="<td>"+data[r].created+"</td>";
-                            html +="<td><a onclick='displayDocumentation("+data[r].id+");'>"+data[r].name+"</a></td>";
-                            html +="<td><a onclick='displayDocumentation("+data[r].id+");'>@Messages("release.description")</a></td>";
+                            html +="<td><a data-pjax='#mainContainer' href='"+jsRoutes.controllers.Modules.viewRelease(id = data[r].id, modid = @mod.id).url +"'>"+data[r].name+"</a></td>";
+                            html +="<td><a data-pjax='#mainContainer' href='"+jsRoutes.controllers.Modules.viewRelease(id = data[r].id, modid = @mod.id).url +"'>@Messages("release.description")</a></td>";
                             html += "<tr>";
                             $('#releasesContainer').append(html);
                             releasesLoaded = releasesLoaded + 1;

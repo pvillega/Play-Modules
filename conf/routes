@@ -49,7 +49,7 @@ POST    /module/$modid<[0-9]+>/release/save  controllers.Modules.saveRelease(mod
 GET     /module/$modid<[0-9]+>/release/$id<[0-9]+>/edit             controllers.Modules.editRelease(id: Long, modid: Long)
 POST    /module/$modid<[0-9]+>/release/$id<[0-9]+>/update            controllers.Modules.updateRelease(id: Long, modid: Long)
 POST    /module/$modid<[0-9]+>/release/$id<[0-9]+>/delete               controllers.Modules.deleteRelease(id: Long, modid: Long)
-GET     /release/$id<[0-9]+>/view               controllers.Modules.viewRelease(id: Long)
+GET     /module/$modid<[0-9]+>/release/$id<[0-9]+>/view               controllers.Modules.viewRelease(id: Long, modid: Long)
 GET     /releases/fetch               controllers.Modules.fetchReleases(modid: Long, start: Int)
 
 # Administration
