@@ -18,11 +18,14 @@
         <div class="span1"><strong>@Messages("release.description")</strong></div>
     </div>
     <div class="row">
-        <div class="span5">@richTextDisplay(release.description)</div>
+        <div class="span9">@richTextDisplay(release.description)</div>
+        <div class="span3 releaseToC">
+
+        </div>
     </div>
 
     <div class="form-actions">
-        <a data-pjax="#mainContainer" href="@routes.Modules.viewModule(modid)" class="btn">@Messages("navigation.back")</a>
+        <a  href="@routes.Modules.viewModule(modid)" class="btn pjaxLink">@Messages("navigation.back")</a>
     </div>
 
     <div class="spacer">&nbsp;</div>

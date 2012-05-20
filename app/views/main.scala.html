@@ -67,24 +67,24 @@
                     </a>
 
                     <!-- Be sure to leave the brand out there if you want it shown -->
-                    <a class="brand" href="@routes.Application.index()">@Messages("app.title")</a>
+                    <a class="brand pjaxLink" href="@routes.Application.index()">@Messages("app.title")</a>
 
                     <!-- Everything you want hidden at 940px or less, place within here -->
                     <div class="nav-collapse">
                         <!-- .nav, .navbar-search, .navbar-form, etc -->
                         <ul class="nav">
-                            <li id="menuHomeArea" class="active"><a data-pjax="#mainContainer" href="@routes.Application.index()">@Messages("area.home")</a></li>
-                            <li id="menuModulesArea"><a data-pjax="#mainContainer" href="@routes.Modules.listModules()">@Messages("area.modules")</a></li>
-                            <li id="menuDemosArea"><a data-pjax="#mainContainer" href="@routes.Demos.listDemos()">@Messages("area.demos")</a></li>
-                            <li id="menuFeedbackArea"><a data-pjax="#mainContainer" href="@routes.Feedback.index()">@Messages("area.feedback")</a></li>
+                            <li id="menuHomeArea" class="active"><a class="pjaxLink" href="@routes.Application.index()">@Messages("area.home")</a></li>
+                            <li id="menuModulesArea"><a class="pjaxLink" href="@routes.Modules.listModules()">@Messages("area.modules")</a></li>
+                            <li id="menuDemosArea"><a class="pjaxLink" href="@routes.Demos.listDemos()">@Messages("area.demos")</a></li>
+                            <li id="menuFeedbackArea"><a class="pjaxLink" href="@routes.Feedback.index()">@Messages("area.feedback")</a></li>
                             <li class="divider-vertical"></li>
                         </ul>
                         <ul class="nav pull-right">
                             @request.session.get("userId").map { userId =>
-                                <li id="menuProfileArea"><a data-pjax="#mainContainer" href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
+                                <li id="menuProfileArea"><a class="pjaxLink" href="@routes.Profile.index(userId.toLong)">@Messages("area.profile")</a></li>
                                 <li><a href="@routes.Authentication.logout()">@Messages("area.logout")</a></li>
                             }.getOrElse{
-                                <li id="menuAuthArea"><a data-pjax="#mainContainer" href="@routes.Authentication.index()">@Messages("area.login")</a></li>
+                                <li id="menuAuthArea"><a class="pjaxLink" href="@routes.Authentication.index()">@Messages("area.login")</a></li>
                             }
 
                         </ul>

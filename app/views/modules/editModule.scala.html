@@ -85,7 +85,7 @@
 
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
-                <a data-pjax="#mainContainer" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+                <a href="@routes.Profile.index(request.user.id.get)" class="btn pjaxLink">@Messages("navigation.back")</a>
             </div>
 
             }
@@ -93,7 +93,7 @@
         <div class="tab-pane" id="releases">
             <div class="row">
                 <div class="span2 offset10">
-                    <a data-pjax="#mainContainer" class="btn btn-success" id="add" href="@routes.Modules.addRelease(id)">@Messages("release.create")</a>
+                    <a  class="btn btn-success pjaxLink" id="add" href="@routes.Modules.addRelease(id)">@Messages("release.create")</a>
                 </div>
             </div>
 
@@ -115,8 +115,8 @@
                     @latestReleases.map { release =>
                     <tr>
                         <td>@release.created.format("dd-MM-yyyy")</td>
-                        <td><a data-pjax="#mainContainer" href="@routes.Modules.editRelease(release.id.get, id)">@release.name</a></td>
-                        <td><a data-pjax="#mainContainer" href="@routes.Modules.editRelease(release.id.get, id)">@Messages("release.description.edit")</a></td>
+                        <td><a class="pjaxLink" href="@routes.Modules.editRelease(release.id.get, id)">@release.name</a></td>
+                        <td><a class="pjaxLink" href="@routes.Modules.editRelease(release.id.get, id)">@Messages("release.description.edit")</a></td>
                     </tr>
                     }
                 }
@@ -129,7 +129,7 @@
             }
 
             <div class="form-actions">
-                <a data-pjax="#mainContainer" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.back")</a>
+                <a  href="@routes.Profile.index(request.user.id.get)" class="btn pjaxLink">@Messages("navigation.back")</a>
             </div>
         </div>
 
@@ -161,14 +161,14 @@
                             for(var r in data) {
                                 var html = "<tr>";
                                 html +="<td>"+data[r].created+"</td>";
-                                html +="<td><a data-pjax='#main-container' href='"+ jsRoutes.controllers.Modules.editRelease(id = data[r].id, modid = @id).url +"'>"+data[r].name+"</a></td>";
-                                html +="<td><a data-pjax='#main-container' href='"+ jsRoutes.controllers.Modules.editRelease(id = data[r].id, modid = @id).url +"'>@Messages("release.description.edit")</a></td>";
+                                html +="<td><a class='pjaxLink' href='"+ jsRoutes.controllers.Modules.editRelease(id = data[r].id, modid = @id).url +"'>"+data[r].name+"</a></td>";
+                                html +="<td><a class='pjaxLink' href='"+ jsRoutes.controllers.Modules.editRelease(id = data[r].id, modid = @id).url +"'>@Messages("release.description.edit")</a></td>";
                                 html += "<tr>";
                                 $('#releasesContainer').append(html);
                                 releasesLoaded = releasesLoaded + 1;
                             }
                             //relink anchors with pjax
-                            $('a[data-pjax]').pjax()
+                            $('.pjaxLink').pjax("#mainContainer")
                     },
                     error: function(err) {
                           $('#releasesLoad').text('@Messages("release.loadMoreError")');

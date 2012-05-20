@@ -8,9 +8,9 @@
             <h1>@Messages("app.title")</h1>
             <p>@Messages("app.pitch")</p>
             <p>
-                <a data-pjax="#mainContainer" class="btn btn-primary btn-large" href="@routes.Modules.listModules()">@Messages("landing.browseModules")</a>
-                <a data-pjax="#mainContainer" class="btn btn-large" href="@routes.Demos.listDemos()">@Messages("landing.demos")</a>
-                <a data-pjax="#mainContainer" class="btn btn-success btn-large" href="@routes.Authentication.index()">@Messages("landing.upload")</a>
+                <a  class="btn btn-primary btn-large pjaxLink" href="@routes.Modules.listModules()">@Messages("landing.browseModules")</a>
+                <a  class="btn btn-large pjaxLink" href="@routes.Demos.listDemos()">@Messages("landing.demos")</a>
+                <a  class="btn btn-success btn-large pjaxLink" href="@routes.Authentication.index()">@Messages("landing.upload")</a>
             </p>
         </div>
     </header>

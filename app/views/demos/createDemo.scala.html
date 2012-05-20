@@ -59,7 +59,7 @@
 
     <div class="form-actions">
         <input type="submit" class="btn btn-primary" value="@Messages("navigation.save")">
-        <a data-pjax="#mainContainer" href="@routes.Profile.index(request.user.id.get)" class="btn">@Messages("navigation.cancel")</a>
+        <a href="@routes.Profile.index(request.user.id.get)" class="btn pjaxLink">@Messages("navigation.cancel")</a>
     </div>
 }
 

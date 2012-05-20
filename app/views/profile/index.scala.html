@@ -19,7 +19,7 @@
                 </li>
             </ul>
             @if(itsMe) {
-                <a data-pjax="#mainContainer" href="@routes.Profile.edit()">@Messages("profile.edit")</a>
+                <a  href="@routes.Profile.edit()">@Messages("profile.edit")</a>
             }
         </div>
         <div class="span10">
@@ -41,7 +41,7 @@
             </div>
             @if(itsMe && user.admin) {
                 <div class="row">
-                    <div class="span1"><strong><a data-pjax="#mainContainer" href="@routes.Administration.index()">@Messages("profile.admin")</a></strong></div>
+                    <div class="span1"><strong><a  href="@routes.Administration.index()">@Messages("profile.admin")</a></strong></div>
                     <div class="span5"></div>
                 </div>
             }
@@ -54,7 +54,7 @@
         <h2>@Messages("profile.modules")</h2>
         @if(itsMe) {
         <div class="span2 offset10 pinRight">
-            <a data-pjax="#mainContainer" class="btn btn-success" id="addMod" href="@routes.Modules.createModule()">@Messages("mods.create")</a>
+            <a  class="btn btn-success" id="addMod" href="@routes.Modules.createModule()">@Messages("mods.create")</a>
         </div>
         }
     </div>
@@ -78,15 +78,15 @@
             case (mod) => {
             <tr>
                 @if(itsMe) {
-                <td><a data-pjax="#mainContainer" href="@routes.Modules.editModule(mod.id)">@mod.name</a></td>
+                <td><a class="pjaxLink" href="@routes.Modules.editModule(mod.id)">@mod.name</a></td>
                 } else {
-                <td>@mod.name</td>
+                <td><a class="pjaxLink" href="@routes.Modules.viewModule(mod.id)">@mod.name</a></td>
                 }
                 <td>@mod.version</td>
                 <td><a href="@mod.url">@mod.url</a></td>
                 <td><span class="badge @if(mod.showScore > 0) {badge-success} else {badge-error}">@mod.showScore</span></td>
                 <td>@mod.updated.format("dd-MM-yyyy")</td>
-                <td><a data-pjax="#mainContainer" href="@routes.Modules.viewModule(mod.id)" class="btn btn-info floatRight">@Messages("mods.comments")</a></td>
+                <td><a href="@routes.Modules.viewModule(mod.id)" class="btn btn-info floatRight pjaxLink">@Messages("mods.comments")</a></td>
             </tr>
             }
             }
@@ -110,7 +110,7 @@
         <h2>@Messages("profile.demos")</h2>
         @if(itsMe) {
         <div class="span2 offset10 pinRight">
-            <a data-pjax="#mainContainer" class="btn btn-success" id="addDemo" href="@routes.Demos.createDemo()">@Messages("demos.create")</a>
+            <a  class="btn btn-success" id="addDemo" href="@routes.Demos.createDemo()">@Messages("demos.create")</a>
         </div>
         }
     </div>
@@ -133,14 +133,14 @@
             case (demo) => {
             <tr>
                 @if(itsMe) {
-                    <td><a data-pjax="#mainContainer" href="@routes.Demos.editDemo(demo.id)">@demo.name</a></td>
+                    <td><a class="pjaxLink" href="@routes.Demos.editDemo(demo.id)">@demo.name</a></td>
                 } else {
-                    <td>@demo.name</td>
+                    <td><a class="pjaxLink" href="@routes.Demos.viewDemo(demo.id)">@demo.name</a></td>
                 }
                 <td>@demo.version</td>
                 <td><a href="@demo.demourl">@demo.demourl</a></td>
                 <td><span class="badge @if(demo.showScore > 0) {badge-success} else {badge-error}">@demo.showScore</span></td>
-                <td><a data-pjax="#mainContainer" href="@routes.Demos.viewDemo(demo.id)" class="btn btn-info floatRight">@Messages("demos.comments")</a></td>
+                <td><a  href="@routes.Demos.viewDemo(demo.id)" class="btn btn-info floatRight pjaxLink">@Messages("demos.comments")</a></td>
             </tr>
             }
             }
@@ -170,7 +170,7 @@
         @if(scala.math.abs(currentOrderBy) == newOrderBy) {
         @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
         }
-        <a data-pjax="#mainContainer" href="@pageLinkProfile(0, currentModPage.page, currentUser, currentOrderBy, currentModOrderBy, call, Some(newOrderBy), None)">@title</a>
+        <a  href="@pageLinkProfile(0, currentModPage.page, currentUser, currentOrderBy, currentModOrderBy, call, Some(newOrderBy), None)">@title</a>
     </th>
 }
 
@@ -179,7 +179,7 @@
     @if(scala.math.abs(currentOrderBy) == newOrderBy) {
     @if(currentOrderBy < 0) { <i class="icon-arrow-down"></i> } else { <i class="icon-arrow-up"></i> }
     }
-    <a data-pjax="#mainContainer" href="@pageLinkProfile(currentDemoPage.page, 0, currentUser, currentDemoOrderBy, currentOrderBy, call, None, Some(newOrderBy))">@title</a>
+    <a  href="@pageLinkProfile(currentDemoPage.page, 0, currentUser, currentDemoOrderBy, currentOrderBy, call, None, Some(newOrderBy))">@title</a>
 </th>
 }
 
@@ -221,7 +221,7 @@
             <ul>
                 @currentPage.prev.map { page =>
                 <li class="prev">
-                    <a data-pjax="#mainContainer" href="@pageLinkProfile(page, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.prev")</a>
+                    <a  href="@pageLinkProfile(page, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.prev")</a>
                 </li>
                 }.getOrElse {
                 <li class="prev disabled">
@@ -236,14 +236,14 @@
                 </li>
                 } else {
                 <li>
-                    <a data-pjax="#mainContainer" href="@pageLinkProfile(index-1, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@index</a>
+                    <a  href="@pageLinkProfile(index-1, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@index</a>
                 </li>
                 }
                 }
 
                 @currentPage.next.map { page =>
                 <li class="next">
-                    <a data-pjax="#mainContainer" href="@pageLinkProfile(page, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.next")</a>
+                    <a  href="@pageLinkProfile(page, currentModPage.page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.next")</a>
                 </li>
                 }.getOrElse {
                 <li class="next disabled">
@@ -260,7 +260,7 @@
             <ul>
                 @currentPage.prev.map { page =>
                 <li class="prev">
-                    <a data-pjax="#mainContainer" href="@pageLinkProfile(currentDemoPage.page, page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.prev")</a>
+                    <a  href="@pageLinkProfile(currentDemoPage.page, page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.prev")</a>
                 </li>
                 }.getOrElse {
                 <li class="prev disabled">
@@ -275,14 +275,14 @@
                 </li>
                 } else {
                 <li>
-                    <a data-pjax="#mainContainer" href="@pageLinkProfile(currentDemoPage.page, index-1, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@index</a>
+                    <a  href="@pageLinkProfile(currentDemoPage.page, index-1, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@index</a>
                 </li>
                 }
                 }
 
                 @currentPage.next.map { page =>
                 <li class="next">
-                    <a data-pjax="#mainContainer" href="@pageLinkProfile(currentDemoPage.page, page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.next")</a>
+                    <a  href="@pageLinkProfile(currentDemoPage.page, page, currentUser, currentDemoOrderBy, currentModOrderBy, call)">@Messages("pagination.next")</a>
                 </li>
                 }.getOrElse {
                 <li class="next disabled">

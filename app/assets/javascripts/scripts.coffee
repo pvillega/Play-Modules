@@ -97,6 +97,44 @@ root.addTag = (id, value, view, demo) ->
             newName = $(this).attr('name').replace(/\[.+\]/g, '[' + i + ']')
             $(this).attr('name', newName)
 
+# Sets the twitter social counter
+# Modification of the method provided by Twitter
+root.twitterCounter = () ->
+    twitter = (d,s,id) ->
+        fjs = d.getElementsByTagName(s)[0]
+        old = $('#'+id)
+        if  old?
+            old.remove()
+        if fjs?  and fjs.parentNode?
+            js=d.createElement(s)
+            js.id=id
+            js.src="//platform.twitter.com/widgets.js"
+            fjs.parentNode.insertBefore(js,fjs)
+    twitter(document,"script","twitter-wjs")
+
+# Sets the reddit social counter
+# It checks if the reddit element is in scope, if so it renders the link
+root.redditCounter = () ->
+    reddit = () ->
+        span = $('#redditCounter')
+        #console.log(span)
+        if span?
+            url = span.attr('url')
+            #console.log(url)
+            #code below copied from reddit, to allow loading it when using pjax
+            styled_submit = '<a style="color: #369; text-decoration: none;" href="http://www.reddit.com/submit?url='+url+'&amp;amp;title=" target="_new">'
+            unstyled_submit = '<a href="http://www.reddit.com/submit?url='+url+'&amp;title=" target="http://www.reddit.com/submit?url='+url+'&amp;amp;title=">'
+            write_string='<span class="reddit_button" style="'
+            write_string += '">'
+            write_string += unstyled_submit + '<img style="height: 2.3ex; vertical-align:top; margin-right: 1ex" src="http://www.redditstatic.com/spreddit2.gif">' + "</a>"
+            write_string += unstyled_submit + 'submit'
+            write_string += '</a>'
+            write_string += '</span>'
+            #end of reddit code
+            span.parent().append(write_string);
+    reddit()
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Below there are core functional scripts, don't change
 
@@ -106,9 +144,24 @@ window.$.noConflict()
 window.$ = window.$.attachReady(jQuery)
 
 # Enable Pjax on all anchors configured to use it
-# Anchors with attribute data-pjax="#mainContainer" will do Pjax requests
-# Example: <a href="#" data-pjax="#mainContainer">Pjax enabled</a>
-$('a[data-pjax]').pjax()
+# Anchors with class pjaxLink will do Pjax requests
+$('.pjaxLink').pjax('#mainContainer')
+
+# Events to check after ajax load, like social buttons loading
+$('#mainContainer').live 'pjax:end', (e, xhr, err) ->
+        console.log("End pjax event fired")
+        twitterCounter()
+        redditCounter()
+        #console.log("End pjax event fired - end")
+
+
+$('#mainContainer').live 'pjax:start', (e, xhr, err) ->
+        console.log("Start pjax event fired")
+
+# Trigger social controls after page loading
+$(document).on 'ready', twitterCounter
+$(document).on 'ready', redditCounter
+
 
 # Prevention of window hijack, run after all jquery scripts
 $('html').css 'display': 'none'
